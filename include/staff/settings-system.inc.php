@@ -84,7 +84,7 @@ $gmtime = Misc::gmtime();
                 <select name="max_page_size">
                     <?php
                      $pagelimit=$config['max_page_size'];
-                    for ($i = 5; $i <= 50; $i += 5) {
+                    for ($i = 25; $i <= 250; $i += 25) {
                         ?>
                         <option <?php echo $config['max_page_size']==$i?'selected="selected"':''; ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
                         <?php

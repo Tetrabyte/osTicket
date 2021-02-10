@@ -1782,6 +1782,7 @@ implements RestrictedAccess, Threadable, Searchable {
 
     function onResponse($response, $options=array()) {
         $this->isanswered = 1;
+		$this->lastupdate = SqlFunction::NOW();
         $this->save();
 
         $vars = array_merge($options,
@@ -1874,6 +1875,7 @@ implements RestrictedAccess, Threadable, Searchable {
 
         $this->isanswered = 0;
         $this->lastupdate = SqlFunction::NOW();
+		$this->status = 1;
         $this->save();
 
 
@@ -3532,6 +3534,7 @@ implements RestrictedAccess, Threadable, Searchable {
         $type = array('type' => 'note');
         Signal::send('object.created', $this, $type);
 
+		$this->lastupdate = SqlFunction::NOW();
         return $note;
     }
 
