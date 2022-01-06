@@ -585,12 +585,16 @@ if($ticket->isOverdue())
                          if ($role->hasPerm(Ticket::PERM_EDIT)) {
                              $duedate = $ticket->getField('duedate'); ?>
                            <td>
-                      <a class="inline-edit" data-placement="bottom"
+                      <a class="inline-edit" data-placement="bottom" data-toggle="tooltip"
+                          title="<?php echo __('Update'); ?>"
                           href="#tickets/<?php echo $ticket->getId();
                            ?>/field/duedate/edit">
-                           <span id="field_duedate"><?php echo Format::datetime($ticket->getEstDueDate()); ?></span>
+                           <?php $due_date = Format::datetime($ticket->getEstDueDate()); ?>
+                           <span id="field_duedate" <?php if (!$due_date) echo 'class="faded"'; ?>>
+                               <?php echo $due_date ?: '&mdash;'.__('Empty').'&mdash;'; ?>
+                           </span>
                       </a>
-                    <td>
+                           </td>
                       <?php } else { ?>
                            <td><?php echo Format::datetime($ticket->getEstDueDate()); ?></td>
                       <?php } ?>
@@ -1301,7 +1305,7 @@ if ($errors['err'] && isset($_POST['a'])) {
     </p>
     <p class="confirm-action" style="display:none;" id="changeuser-confirm">
         <span id="msg_warning" style="display:block;vertical-align:top">
-        <?php echo sprintf(Format::htmlchars(__('%s <%s> will longer have access to the ticket')),
+        <?php echo sprintf(Format::htmlchars(__('%s <%s> will no longer have access to the ticket')),
             '<b>'.Format::htmlchars($ticket->getName()).'</b>', Format::htmlchars($ticket->getEmail())); ?>
         </span>
         <?php echo sprintf(__('Are you sure you want to <b>change</b> ticket owner to %s?'),

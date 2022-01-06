@@ -94,8 +94,7 @@ else {
         <div class="error"><?php echo $errors['criteria']; ?></div>
         <div class="advanced-search">
 <?php
-            $filterVisibility = false;
-            $form = $queue->getForm(null, null, $filterVisibility);
+            $form = $queue->getForm();
             $search = $queue;
             $matches = $queue->getSupportedMatches();
             include STAFFINC_DIR . 'templates/advanced-search-criteria.tmpl.php';
@@ -125,7 +124,7 @@ else {
             echo Format::htmlchars($errors['filter']); ?></div>
         <br/>
 
-        <div><strong><?php echo __("Defaut Sorting"); ?></strong></div>
+        <div><strong><?php echo __("Default Sorting"); ?></strong></div>
         <hr/>
         <select name="sort_id">
           <option value="" <?php if ($queue->filter == "")

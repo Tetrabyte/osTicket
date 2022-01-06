@@ -259,7 +259,7 @@ class Installer extends SetupWizard {
             'admin_email'=>$vars['admin_email'],
             'schema_signature'=>$streams['core'],
             'helpdesk_url'=>URL,
-            'helpdesk_title'=>$vars['name']
+            'helpdesk_title'=>Format::htmlchars($vars['name'], true)
         );
 
         $config = new Config('core');
@@ -318,8 +318,10 @@ class Installer extends SetupWizard {
             $user->setOrganization($org);
         }
 
-        //TODO: create another personalized ticket and assign to admin??
+        // Rebuild cdata tables
+        DynamicForm::rebuildDynamicDataViews();
 
+        //TODO: create another personalized ticket and assign to admin??
         //Log a message.
         $msg=__("Congratulations osTicket basic installation completed!\n\nThank you for choosing osTicket!");
         $sql='INSERT INTO '.TABLE_PREFIX.'syslog SET created=NOW(), updated=NOW(), log_type="Debug" '
