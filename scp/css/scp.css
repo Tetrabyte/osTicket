@@ -1627,7 +1627,7 @@ img.avatar {
 }
 
 .thread-entry.note .header {
-    background:#FFE;
+    background:#F9EAEA;
 }
 .thread-entry.avatar.note .header:after {
     border-right-color: #FFE;
