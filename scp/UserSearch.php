@@ -50,7 +50,8 @@ function run_search ($keyword) {
 								ost_organization.`name` LIKE '%".db_input($text, false)."%' OR 
 								ost_user_email.address LIKE '%".db_input($text, false)."%' OR 
 								ost_user__cdata.notes LIKE '%".db_input($text, false)."%' OR
-								ost_user__cdata.phone LIKE '%".db_input($text, false)."%'
+								ost_user__cdata.phone LIKE '%".db_input($text, false)."%'OR
+								ost_organization__cdata.notes LIKE '%".db_input($text, false)."%'								
 							) AND";				
 			}
 			$query = substr($query, 0, -4);  #deduct the last ' AND' - 4 chars

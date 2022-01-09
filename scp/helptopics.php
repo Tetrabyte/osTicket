@@ -61,11 +61,7 @@ if($_POST){
                         __('one help topic'));
             }
             if (!$errors) {
-                $count=$_POST['ids']?count($_POST['ids']):0;
-
-                $activeTopics = Topic::getHelpTopics(false, false);
-                $allTopics = count(Topic::getAllHelpTopics());
-                $diff = array_intersect($_POST['ids'], array_keys($activeTopics));
+                $count=count($_POST['ids']);
 
                 switch(strtolower($_POST['a'])) {
                     case 'enable':
@@ -121,7 +117,6 @@ if($_POST){
                               }
                             }
                         }
-
                         if ($num > 0) {
                             if($num==$count)
                                 $msg = sprintf(__('Successfully disabled %s'),
