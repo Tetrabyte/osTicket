@@ -41,10 +41,7 @@ if($_POST) {
         case 'sendmail':
             if (($staff=Staff::lookup($_POST['userid']))) {
                 if (!$staff->hasPassword()) {
-                    if ($staff->sendResetEmail('registration-staff', false) !== false)
-                        $msg = __('Registration email sent successfully.');
-                    else
-                        $msg = __('Unable to reset password. Contact your administrator');
+                    $msg = __('Unable to reset password. Contact your administrator');
                 }
                 elseif (!$staff->sendResetEmail()) {
                     $tpl = 'pwreset.sent.php';

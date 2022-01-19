@@ -1373,7 +1373,7 @@ $(document).on('click.inline-edit', 'a.inline-edit', function(e) {
                             reply.append(option);
                     if (note)
                         if (note.find('option[value='+key+']').length == 0)
-                            note.append(option.clone());
+                            note.append(option);
                 });
                 // Hide warning banner
                 reply.closest('td').find('.warning-banner').hide();

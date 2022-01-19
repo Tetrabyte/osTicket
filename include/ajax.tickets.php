@@ -1188,6 +1188,7 @@ class TicketsAjaxAPI extends AjaxController {
             $info[':title'] = sprintf('Transfer %s',
                     _N('selected ticket', 'selected tickets', $count));
             $form = TransferForm::instantiate($_POST);
+            $form->hideDisabled();
             if ($_POST && $form->isValid()) {
                 foreach ($_POST['tids'] as $tid) {
                     if (($t=Ticket::lookup($tid))
@@ -1591,7 +1592,7 @@ class TicketsAjaxAPI extends AjaxController {
         if (!($ticket=Ticket::lookup($tid)))
             Http::response(404, __('No such ticket'));
 
-        if (!$ticket->checkStaffPerm($thisstaff, Ticket::PERM_MARKANSWERED) && !$thisstaff->isManager())
+        if (!$ticket->checkStaffPerm($thisstaff, Ticket::PERM_MARKANSWERED) && !$thisstaff->isManager($ticket->getDept()))
             Http::response(403, __('Permission denied'));
 
         $errors = array();
