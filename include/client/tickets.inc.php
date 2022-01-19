@@ -213,7 +213,7 @@ if ($closedTickets) {?>
             <th width="75">
                 <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><?php echo __('Status');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
-			<th width="150">
+			<th width="110">
                 <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By From"><?php echo __('From');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
             <th nowrap>
