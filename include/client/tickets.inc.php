@@ -133,7 +133,7 @@ $tickets->order_by($order.$order_by);
 $tickets->values(
     'ticket_id', 'number', 'created', 'isanswered', 'source', 'status_id',
     'status__state', 'status__name', 'cdata__subject', 'dept_id',
-    'dept__name', 'dept__ispublic', 'user__default_email__address', 'user_id','user__name', 'updated'
+    'dept__name', 'dept__ispublic', 'user__default_email__address', 'user_id', 'user__name', 'updated'
 );
 
 ?>
@@ -200,7 +200,7 @@ if ($closedTickets) {?>
     </small>
 </div>
 </h1>
-<table id="ticketTable" width="800" border="0" cellspacing="0" cellpadding="0">
+<table id="ticketTable" width="100%" border="0" cellspacing="0" cellpadding="0">
     <caption><?php echo $showing; ?></caption>
     <thead>
         <tr>
@@ -213,7 +213,7 @@ if ($closedTickets) {?>
             <th width="75">
                 <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><?php echo __('Status');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
-			<th width="150">
+			<th width="110">
                 <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By From"><?php echo __('From');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
             <th nowrap>
@@ -255,9 +255,9 @@ if ($closedTickets) {?>
                 <a class="Icon <?php echo strtolower($T['source']); ?>Ticket" title="<?php echo $T['user__default_email__address']; ?>"
                     href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><?php echo $ticketNumber; ?></a>
                 </td>
-				<td><?php echo $T['user__name']; ?></td>
                 <td><?php echo Format::date($T['created']); ?></td>
                 <td><?php echo $status; ?></td>
+                <td><?php echo $T['user__name']; ?></td>
                 <td>
                   <?php if ($isCollab) {?>
                     <div style="max-height: 1.2em; max-width: 320px;" class="link truncate" href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><i class="icon-group"></i> <?php echo $subject; ?></div>
@@ -265,7 +265,7 @@ if ($closedTickets) {?>
                     <div style="max-height: 1.2em; max-width: 320px;" class="link truncate" href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><?php echo $subject; ?></div>
                     <?php } ?>
                 </td>
-				<td><?php echo $T['updated'];?></td>
+                <td><?php echo $T['updated'];?></td>
                 <td><span class="truncate"><?php echo $dept; ?></span></td>
             </tr>
         <?php

@@ -146,7 +146,11 @@ class CustomQueue extends VerySimpleModel {
     }
 
     function describeCriteria($criteria=false){
-        $all = $this->getSupportedMatches($this->getRoot());
+        global $account;
+
+        if (!($all = $this->getSupportedMatches($this->getRoot())))
+            return '';
+
         $items = array();
         $criteria = $criteria ?: $this->getCriteria(true);
         foreach ($criteria ?: array() as $C) {
@@ -172,7 +176,7 @@ class CustomQueue extends VerySimpleModel {
      *      search beyond the current configuration of the search criteria
      * $searchables - search fields - default to current if not provided
      */
-    function getForm($source=null, $searchable=null, $filterVisibility=null) {
+    function getForm($source=null, $searchable=null) {
         $fields = array();
         if (!isset($searchable)) {
             $fields = array(
@@ -196,7 +200,7 @@ class CustomQueue extends VerySimpleModel {
         }
 
         foreach ($searchable ?: array() as $path => $field)
-            $fields = array_merge($fields, static::getSearchField($field, $path, array('filterVisibility' => $filterVisibility)));
+            $fields = array_merge($fields, static::getSearchField($field, $path));
 
         $form = new AdvancedSearchForm($fields, $source);
 
@@ -381,7 +385,8 @@ class CustomQueue extends VerySimpleModel {
             $exclude[$base] = 1;
             foreach ($base::getMeta('joins') as $path=>$j) {
                 $fc = $j['fkey'][0];
-                if (isset($exclude[$fc]) || $j['list'])
+                if (isset($exclude[$fc]) || $j['list']
+                        || (isset($j['searchable']) && !$j['searchable']))
                     continue;
                 foreach (static::getSearchableFields($fc, $recurse-1,
                     true, $exclude)
@@ -435,7 +440,7 @@ class CustomQueue extends VerySimpleModel {
      *      representing the configurable search
      * $name - <string> ORM path for the search
      */
-    static function getSearchField($F, $name, $options=array()) {
+    static function getSearchField($F, $name) {
         list($label, $field) = $F;
 
         $pieces = array();
@@ -460,7 +465,7 @@ class CustomQueue extends VerySimpleModel {
             )), VisibilityConstraint::HIDDEN),
         ));
         $offs = 0;
-        foreach ($field->getSearchMethodWidgets($options) as $m=>$w) {
+        foreach ($field->getSearchMethodWidgets() as $m=>$w) {
             if (!$w)
                 continue;
             list($class, $args) = $w;
@@ -814,6 +819,9 @@ class CustomQueue extends VerySimpleModel {
                 || !($query=$this->getQuery())
                 || !($fields=$this->getExportFields()))
             return false;
+
+        // Do not store results in memory
+        $query->setOption(QuerySet::OPT_NOCACHE, true);
 
         // See if we have cached export preference
         if (isset($_SESSION['Export:Q'.$this->getId()])) {
@@ -2374,7 +2382,7 @@ extends VerySimpleModel {
             return '';
 
         $val = $f->to_php($f->from_query($row, $this->primary));
-        if (!is_string($val))
+        if (!is_string($val) || is_numeric($val))
             $val = $f->display($val);
 
         return $val;

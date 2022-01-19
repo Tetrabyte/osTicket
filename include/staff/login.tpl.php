@@ -78,7 +78,6 @@ if (count($ext_bks)) { ?>
         </div>
     </div>
 </div>
-
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         if (undefined === window.getComputedStyle(document.documentElement).backgroundBlendMode) {

@@ -142,6 +142,6 @@ if($thisstaff->forcePasswdChange() && !$exempt) {
     exit;
 }
 $ost->setWarning($sysnotice);
-$ost->setPageTitle(__('osTicket :: Staff Control Panel'));
+$ost->setPageTitle(__('Staff Control Panel'));
 
 ?>

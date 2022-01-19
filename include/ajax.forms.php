@@ -29,13 +29,13 @@ class DynamicFormsAjaxAPI extends AjaxController {
         }
 
         foreach ($topic->getForms() as $form) {
-            if (!$form->hasAnyVisibleFields())
+            if ($form->isDeleted() || !$form->hasAnyVisibleFields())
                 continue;
+
             ob_start();
             $form->getForm($_SESSION[':form-data'])->render(array(
                 'staff' => !$client,
-                'mode' => 'create',
-                'filterVisibility' => true));
+                'mode' => 'create'));
             $html .= ob_get_clean();
             ob_start();
             print $form->getMedia();
