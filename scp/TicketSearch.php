@@ -248,10 +248,10 @@ function OrgName ($UserId) {
 									echo '	
 									<tr>
 										<td scope="row"> '.$row["entry_type"].' </td>
-										<td> <a href="https://tickets.remoteit.co.uk/scp/orgs.php?id='.$UserOrg['OrgId'].'#tickets">'.$UserOrg["OrgName"].' </a></td>
+										<td> <a href="/scp/orgs.php?id='.$UserOrg['OrgId'].'#tickets">'.$UserOrg["OrgName"].' </a></td>
 									';	
 									if ( $row['user_id'] != 0) {
-										echo '<td> <a href="https://tickets.remoteit.co.uk/scp/UserSearch.php?UserId='.$row['user_id'].'">'.$row["poster"].' </a></td> ';
+										echo '<td> <a href="/scp/UserSearch.php?UserId='.$row['user_id'].'">'.$row["poster"].' </a></td> ';
 									}
 									else
 									{
@@ -259,8 +259,8 @@ function OrgName ($UserId) {
 									}
 										
 									echo '		
-										<td> <a href="https://tickets.remoteit.co.uk/scp/tickets.php?id='.$row["ticket_id"].'">'.$row["ticket_number"].' </a> </td>
-										<td> <a href="https://tickets.remoteit.co.uk/scp/tickets.php?id='.$row["ticket_id"].'">'.$row["ticket_subject"].'</a> </td>
+										<td> <a href="/scp/tickets.php?id='.$row["ticket_id"].'">'.$row["ticket_number"].' </a> </td>
+										<td> <a href="/scp/tickets.php?id='.$row["ticket_id"].'">'.$row["ticket_subject"].'</a> </td>
 										<td> '.$row["status"].' </td>
 										<td> '.$row["entry_posted"].' </td>
 									</tr>
