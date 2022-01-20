@@ -530,7 +530,7 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 		$commit = db_query($query, $logError=true, $buffered=true);	
 		$commit = db_query($query2, $logError=true, $buffered=true);		
 	}
-	header('Location: https://tickets.remoteit.co.uk/scp/UserSearch.php?UserId='.$_GET['UserId']);
+	header('Location: <?php echo $_SERVER["HTTP_HOST"]; ?>/scp/UserSearch.php?UserId='.$_GET['UserId']);
 }
 
 ?>
@@ -541,7 +541,7 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+	<link rel="icon" type="image/png" href="favicon2.png">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
@@ -634,8 +634,8 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 										
 									}
 									echo '<tr>';
-									echo '<td> <a href="https://tickets.remoteit.co.uk/scp/UserSearch.php?UserId='.$row["UserId"].'" class="btn btn-primary" role="button">Select User</a></td> ';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
+									echo '<td> <a href="/scp/UserSearch.php?UserId='.$row["UserId"].'" class="btn btn-primary" role="button">Select User</a></td> ';
+									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
 									echo '<td>';
 									if ( $row["UserPhone"] != "" ) {
 										echo $row["UserPhone"];
@@ -681,7 +681,7 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 											</div>';
 										echo $row["UserNotes"];
 									echo '</td>';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/orgs.php?id='.$row["OrgId"].'#tickets">'.$row["OrgName"].'</td> ';
+									echo '<td> <a target="_blank" href="/scp/orgs.php?id='.$row["OrgId"].'#tickets">'.$row["OrgName"].'</td> ';
 									echo '<td>';
 									if ( $row["OrgPhone"] != "" ) {
 										echo $row["OrgPhone"];
@@ -728,7 +728,7 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 										echo $row["OrgNotes"];
 									echo '</td>';
 									
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/tickets.php?a=open&uid='.$row["UserId"].'"class="btn btn-success" role="button" > OPEN TICKET </a></td> ';	
+									echo '<td> <a target="_blank" href="/scp/tickets.php?a=open&uid='.$row["UserId"].'"class="btn btn-success" role="button" > OPEN TICKET </a></td> ';	
 									
 									echo '</tr>';
 								}
@@ -941,10 +941,10 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 								while($row = $u_o_commit->fetch_assoc())  {	
 									$rowcolor = ticketstatusid2rowbgcolor($row["TicketStatus"]);
 									echo '<tr style="background-color:'.$rowcolor.'">';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
 									echo '<td>'.$row['TicketStatusName'].'</td>';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
 									if ( $row['TicketOverdue'] == 1 ) {
 										echo '<td style="color:red;">'.$row['TicketDue'].'</td>';
 									}else{
@@ -979,10 +979,10 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 								while($row = $u_c_commit->fetch_assoc())  {	
 									$rowcolor = ticketstatusid2rowbgcolor($row["TicketStatus"]);
 									echo '<tr style="background-color:'.$rowcolor.'">';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
 									echo '<td>'.$row['TicketStatusName'].'</td>';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
 									if ( $row['TicketOverdue'] == 1 ) {
 										echo '<td style="color:red;">'.$row['TicketDue'].'</td>';
 									}else{
@@ -1017,10 +1017,10 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 								while($row = $o_o_commit->fetch_assoc())  {	
 									$rowcolor = ticketstatusid2rowbgcolor($row["TicketStatus"]);
 									echo '<tr style="background-color:'.$rowcolor.'">';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
 									echo '<td>'.$row['TicketStatusName'].'</td>';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
 									if ( $row['TicketOverdue'] == 1 ) {
 										echo '<td style="color:red;">'.$row['TicketDue'].'</td>';
 									}else{
@@ -1055,10 +1055,10 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 								while($row = $o_c_commit->fetch_assoc())  {	
 									$rowcolor = ticketstatusid2rowbgcolor($row["TicketStatus"]);
 									echo '<tr style="background-color:'.$rowcolor.'">';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
 									echo '<td>'.$row['TicketStatusName'].'</td>';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
-									echo '<td> <a target="_blank" href="https://tickets.remoteit.co.uk/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
 									if ( $row['TicketOverdue'] == 1 ) {
 										echo '<td style="color:red;">'.$row['TicketDue'].'</td>';
 									}else{
