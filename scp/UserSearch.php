@@ -530,7 +530,7 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 		$commit = db_query($query, $logError=true, $buffered=true);	
 		$commit = db_query($query2, $logError=true, $buffered=true);		
 	}
-	header('Location: <?php echo $_SERVER["HTTP_HOST"]; ?>/scp/UserSearch.php?UserId='.$_GET['UserId']);
+	header('Location: /scp/UserSearch.php?UserId='.$_GET['UserId']);
 }
 
 ?>
