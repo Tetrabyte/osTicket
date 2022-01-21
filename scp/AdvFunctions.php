@@ -8,7 +8,7 @@
 **********************************************************************/
 
 require('staff.inc.php');
-
+require_once(STAFFINC_DIR.'header.inc.php');
 function TicketNum2ThreadID ($TikNum) {
 	
 	$query = "	SELECT
@@ -256,10 +256,8 @@ if ( isset($_GET['OrigUser']) AND isset($_GET['DestUser']) ) {
 </html>
 
 <?php
-
-
-
-
+require_once(STAFFINC_DIR.'footer.inc.php');
+?>
+<?php
 
 ?>
-

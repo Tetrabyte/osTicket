@@ -135,12 +135,14 @@ class StaffNav {
                     'desc' => __('Users'), 'href' => 'users.php', 'title' => __('User Directory')
                 );
             }
+            
             $this->tabs['tasks'] = array('desc'=>__('Tasks'), 'href'=>'tasks.php', 'title'=>__('Task Queue'));
             $this->tabs['tickets'] = array('desc'=>__('Tickets'),'href'=>'tickets.php','title'=>__('Ticket Queue'));
-
             $this->tabs['kbase'] = array('desc'=>__('Knowledgebase'),'href'=>'kb.php','title'=>__('Knowledgebase'));
             if (!is_null($this->getRegisteredApps()))
                 $this->tabs['apps']=array('desc'=>__('Applications'),'href'=>'apps.php','title'=>__('Applications'));
+            $this->tabs['usearch'] = array('desc'=>__('User Search'),'href'=>'UserSearch.php','title'=>__('User Search'));
+            $this->tabs['tsearch'] = array('desc'=>__('Ticket Search'),'href'=>'TicketSearch.php','title'=>__('Ticket Search'));
         }
 
         return $this->tabs;
@@ -161,6 +163,12 @@ class StaffNav {
                     $subnav[]=array('desc'=>__('Dashboard'),'href'=>'dashboard.php','iconclass'=>'logs');
                     $subnav[]=array('desc'=>__('Agent Directory'),'href'=>'directory.php','iconclass'=>'teams');
                     $subnav[]=array('desc'=>__('My Profile'),'href'=>'profile.php','iconclass'=>'users');
+                    break;
+                case 'tsearch':
+                    $subnav[]=array('desc' => __('Ticket Search'), 'href' => 'TicketSearch.php', 'iconclass'=>'Ticket', 'droponly'=>true);
+                    break;
+                case 'usearch':
+                    $subnav[]=array('desc' => __('User Search'), 'href' => 'UserSearch.php', 'iconclass'=>'teams', 'droponly'=>true);
                     break;
                 case 'users':
                     $subnav[] = array('desc' => __('User Directory'), 'href' => 'users.php', 'iconclass' => 'teams');

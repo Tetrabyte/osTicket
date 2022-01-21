@@ -8,6 +8,7 @@
 **********************************************************************/
 
 require('staff.inc.php');
+require_once(STAFFINC_DIR.'header.inc.php');
 
 $dev = 0;
 
@@ -292,10 +293,9 @@ function OrgName ($UserId) {
 </html>
 
 <?php
-
-
-
-
+$nav->setTabActive('tsearch');
+require_once(STAFFINC_DIR.'footer.inc.php');
+?>
+<?php
 
 ?>
-

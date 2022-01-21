@@ -1265,10 +1265,10 @@ a.print {
 .table tr.header {
     border-bottom: 1px dotted #777;
 }
-.table td:not(:empty) {
-    padding: 4px;
-    background-color:#fff;
-}
+//.table td:not(:empty) {
+//    padding: 4px;
+ //   background-color:#fff;
+//}
 .table.two-column tbody tr td:first-child {
     width: 25%;
 }
