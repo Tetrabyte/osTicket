@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="BitMap.php" server="80.244.186.128/httpdocs/" local="132873467228740597" remote="132870582600000000" Dst="1" />
+<file name="Cache.php" server="80.244.186.128/httpdocs/" local="132873467233260610" remote="132870582600000000" Dst="1" />
+<file name="Exception.php" server="80.244.186.128/httpdocs/" local="132873467233810606" remote="132870582600000000" Dst="1" />
+<file name="Header.php" server="80.244.186.128/httpdocs/" local="132873467233990611" remote="132870582600000000" Dst="1" />
+<file name="Lookups.php" server="80.244.186.128/httpdocs/" local="132873467234250610" remote="132870582600000000" Dst="1" />
+<file name="Packet.php" server="80.244.186.128/httpdocs/" local="132873467237720613" remote="132870582600000000" Dst="1" />
+<file name="Question.php" server="80.244.186.128/httpdocs/" local="132873467238315599" remote="132870582600000000" Dst="1" />
+<file name="PrivateKey.php" server="80.244.186.128/httpdocs/" local="132873467238450609" remote="132870582600000000" Dst="1" />
+<file name="RR.php" server="80.244.186.128/httpdocs/" local="132873467256020658" remote="132870582600000000" Dst="1" />
+<file name="Resolver.php" server="80.244.186.128/httpdocs/" local="132873467256175667" remote="132870582600000000" Dst="1" />
+<file name="Socket.php" server="80.244.186.128/httpdocs/" local="132873467257060672" remote="132870582600000000" Dst="1" />
+<file name="Updater.php" server="80.244.186.128/httpdocs/" local="132873467257645672" remote="132870582600000000" Dst="1" />
+</dwsync>

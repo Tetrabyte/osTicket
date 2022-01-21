@@ -93,7 +93,7 @@ function OrgName ($UserId) {
 	
 	return $commit;
 }
-
+$ost->setPageTitle('Ticket Search Tool');
 ?>
 
 <!doctype html>
@@ -101,81 +101,58 @@ function OrgName ($UserId) {
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	  <style>
+*, ::after, ::before {
+  box-sizing: content-box;
+}
+a {
+	text-decoration: none;
+}</style>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>User Search Tool</title>
 	<link rel="icon" type="image/png" href="favicon2.png">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
-    <title>Ticket Search Tool</title>
   </head>
   <body>
-		<div class="row">
-			<div class="col-md-11">
-				<h3>Ticket Search Tool - - - - - - <a href="UserSearch.php">User Search Tool</a></h3>
-			</div>
-			<div class="col-md-1" data-toggle="modal" data-target="#InfoModal" >
-				<svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-question-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-				  <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z"/>
-				</svg>
-			</div>
-		</div>
 		<div class="row">
 			<div class="col-md-12">
 				<form role="form" method="GET" class="form">
 					<div class="form-row" style="padding-bottom:5px">
-						<div class="col-md-6">
-							<input type="text" class="form-control" name="keyword" <?php if ( isset($_GET['keyword']) ) { echo 'value="'.$_GET['keyword'].'" ';}?> autofocus >
+						<div class="input-group">
+							<input type="text" class="form-control" name="keyword" <?php if ( isset($_GET['keyword']) ) { echo 'value="'.$_GET['keyword'].'" ';}?> autofocus>
+							<button type="submit" class="form-control btn btn-primary">Search</button>
 						</div>
-						<div class="col-md-2">
-								<button type="submit" class="form-control btn btn-primary">Search</button>
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="col-md-1">
-						</div>
-						<div class="col-md-1">						
-							<div class="form-check">
+						<div class="input-group">
+							<div class="form-check form-check-inline">
 								<input class="form-check-input" type="radio" id="andorand" value="and" name="andor" 
 									<?php
 										if ( ($_GET['andor'] == "and") OR ( !isset($_GET['andor']) ) ) {
 											echo 'checked ';
 										}
-									?>
-								>
-								<label class="form-check-label" for="andorand">
-									AND
-								</label>
+									?> >
+								<label class="form-check-label" for="andorand"> AND</label>
 							</div>
-							<div class="form-check">
+							<div class="form-check form-check-inline">
 								<input class="form-check-input" type="radio" id="andoror" value="or" name="andor"  
 									<?php
 										if ( $_GET['andor'] == "or" ) {
 											echo 'checked ';
 										}
-									?>
-								>
-								<label class="form-check-label" for="andoror">
-									OR
-								</label>
-							</div>
+									?> >
+								<label class="form-check-label" for="andoror"> OR</label>
+							</div>				
+							<label for="since" class="col-3 col-form-label">Since Date</label>
+								<input class="form-control" type="date" value="<?php 
+									if ( isset($_GET['since']) ) {
+										echo $_GET['since'];
+									}
+									else
+									{
+										echo date("Y-m-d",strtotime("-3 year"));
+									}
+								?>" id="since" name="since">
 						</div>
-						<div class="col-md-3">						
-							<div class="form-group row">
-								<label for="since" class="col-3 col-form-label">Since Date</label>
-								<div class="col-6">
-									<input class="form-control" type="date" value="<?php 
-										if ( isset($_GET['since']) ) {
-											echo $_GET['since'];
-										}
-										else
-										{
-											echo date("Y-m-d",strtotime("-3 year"));
-										}
-									?>" id="since" name="since">
-								</div>
-							</div>
-						</div>
-						
 					</div>
 				</form>
 			</div>

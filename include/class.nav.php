@@ -164,12 +164,6 @@ class StaffNav {
                     $subnav[]=array('desc'=>__('Agent Directory'),'href'=>'directory.php','iconclass'=>'teams');
                     $subnav[]=array('desc'=>__('My Profile'),'href'=>'profile.php','iconclass'=>'users');
                     break;
-                case 'tsearch':
-                    $subnav[]=array('desc' => __('Ticket Search'), 'href' => 'TicketSearch.php', 'iconclass'=>'Ticket', 'droponly'=>true);
-                    break;
-                case 'usearch':
-                    $subnav[]=array('desc' => __('User Search'), 'href' => 'UserSearch.php', 'iconclass'=>'teams', 'droponly'=>true);
-                    break;
                 case 'users':
                     $subnav[] = array('desc' => __('User Directory'), 'href' => 'users.php', 'iconclass' => 'teams');
                     $subnav[] = array('desc' => __('Organizations'), 'href' => 'orgs.php', 'iconclass' => 'departments');

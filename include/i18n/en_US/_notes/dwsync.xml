@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="config.yaml" server="80.244.186.128/httpdocs/" local="132873466610134410" remote="132870582600000000" Dst="1" />
+<file name="department.yaml" server="80.244.186.128/httpdocs/" local="132873466610299435" remote="132870582600000000" Dst="1" />
+<file name="email_template_group.yaml" server="80.244.186.128/httpdocs/" local="132873466610784413" remote="132870582600000000" Dst="1" />
+<file name="event.yaml" server="80.244.186.128/httpdocs/" local="132873466611134419" remote="132870582600000000" Dst="1" />
+<file name="file.yaml" server="80.244.186.128/httpdocs/" local="132873466611294410" remote="132870582600000000" Dst="1" />
+<file name="filter.yaml" server="80.244.186.128/httpdocs/" local="132873466611619415" remote="132870582600000000" Dst="1" />
+<file name="form.yaml" server="80.244.186.128/httpdocs/" local="132873466611954421" remote="132870582600000000" Dst="1" />
+<file name="group.yaml" server="80.244.186.128/httpdocs/" local="132873466612099418" remote="132870582600000000" Dst="1" />
+<file name="help_topic.yaml" server="80.244.186.128/httpdocs/" local="132873466629764418" remote="132870582600000000" Dst="1" />
+<file name="list.yaml" server="80.244.186.128/httpdocs/" local="132873466629919427" remote="132870582600000000" Dst="1" />
+<file name="organization.yaml" server="80.244.186.128/httpdocs/" local="132873466630474417" remote="132870582600000000" Dst="1" />
+<file name="priority.yaml" server="80.244.186.128/httpdocs/" local="132873466630814416" remote="132870582600000000" Dst="1" />
+<file name="queue.yaml" server="80.244.186.128/httpdocs/" local="132873466630964426" remote="132870582600000000" Dst="1" />
+<file name="queue_column.yaml" server="80.244.186.128/httpdocs/" local="132873466631519422" remote="132870582600000000" Dst="1" />
+<file name="queue_sort.yaml" server="80.244.186.128/httpdocs/" local="132873466631704423" remote="132870582600000000" Dst="1" />
+<file name="role.yaml" server="80.244.186.128/httpdocs/" local="132873466631889426" remote="132870582600000000" Dst="1" />
+<file name="schedule.yaml" server="80.244.186.128/httpdocs/" local="132873466632354419" remote="132870582600000000" Dst="1" />
+<file name="sla.yaml" server="80.244.186.128/httpdocs/" local="132873466632814434" remote="132870582600000000" Dst="1" />
+<file name="sequence.yaml" server="80.244.186.128/httpdocs/" local="132873466632954427" remote="132870582600000000" Dst="1" />
+<file name="team.yaml" server="80.244.186.128/httpdocs/" local="132873466633249434" remote="132870582600000000" Dst="1" />
+<file name="ticket_status.yaml" server="80.244.186.128/httpdocs/" local="132873466657149519" remote="132870582600000000" Dst="1" />
+</dwsync>
