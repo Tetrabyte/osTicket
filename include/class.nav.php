@@ -222,6 +222,8 @@ class AdminNav extends StaffNav{
             $tabs['staff']=array('desc'=>__('Agents'),'href'=>'staff.php','title'=>__('Manage Agents'));
             if (!is_null($this->getRegisteredApps()))
                 $tabs['apps']=array('desc'=>__('Applications'),'href'=>'apps.php','title'=>__('Applications'));
+            $tabs['usearch']=array('desc'=>__('User Search'),'href'=>'UserSearch.php','title'=>__('User Search'));
+            $tabs['tsearch']=array('desc'=>__('Ticket Search'),'href'=>'TicketSearch.php','title'=>__('Ticket Search'));
             $this->tabs=$tabs;
         }
 
