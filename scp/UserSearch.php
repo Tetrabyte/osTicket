@@ -549,6 +549,9 @@ $ost->addExtraHeader('<title>User Search Tool</title>');
 }
 a {
 	text-decoration: none;
+}
+:root {
+	--bs-body-bg : #eee;
 }</style>
     <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
