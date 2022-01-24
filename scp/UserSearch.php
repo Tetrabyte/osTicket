@@ -542,7 +542,11 @@ $ost->addExtraHeader('<title>User Search Tool</title>');
 <!doctype html>
 <html lang="en">
   <head>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
 	  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+	  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
 	  <style>
 *, ::after, ::before {
   box-sizing: content-box;
@@ -553,8 +557,7 @@ a {
 :root {
 	--bs-body-bg : #eee;
 }</style>
-    <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    
 	<title>User Search Tool</title>
 	<link rel="icon" type="image/png" href="favicon2.png">
   </head>
@@ -641,7 +644,7 @@ a {
 										echo $row["UserPhone"];
 										echo '
 											<div style="float:right">
-												<div style="float:left" id="UpdateNumber" data-toggle="modal" data-UserId="'.$row["UserId"].'" data-target="#UpdateNumberModal">
+												<div style="float:left" id="UpdateNumber" data-bs-toggle="modal" data-UserId="'.$row["UserId"].'" data-bs-target="#UpdateNumberModal">
 													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 														<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
 														<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -659,7 +662,7 @@ a {
 									{
 										echo '	
 											<div style="float:right">	
-												<div style="float:left" id="UpdateNumber" data-toggle="modal" data-UserId="'.$row["UserId"].'" data-target="#UpdateNumberModal">
+												<div style="float:left" id="UpdateNumber" data-bs-toggle="modal" data-UserId="'.$row["UserId"].'" data-bs-target="#UpdateNumberModal">
 													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 													  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
 													  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -672,7 +675,7 @@ a {
 									echo '<td> <a href="mailto:'.$row["UserEmail"].'">'.$row["UserEmail"].'</a></td> ';
 									echo '<td>
 											<div style="float:right">
-												<div style="float:left" id="UpdateUserNotes" data-toggle="modal" data-UserId="'.$row["UserId"].'" data-target="#UpdateUserNotesModal">
+												<div style="float:left" id="UpdateUserNotes" data-bs-toggle="modal" data-UserId="'.$row["UserId"].'" data-bs-target="#UpdateUserNotesModal">
 													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 														<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
 														<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -687,7 +690,7 @@ a {
 										echo $row["OrgPhone"];
 										echo '
 											<div style="float:right">
-												<div style="float:left" id="UpdateOrgPhone" data-toggle="modal" data-UserId="'.$row["OrgId"].'" data-target="#UpdateOrgPhoneModal">
+												<div style="float:left" id="UpdateOrgPhone" data-bs-toggle="modal" data-UserId="'.$row["OrgId"].'" data-bs-target="#UpdateOrgPhoneModal">
 													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 													  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
 													  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -706,7 +709,7 @@ a {
 									{
 										echo '	
 												<div style="float:right">
-													<div style="float:left" id="UpdateOrgPhone" data-toggle="modal" data-UserId="'.$row["OrgId"].'" data-target="#UpdateOrgPhoneModal">
+													<div style="float:left" id="UpdateOrgPhone" data-bs-toggle="modal" data-UserId="'.$row["OrgId"].'" data-bs-target="#UpdateOrgPhoneModal">
 														<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 														  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
 														  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -718,7 +721,7 @@ a {
 									echo '</td>
 										<td>
 											<div style="float:right">
-												<div style="float:left" id="UpdateOrgNotes" data-toggle="modal" data-UserId="'.$row["OrgId"].'" data-target="#UpdateOrgNotesModal">
+												<div style="float:left" id="UpdateOrgNotes" data-bs-toggle="modal" data-UserId="'.$row["OrgId"].'" data-bs-target="#UpdateOrgNotesModal">
 													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 														<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
 														<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -747,11 +750,11 @@ a {
 
 						<!-- START UpdateNumber MODAL -->
 							<div class="modal fade" id="UpdateNumberModal">
-								<div class="modal-dialog">
+								<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 									<div class="modal-content">
-										<div class="modal-header" style="display:inline;">
-											<button type="button" class="close" data-dismiss="modal">&times;</button>
-											<h4 class="modal-title">Update Number</h4>
+										<div class="modal-header">
+											<h5 class="modal-title">Update Number</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 										</div>
 										<form id="UserNumberUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
@@ -760,7 +763,7 @@ a {
 												<input type="hidden" class="form-control" id="UserId" name="UserId" value="<?php echo $UserId; ?>" />
 											</div>
 											<div class="modal-footer">
-												<button type="button" id="closeBtn" class="btn btn-default" data-dismiss="modal">Close</button>
+												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 												<button type="sumbit" id="UpdateNumberNowBtn" class="btn btn-primary">Update</button>
 											</div>
 										</form>
@@ -770,11 +773,11 @@ a {
 						<!-- END UpdateNumber MODAL -->
 						<!-- START UpdateUserNotes MODAL -->
 							<div class="modal fade" id="UpdateUserNotesModal">
-								<div class="modal-dialog">
+								<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 									<div class="modal-content">
-										<div class="modal-header" style="display:inline;">
-											<button type="button" class="close" data-dismiss="modal">&times;</button>
-											<h4 class="modal-title">Update User Notes</h4>
+										<div class="modal-header">
+											<h5 class="modal-title">Update User Notes</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 										</div>
 										<form id="UserNotesUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
@@ -782,7 +785,7 @@ a {
 												<textarea rows="5" name="UserNotes" id="UserNotes" class="form-control" placeholder="User Notes"><?php echo $UserNotesPHP; ?></textarea>
 											</div>
 											<div class="modal-footer">
-												<button type="button" id="closeBtn" class="btn btn-default" data-dismiss="modal">Close</button>
+												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 												<button type="sumbit" id="UpdateUserNotesNowBtn" class="btn btn-primary">Update</button>
 											</div>
 										</form>
@@ -792,11 +795,11 @@ a {
 						<!-- END UpdateUserNotes MODAL -->
 						<!-- START UpdateOrgPhone MODAL -->
 							<div class="modal fade" id="UpdateOrgPhoneModal">
-								<div class="modal-dialog">
+								<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 									<div class="modal-content">
-										<div class="modal-header" style="display:inline;">
-											<button type="button" class="close" data-dismiss="modal">&times;</button>
-											<h4 class="modal-title">Update Org Phone Number</h4>
+										<div class="modal-header">
+											<h5 class="modal-title">Update Org Phone Number</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 										</div>
 										<form id="OrgPhoneUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
@@ -805,7 +808,7 @@ a {
 												<input type="text" name="OrgPhone" id="OrgPhone" class="form-control" placeholder="01234 567 890" value="<?php echo $OrgPhone; ?>"/>
 											</div>
 											<div class="modal-footer">
-												<button type="button" id="closeBtn" class="btn btn-default" data-dismiss="modal">Close</button>
+												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 												<button type="sumbit" id="UpdateOrgPhoneNowBtn" class="btn btn-primary">Update</button>
 											</div>
 										</form>
@@ -815,11 +818,11 @@ a {
 						<!-- END UpdateOrgPhone MODAL -->
 						<!-- START UpdateOrgNotes MODAL -->
 							<div class="modal fade" id="UpdateOrgNotesModal">
-								<div class="modal-dialog">
+								<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 									<div class="modal-content">
-										<div class="modal-header" style="display:inline;">
-											<button type="button" class="close" data-dismiss="modal">&times;</button>
-											<h4 class="modal-title">Update Org Notes</h4>
+										<div class="modal-header">
+											<h5 class="modal-title">Update Org Notes</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 										</div>
 										<form id="OrgNotesUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
@@ -828,7 +831,7 @@ a {
 												<textarea rows="5" name="OrgNotes" id="OrgNotes" class="form-control" placeholder="Org Notes"><?php echo $OrgNotesPHP; ?></textarea>
 											</div>
 											<div class="modal-footer">
-												<button type="button" id="closeBtn" class="btn btn-default" data-dismiss="modal">Close</button>
+												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 												<button type="sumbit" id="UpdateOrgNotesNowBtn" class="btn btn-primary">Update</button>
 											</div>
 										</form>
@@ -844,7 +847,7 @@ a {
 								<div class="modal-dialog" style="width:75%; max-width:none">
 									<div class="modal-content">
 										<div class="modal-header" style="display:inline;">
-											<button type="button" class="close" data-dismiss="modal">&times;</button>
+											<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 											<h4 class="modal-title">System Info</h4>
 										</div>
 									
@@ -882,7 +885,7 @@ a {
 											
 											<div class="modal-footer">
 												<span class="mr-auto" style="font-size:9px">System Design by <a href="https://www.ashleyunwin.com">AshleyUnwin.com</a></span>
-												<button type="button" id="closeBtn" class="btn btn-default" data-dismiss="modal">Close</button>
+												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 											</div>
 										
 									</div>
