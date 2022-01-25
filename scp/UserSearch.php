@@ -758,7 +758,7 @@ a {
 										</div>
 										<form id="UserNumberUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
-												<input type="text" name="UserNumber" id="UserNumber" class="form-control" placeholder="01234 567 890" value="<?php echo $UserPhone;
+												<input type="text" name="UserNumber" id="UserNumber" class="form-control" style="box-sizing: border-box !important;" placeholder="01234 567 890" value="<?php echo $UserPhone;
 												?>" />
 												<input type="hidden" class="form-control" id="UserId" name="UserId" value="<?php echo $UserId; ?>" />
 											</div>
@@ -773,7 +773,7 @@ a {
 						<!-- END UpdateNumber MODAL -->
 						<!-- START UpdateUserNotes MODAL -->
 							<div class="modal fade" id="UpdateUserNotesModal">
-								<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
 											<h5 class="modal-title">Update User Notes</h5>
@@ -782,7 +782,7 @@ a {
 										<form id="UserNotesUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
 												<input type="hidden" class="form-control" id="UserId" name="UserId" value="<?php echo $UserId; ?>" />
-												<textarea rows="5" name="UserNotes" id="UserNotes" class="form-control" placeholder="User Notes"><?php echo $UserNotesPHP; ?></textarea>
+												<textarea rows="5" name="UserNotes" id="UserNotes" class="form-control" placeholder="User Notes" style="box-sizing: border-box !important;"><?php echo $UserNotesPHP; ?></textarea>
 											</div>
 											<div class="modal-footer">
 												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -805,7 +805,7 @@ a {
 											<div class="modal-body">
 												<input type="hidden" class="form-control" id="UserId" name="UserId" value="<?php echo $UserId; ?>" />
 												<input type="hidden" class="form-control" id="OrgId" name="OrgId" value="<?php echo $OrgId; ?>" />
-												<input type="text" name="OrgPhone" id="OrgPhone" class="form-control" placeholder="01234 567 890" value="<?php echo $OrgPhone; ?>"/>
+												<input type="text" name="OrgPhone" id="OrgPhone" class="form-control" style="box-sizing: border-box !important;" placeholder="01234 567 890" value="<?php echo $OrgPhone; ?>"/>
 											</div>
 											<div class="modal-footer">
 												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -818,7 +818,7 @@ a {
 						<!-- END UpdateOrgPhone MODAL -->
 						<!-- START UpdateOrgNotes MODAL -->
 							<div class="modal fade" id="UpdateOrgNotesModal">
-								<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
 											<h5 class="modal-title">Update Org Notes</h5>
@@ -828,7 +828,7 @@ a {
 											<div class="modal-body">
 												<input type="hidden" class="form-control" id="UserId" name="UserId" value="<?php echo $UserId; ?>" />
 												<input type="hidden" class="form-control" id="OrgId" name="OrgId" value="<?php echo $OrgId; ?>" />
-												<textarea rows="5" name="OrgNotes" id="OrgNotes" class="form-control" placeholder="Org Notes"><?php echo $OrgNotesPHP; ?></textarea>
+												<textarea rows="5" name="OrgNotes" id="OrgNotes" class="form-control" placeholder="Org Notes" style="box-sizing: border-box !important;"><?php echo $OrgNotesPHP; ?></textarea>
 											</div>
 											<div class="modal-footer">
 												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
