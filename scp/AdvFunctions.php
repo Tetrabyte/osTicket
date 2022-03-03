@@ -89,17 +89,23 @@ if ( isset($_GET['OrigUser']) AND isset($_GET['DestUser']) ) {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="icon" type="image/png" href="favicon2.png">
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	  <style>
+*, ::after, ::before {
+  box-sizing: content-box;
+}
+a {
+	text-decoration: none;
+}
+:root {
+	--bs-body-bg : #eee;
+}</style>
     <title>Advanced Functions</title>
   </head>
   <body>
   <br/><br/>
 		<div class="row">
-			<div class="col-md-11">
-				<h3>Advanced Functions - - - - - - <a href="UserSearch.php">User Search Tool</a> - - - - - - <a href="TicketSearch.php">Ticket Search Tool</a></h3>
-			</div>
-			<div class="col-md-1" data-toggle="modal" data-target="#InfoModal" >
+			<div class="col-md-1" data-bs-toggle="modal" data-bs-target="#InfoModal" >
 					<svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-question-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 					  <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z"/>
 					</svg>
@@ -113,16 +119,10 @@ if ( isset($_GET['OrigUser']) AND isset($_GET['DestUser']) ) {
 		<div class="row">
 			<div class="col-md-12">
 				<form role="form" method="GET" class="form">
-					<div class="form-row" style="padding-bottom:5px">
-						<div class="col-md-3">
+					<div class="input-group" style="padding-bottom:5px">
 							<input type="text" class="form-control" id="PostID" name="PostID" placeholder="Current Entry Number" />
-						</div>
-						<div class="col-md-3">
 							<input type="text" class="form-control" id="TikNum" name="TikNum" placeholder="Destination Ticket Number" autofocus />
-						</div>
-						<div class="col-md-2">
 							<button type="submit" class="form-control btn btn-primary">Switch</button>
-						</div>
 					</div>
 				</form>
 			</div>
@@ -142,16 +142,10 @@ if ( isset($_GET['OrigUser']) AND isset($_GET['DestUser']) ) {
 		<div class="row">
 			<div class="col-md-12">
 				<form role="form" method="GET" class="form">
-					<div class="form-row" style="padding-bottom:5px">
-						<div class="col-md-3">
+					<div class="input-group" style="padding-bottom:5px">
 							<input type="text" class="form-control" id="OrigUser" name="OrigUser" placeholder="Original User ID"/>
-						</div>
-						<div class="col-md-3">
 							<input type="text" class="form-control" id="DestUser" name="DestUser" placeholder="Destination User ID" />
-						</div>
-						<div class="col-md-2">
 							<button type="submit" class="form-control btn btn-primary">Move</button>
-						</div>
 					</div>
 				</form>
 			</div>
@@ -228,30 +222,12 @@ if ( isset($_GET['OrigUser']) AND isset($_GET['DestUser']) ) {
 								</div>
 							</div>
 						<!-- END UpdateOrgNotes MODAL -->
-					
-
-
-
-
-
-
-			
-						
-
 					</div>
 				</div>
 			</div>            
 		</div>
-
-
-
-
-
-
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>  
   </body>
 </html>
 
