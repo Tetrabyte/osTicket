@@ -535,7 +535,6 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 
 <?php
 require_once(STAFFINC_DIR.'header.inc.php');
-$ost->addExtraHeader('<link rel="icon" type="image/png" href="favicon2.png">');
 $ost->addExtraHeader('<title>User Search Tool</title>');
 ?>
 
@@ -982,10 +981,10 @@ a {
 								while($row = $u_c_commit->fetch_assoc())  {	
 									$rowcolor = ticketstatusid2rowbgcolor($row["TicketStatus"]);
 									echo '<tr style="background-color:'.$rowcolor.'">';
-									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'#note">'.$row['TicketNumber'].' </a> </td>';
 									echo '<td>'.$row['TicketStatusName'].'</td>';
 									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
-									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'#note">'.$row['TicketSubject'].' </a> </td>';
 									if ( $row['TicketOverdue'] == 1 ) {
 										echo '<td style="color:red;">'.$row['TicketDue'].'</td>';
 									}else{
@@ -1020,10 +1019,10 @@ a {
 								while($row = $o_o_commit->fetch_assoc())  {	
 									$rowcolor = ticketstatusid2rowbgcolor($row["TicketStatus"]);
 									echo '<tr style="background-color:'.$rowcolor.'">';
-									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'#note">'.$row['TicketNumber'].' </a> </td>';
 									echo '<td>'.$row['TicketStatusName'].'</td>';
 									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
-									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'#note">'.$row['TicketSubject'].' </a> </td>';
 									if ( $row['TicketOverdue'] == 1 ) {
 										echo '<td style="color:red;">'.$row['TicketDue'].'</td>';
 									}else{
@@ -1058,10 +1057,10 @@ a {
 								while($row = $o_c_commit->fetch_assoc())  {	
 									$rowcolor = ticketstatusid2rowbgcolor($row["TicketStatus"]);
 									echo '<tr style="background-color:'.$rowcolor.'">';
-									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'#note">'.$row['TicketNumber'].' </a> </td>';
 									echo '<td>'.$row['TicketStatusName'].'</td>';
 									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
-									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'#note">'.$row['TicketSubject'].' </a> </td>';
 									if ( $row['TicketOverdue'] == 1 ) {
 										echo '<td style="color:red;">'.$row['TicketDue'].'</td>';
 									}else{
