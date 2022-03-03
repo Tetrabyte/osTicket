@@ -1,7 +1,6 @@
 body {
   font-family: "Lato", "Helvetica Neue", arial, helvetica, sans-serif;
   font-weight: 400;
-  letter-spacing: 0.15px;
   -webkit-font-smoothing:antialiased;
           font-smoothing:antialiased;
 }
@@ -909,7 +908,7 @@ a time {
     display:block;
     float:left;
     color:rgba(0,0,0,.2);
-    margin:4px 0 0 4px;
+    margin:7px 0 0 5px;
     cursor:pointer;
 }
 .configureQ:hover {
@@ -1166,7 +1165,7 @@ table.list tbody td {
 }
 
 table.list tbody td { background: #fff; padding: 4px 3px; vertical-align: top; }
-table.list tbody tr:nth-child(2n+1) td { background-color: #f0faff; }
+table.list tbody tr:nth-child(2n+1) td { background-color: #e9f8ff; }
 table.list tbody tr:hover td { background: #ffe; }
 table.list tbody tr:nth-child(2n+1):hover td { background: #ffd; }
 /* row highlighting on hover + select */
