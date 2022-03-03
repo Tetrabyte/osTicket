@@ -181,12 +181,16 @@ class DynamicList extends VerySimpleModel implements CustomList {
         return ($this->getForm() && $this->getForm()->getFields());
     }
 
-    function getSortModes() {
+    static function sortModes() {
         return array(
             'Alpha'     => __('Alphabetical'),
             '-Alpha'    => __('Alphabetical (Reversed)'),
             'SortCol'   => __('Manually Sorted')
         );
+    }
+
+    function getSortModes() {
+        return self::sortModes();
     }
 
     function getSortMode() {
@@ -722,7 +726,7 @@ class DynamicListItem extends VerySimpleModel implements CustomListItem {
     function setConfiguration($vars, &$errors=array()) {
         $config = array();
         foreach ($this->getConfigurationForm($vars)->getFields() as $field) {
-            $config[$field->get('id')] = $field->to_php($field->getClean());
+            $config[$field->get('id')] = $field->to_database($field->getClean());
             $errors = array_merge($errors, $field->errors());
         }
 
@@ -797,13 +801,14 @@ class DynamicListItem extends VerySimpleModel implements CustomListItem {
     }
 
     function display() {
+
+        return $this->getValue();
         //TODO: Allow for display mode (edit, preview or both)
-        return sprintf('%s &nbsp;<a class="preview" href="#"
-                data-preview="#list/%d/items/%d/preview">
-                <i class="icon-info-sign"></i></a>',
-                $this->getValue(),
+        return sprintf('<a class="preview" href="#"
+                data-preview="#list/%d/items/%d/preview">%s</a>',
                 $this->getListId(),
-                $this->getId()
+                $this->getId(),
+                $this->getValue()
                 );
     }
 
@@ -926,9 +931,9 @@ class TicketStatusList extends CustomListHandler {
         $items = TicketStatus::objects();
         if ($filters)
             $items->filter($filters);
-        if ($criteria['limit'])
+        if (isset($criteria['limit']))
             $items->limit($criteria['limit']);
-        if ($criteria['offset'])
+        if (isset($criteria['offset']))
             $items->offset($criteria['offset']);
 
         $items->order_by($this->getListOrderBy());
