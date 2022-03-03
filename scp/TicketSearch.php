@@ -111,6 +111,13 @@ a {
 }
 :root {
 	--bs-body-bg : #eee;
+}
+body {
+  font-family: "Lato", "Helvetica Neue", arial, helvetica, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.15px;
+  -webkit-font-smoothing:antialiased;
+          font-smoothing:antialiased;
 }</style>
     <meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">

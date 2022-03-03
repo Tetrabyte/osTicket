@@ -180,7 +180,7 @@
 
 .redactor-box,
 .redactor-box textarea {
-    width: 100%;
+    width: 100% !important;
   z-index: auto; }
 
 .redactor-box {
