@@ -165,7 +165,7 @@ a time {
 #header p {
     display:block;
     width:auto;
-    max-width:630px;
+    max-width:100%;
     margin:10px;
     background:#eee;
     border:1px solid #ccc;
@@ -1675,7 +1675,6 @@ img.avatar {
     width: 48%;
 }
 .thread-body .attachment-info .filename {
-  max-width: 80%;
   max-width: calc(100% - 70px);
 }
 
