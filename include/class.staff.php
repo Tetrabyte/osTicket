@@ -1601,7 +1601,7 @@ extends AbstractForm {
     }
 
     function getInstructions() {
-        return __('Confirm your current password and enter a new password to continue');
+        return __('Confirm your current password and enter a new password to continue</br>Passwords should be longer than 12 characters and Must have two differing character sets (Upper, Lower, Numbers, Symbols). We recommend using an approved password manager and selecting a randomised password, else using 3 random words or every first letter from a sentence and then added extra characters to the end. The password should be unique and not used elsewhere.');
     }
 
     function validate($clean) {
