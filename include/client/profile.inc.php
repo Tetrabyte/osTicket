@@ -56,8 +56,9 @@ $selected = ($info['lang'] == $l['code']) ? 'selected="selected"' : ''; ?>
 <tr>
     <td colspan="2">
         <div><hr><h3><?php echo __('Access Credentials'); ?></h3></div>
+        <div>Passwords should be longer than 12 characters and Must have two differing character sets (Upper, Lower, Numbers, Symbols). We recommend using an approved password manager and selecting a randomised password, else using 3 random words or every first letter from a sentence and then added extra characters to the end. The password should be unique and not used elsewhere.</div>
+
     </td>
-    <div>Passwords should be longer than 12 characters and Must have two differing character sets (Upper, Lower, Numbers, Symbols). We recommend using an approved password manager and selecting a randomised password, else using 3 random words or every first letter from a sentence and then added extra characters to the end. The password should be unique and not used elsewhere.</div>
 </tr>
 <?php if (!isset($_SESSION['_client']['reset-token'])) { ?>
 <tr>
