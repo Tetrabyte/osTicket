@@ -152,7 +152,7 @@ h2, .subject {
 /* Pagination */
 #pagination {
   border: 0;
-  margin: 0 0 40px 0;
+  margin: 0 0 40px;
   padding: 0;
 }
 #pagination li {
@@ -245,7 +245,7 @@ h2, .subject {
   border: none;
   display: inline-block;
   font-size: 16px;
-  padding: 4px 16px 4px 16px;
+  padding: 4px 16px;
   max-width: 220px;
   text-align: center;
   color: #fff;
@@ -405,7 +405,7 @@ body {
   color: #333;
 }
 #footer p {
-  margin: 10px 0 0 0;
+  margin: 10px 0 0;
 }
 #footer #poweredBy {
   display: block;
@@ -1193,7 +1193,7 @@ img.avatar {
   text-shadow: none;
 }
 .thread-event {
-    padding: 0px 2px 15px;
+    padding: 0 2px 15px;
     margin-left: 60px;
 }
 .type-icon {
