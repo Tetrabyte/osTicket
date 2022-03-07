@@ -70,6 +70,7 @@ a {
 :root {
 	--bs-body-bg : #eee;
     --bs-body-font-family : "Lato", "Helvetica Neue", arial, helvetica, sans-serif;
+    --bs-body-line-height : 0.5;
 }
 table {
 	border-collapse: separate !important;
