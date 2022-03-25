@@ -33,7 +33,7 @@ if (osTicket::is_ie())
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title><?php echo Format::htmlchars($title); ?></title>
     <meta name="description" content="customer support platform">
-    <meta name="keywords" content="osTicket, Customer support system, support ticket system">
+    <meta name="keywords" content="Tetrabyte, Customer support system, support ticket system">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/osticket.css" media="screen">
     <link rel="stylesheet" href="<?php echo ASSETS_PATH; ?>css/theme.css" media="screen">
@@ -50,6 +50,7 @@ if (osTicket::is_ie())
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/select2.min.css">
     <!-- Favicons -->
+    <link rel="shortcut icon" href="<?php echo ROOT_PATH ?>favicon.ico" type="image/x-icon"/>
     <link rel="apple-touch-icon" href="<?php echo ROOT_PATH ?>images/apple-touch-icon.png" sizes="180x180"/>
     <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/favicon-16x16.png" sizes="16x16" />
