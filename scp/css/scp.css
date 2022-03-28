@@ -2561,7 +2561,6 @@ select + .button {
 button[type=submit], input[type="submit"], .primary.button {
     font-weight: normal;
     box-shadow: 0 0 0 1px rgba(0,0,0,0.45) inset;
-    background-color: rgba(0,0,0,0.07);
 }
 
 .save.pending {

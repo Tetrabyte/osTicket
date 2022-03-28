@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="dashboard.audit_logs.yaml" server="80.244.186.128/httpdocs/" local="132873466616589425" remote="132870582600000000" Dst="1" />
+<file name="dashboard.dashboard.yaml" server="80.244.186.128/httpdocs/" local="132873466616744417" remote="132870582600000000" Dst="1" />
+<file name="dashboard.my_profile.yaml" server="80.244.186.128/httpdocs/" local="132873466617169421" remote="132870582600000000" Dst="1" />
+<file name="dashboard.staff_directory.yaml" server="80.244.186.128/httpdocs/" local="132873466617474428" remote="132870582600000000" Dst="1" />
+<file name="dashboard.system_logs.yaml" server="80.244.186.128/httpdocs/" local="132873466617639426" remote="132870582600000000" Dst="1" />
+<file name="emails.banlist.yaml" server="80.244.186.128/httpdocs/" local="132873466618069427" remote="132870582600000000" Dst="1" />
+<file name="emails.diagnostic.yaml" server="80.244.186.128/httpdocs/" local="132873466618374421" remote="132870582600000000" Dst="1" />
+<file name="emails.email.yaml" server="80.244.186.128/httpdocs/" local="132873466618699437" remote="132870582600000000" Dst="1" />
+<file name="emails.template.yaml" server="80.244.186.128/httpdocs/" local="132873466619144422" remote="132870582600000000" Dst="1" />
+<file name="forms.yaml" server="80.244.186.128/httpdocs/" local="132873466619314432" remote="132870582600000000" Dst="1" />
+<file name="install.yaml" server="80.244.186.128/httpdocs/" local="132873466619619416" remote="132870582600000000" Dst="1" />
+<file name="knowledgebase.canned_response.yaml" server="80.244.186.128/httpdocs/" local="132873466620084416" remote="132870582600000000" Dst="1" />
+<file name="knowledgebase.category.yaml" server="80.244.186.128/httpdocs/" local="132873466620389417" remote="132870582600000000" Dst="1" />
+<file name="knowledgebase.faq.yaml" server="80.244.186.128/httpdocs/" local="132873466620534420" remote="132870582600000000" Dst="1" />
+<file name="manage.api_keys.yaml" server="80.244.186.128/httpdocs/" local="132873466621119413" remote="132870582600000000" Dst="1" />
+<file name="manage.custom_list.yaml" server="80.244.186.128/httpdocs/" local="132873466621444430" remote="132870582600000000" Dst="1" />
+<file name="manage.filter.yaml" server="80.244.186.128/httpdocs/" local="132873466621594444" remote="132870582600000000" Dst="1" />
+<file name="manage.helptopic.yaml" server="80.244.186.128/httpdocs/" local="132873466622119427" remote="132870582600000000" Dst="1" />
+<file name="manage.pages.yaml" server="80.244.186.128/httpdocs/" local="132873466622274415" remote="132870582600000000" Dst="1" />
+<file name="manage.schedule.yaml" server="80.244.186.128/httpdocs/" local="132873466622424421" remote="132870582600000000" Dst="1" />
+<file name="manage.sla.yaml" server="80.244.186.128/httpdocs/" local="132873466622879417" remote="132870582600000000" Dst="1" />
+<file name="org.yaml" server="80.244.186.128/httpdocs/" local="132873466623209424" remote="132870582600000000" Dst="1" />
+<file name="settings.agents.yaml" server="80.244.186.128/httpdocs/" local="132873466623354420" remote="132870582600000000" Dst="1" />
+<file name="settings.alerts.yaml" server="80.244.186.128/httpdocs/" local="132873466623669441" remote="132870582600000000" Dst="1" />
+<file name="settings.autoresponder.yaml" server="80.244.186.128/httpdocs/" local="132873466624134432" remote="132870582600000000" Dst="1" />
+<file name="settings.email.yaml" server="80.244.186.128/httpdocs/" local="132873466624274406" remote="132870582600000000" Dst="1" />
+<file name="settings.kb.yaml" server="80.244.186.128/httpdocs/" local="132873466624579415" remote="132870582600000000" Dst="1" />
+<file name="settings.pages.yaml" server="80.244.186.128/httpdocs/" local="132873466625034430" remote="132870582600000000" Dst="1" />
+<file name="settings.tasks.yaml" server="80.244.186.128/httpdocs/" local="132873466625394423" remote="132870582600000000" Dst="1" />
+<file name="settings.system.yaml" server="80.244.186.128/httpdocs/" local="132873466625559427" remote="132870582600000000" Dst="1" />
+<file name="settings.ticket.yaml" server="80.244.186.128/httpdocs/" local="132873466626054424" remote="132870582600000000" Dst="1" />
+<file name="settings.users.yaml" server="80.244.186.128/httpdocs/" local="132873466626199426" remote="132870582600000000" Dst="1" />
+<file name="staff.agent.yaml" server="80.244.186.128/httpdocs/" local="132873466626554418" remote="132870582600000000" Dst="1" />
+<file name="staff.agents.yaml" server="80.244.186.128/httpdocs/" local="132873466627014415" remote="132870582600000000" Dst="1" />
+<file name="staff.department.yaml" server="80.244.186.128/httpdocs/" local="132873466627159420" remote="132870582600000000" Dst="1" />
+<file name="staff.departments.yaml" server="80.244.186.128/httpdocs/" local="132873466627484431" remote="132870582600000000" Dst="1" />
+<file name="staff.groups.yaml" server="80.244.186.128/httpdocs/" local="132873466627949420" remote="132870582600000000" Dst="1" />
+<file name="staff.staff_members.yaml" server="80.244.186.128/httpdocs/" local="132873466628099415" remote="132870582600000000" Dst="1" />
+<file name="staff.team.yaml" server="80.244.186.128/httpdocs/" local="132873466628414426" remote="132870582600000000" Dst="1" />
+<file name="staff.yaml" server="80.244.186.128/httpdocs/" local="132873466628864426" remote="132870582600000000" Dst="1" />
+<file name="tasks.queue.yaml" server="80.244.186.128/httpdocs/" local="132873466629004414" remote="132870582600000000" Dst="1" />
+<file name="tickets.queue.yaml" server="80.244.186.128/httpdocs/" local="132873466629449415" remote="132870582600000000" Dst="1" />
+</dwsync>

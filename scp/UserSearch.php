@@ -535,41 +535,35 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 
 <?php
 require_once(STAFFINC_DIR.'header.inc.php');
-$nav->setTabActive('usearch');
 $ost->addExtraHeader('<link rel="icon" type="image/png" href="favicon2.png">');
+$ost->addExtraHeader('<title>User Search Tool</title>');
 ?>
 
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
+	  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	  <style>
+*, ::after, ::before {
+  box-sizing: content-box;
+}
+a {
+	text-decoration: none;
+}</style>
     <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>User Search Tool</title>
 	<link rel="icon" type="image/png" href="favicon2.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <title>User Search Tool</title>
   </head>
   <body>
 	<?php echo '<script>document.getElementById("table").classList.remove(".table td:not(:empty)");</script>' ?>
 		<div class="row">
-			<div class="col-md-11">
-			<h3>User Search Tool - - - - - - <a href="TicketSearch.php">Ticket Search Tool</a></h3>
-			</div>
-			<div class="col-md-1" data-toggle="modal" data-target="#InfoModal" >
-				<svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-question-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-				  <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z"/>
-				</svg>
-			</div>
-		</div>
-		<div class="row">
 			<div class="col-md-12">
 				<form role="form" method="GET" class="form">
-					<div class="form-row" style="padding-bottom:5px">
-						<div class="col-md-6">
-							<input type="text" class="form-control" id="keyword" name="keyword" <?php if ( isset($_GET['keyword']) ) { echo 'value="'.$_GET['keyword'].'" ';} ?> autofocus />
-						</div>
-						<div class="col-md-2">
-							<button type="submit" class="form-control btn btn-primary">Search</button>
+					<div class="row g-3" style="padding-bottom:5px">
+						<div class="input-group mb-3">
+							<input type="text" class="form-control" id="keyword" name="keyword" <?php if ( isset($_GET['keyword']) ) { echo 'value="'.$_GET['keyword'].'" ';} ?> autofocus>
+							<button type="submit" class="btn btn-primary btn-lg">Search</button>
 						</div>
 					</div>
 				</form>

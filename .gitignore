@@ -18,3 +18,5 @@ stage
 include/mpdf/ttfontdata
 include/mpdf/tmp
 nbproject/
+
+include/ost-config-old.php
