@@ -1,7 +1,6 @@
 body {
   font-family: "Lato", "Helvetica Neue", arial, helvetica, sans-serif;
   font-weight: 400;
-  letter-spacing: 0.15px;
   -webkit-font-smoothing:antialiased;
           font-smoothing:antialiased;
 }
@@ -127,6 +126,7 @@ a time {
 
 #container {
     width:95%;
+    min-width:1200px;
     margin:0 auto 20px auto;
 }
 
@@ -164,7 +164,7 @@ a time {
 #header p {
     display:block;
     width:auto;
-    max-width:630px;
+    max-width:100%;
     margin:10px;
     background:#eee;
     border:1px solid #ccc;
@@ -726,6 +726,7 @@ a time {
 .jb-overflowmenu {
     position: relative;
     height:35px;
+    width: 100%;
 }
 
 
@@ -907,7 +908,7 @@ a time {
     display:block;
     float:left;
     color:rgba(0,0,0,.2);
-    margin:4px 0 0 4px;
+    margin:7px 0 0 5px;
     cursor:pointer;
 }
 .configureQ:hover {
@@ -1119,7 +1120,7 @@ table.dashboard-stats tbody:nth-child(2) tr:hover th {
     color:#000;
 }
 
-table { vertical-align:top; }
+table { vertical-align:top; width: 100%;}
 
 table.list {
     clear:both;
@@ -1164,7 +1165,7 @@ table.list tbody td {
 }
 
 table.list tbody td { background: #fff; padding: 4px 3px; vertical-align: top; }
-table.list tbody tr:nth-child(2n+1) td { background-color: #f0faff; }
+table.list tbody tr:nth-child(2n+1) td { background-color: #e9f8ff; }
 table.list tbody tr:hover td { background: #ffe; }
 table.list tbody tr:nth-child(2n+1):hover td { background: #ffd; }
 /* row highlighting on hover + select */
@@ -1467,6 +1468,7 @@ h3.title > .sub-title {
 
 .ticket_info {
     background:#F4FAFF;
+    width: 100%;
 }
 
 .ticket_info.custom-data thead th {
@@ -1628,7 +1630,7 @@ img.avatar {
 }
 
 .thread-entry.note .header {
-    background:#F9EAEA;
+    background:#F2B1B1;
 }
 .thread-entry.avatar.note .header:after {
     border-right-color: #FFE;
@@ -1672,7 +1674,6 @@ img.avatar {
     width: 48%;
 }
 .thread-body .attachment-info .filename {
-  max-width: 80%;
   max-width: calc(100% - 70px);
 }
 
@@ -3584,7 +3585,7 @@ input[type=checkbox] {
   padding: 0;
   margin:0;
   margin-right: 0.1em;
-  vertical-align: middle;
+  vertical-align: bottom;
   position: relative;
   top: -0.05em;
   *overflow: hidden;

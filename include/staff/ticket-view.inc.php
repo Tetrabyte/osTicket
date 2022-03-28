@@ -788,8 +788,7 @@ if ($errors['err'] && isset($_POST['a'])) {
 <?php
 } ?>
 
-<div class="sticky bar stop actions" id="response_options"
->
+<div class="sticky bar stop actions" id="response_options">
     <ul class="tabs" id="response-tabs">
 			<?php 
 			if (!($blockReply)) { 

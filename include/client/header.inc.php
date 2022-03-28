@@ -64,6 +64,9 @@ if (osTicket::is_ie())
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-plugins.js"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-osticket.js"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <?php
     if($ost && ($headers=$ost->getExtraHeaders())) {
         echo "\n\t".implode("\n\t", $headers)."\n";
@@ -112,16 +115,14 @@ if (osTicket::is_ie())
                 <a href="<?php echo $signout_url; ?>"><?php echo __('Sign Out'); ?></a>
             <?php
             } elseif($nav) {
-				echo '<span style="font-size:30px;">';
-					if ($cfg->getClientRegistrationMode() == 'public') { ?>
-						<?php echo __('Guest User'); ?> | <?php
-					}
-					if ($thisclient && $thisclient->isValid() && $thisclient->isGuest()) { ?>
-						<a href="<?php echo $signout_url; ?>"><?php echo __('Sign Out'); ?></a><?php
-					}
-					elseif ($cfg->getClientRegistrationMode() != 'disabled') { ?>
-						<a href="<?php echo $signin_url; ?>"><?php echo __('Sign In'); ?></a>
-				</span>
+                if ($cfg->getClientRegistrationMode() == 'public') { ?>
+                    <?php echo __('<span style="font-size:30px;">Not Logged In</span>'); ?> <span style="font-size:30px;">|</span> <?php
+                }
+                if ($thisclient && $thisclient->isValid() && $thisclient->isGuest()) { ?>
+                    <a href="<?php echo $signout_url; ?>"><?php echo __('Sign Out'); ?></a><?php
+                }
+                elseif ($cfg->getClientRegistrationMode() != 'disabled') { ?>
+                    <a href="<?php echo $signin_url; ?>"><?php echo __('<span style="font-size:30px;">Sign In</span>'); ?></a>
 <?php
                 }
             } ?>

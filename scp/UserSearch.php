@@ -1,6 +1,6 @@
 <?php
 
-/*************************************************************************
+/***********************************************************************
 	Basic OSTicket User Search Tool
 	
 	Ashley Unwin
@@ -555,6 +555,13 @@ a {
 }
 :root {
 	--bs-body-bg : #eee;
+}
+body {
+  font-family: "Lato", "Helvetica Neue", arial, helvetica, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.15px;
+  -webkit-font-smoothing:antialiased;
+          font-smoothing:antialiased;
 }</style>
     
 	<title>User Search Tool</title>
@@ -943,10 +950,10 @@ a {
 								while($row = $u_o_commit->fetch_assoc())  {	
 									$rowcolor = ticketstatusid2rowbgcolor($row["TicketStatus"]);
 									echo '<tr style="background-color:'.$rowcolor.'">';
-									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketNumber'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'#note">'.$row['TicketNumber'].' </a> </td>';
 									echo '<td>'.$row['TicketStatusName'].'</td>';
 									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
-									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'">'.$row['TicketSubject'].' </a> </td>';
+									echo '<td> <a target="_blank" href="/scp/tickets.php?id='.$row['TicketId'].'#note">'.$row['TicketSubject'].' </a> </td>';
 									if ( $row['TicketOverdue'] == 1 ) {
 										echo '<td style="color:red;">'.$row['TicketDue'].'</td>';
 									}else{
