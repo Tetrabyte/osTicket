@@ -1,3 +1,61 @@
+osTicket v1.16.1
+================
+### Improvements
+* issue: Remaining Deprecated each() (69db3a7)
+* issue: User sendUnlockEmail (13652db)
+* issue: Auth_SASL Non-Static (4378f77)
+* issue: Banlist Non-Static (96995e1)
+* issue: PHP Version Requirements 1.16.x (fdc0445)
+* issue: Email Templates Static (fb0b075)
+* issue: Status List getSortModes() (6d4650d)
+
+osTicket v1.16
+==============
+### Enhancements
+* PHP8: Static Method Lint Test (958a748)
+* Update MPDF (59dc587)
+
+### Improvements
+* prereqs: Update README.md (2767ad4)
+* upgrader: v1.16 Release (57347ab)
+* release: Prep Release (0905e7b)
+* php8: Temporarily Suppress Warnings (0afe2b2)
+* issue: PEAR each() (1eafd98)
+* issue: Further Fixes (03d203b)
+* issue: EmailDataParser (c4fc76c)
+* issue: Even More Fixes (998cd7d)
+* issue: Misc. Fixes (ec9c09d)
+* issue: Static to Non-Static (3bb36ff)
+* issue: create_function() (7668b71)
+* issue: Unparenthesized (64076e2)
+* issue: Undefined Key, Var, Prop (6974734)
+* issue: Undefined Function each() (e261a5f)
+* issue: Calling Non-Static Statically (a4ab19d)
+* Fix first problems with PHP 8 (ab77c0a, 29dcbd9, 6b3c7f9, 4d972b5, e63998e)
+
+osTicket v1.15.6
+================
+### Enhancements
+* i18n: Missing translations for the action buttons (823b5fb)
+
+### Improvements
+* issue: Required Custom Field User Registration (f4e693e)
+
+osTicket v1.15.5
+================
+### Enhancements
+* redactor: Upgrade to version 3.5.2 (4e4f82e)
+* auth: Allow AuthBackends to auto-register Users (6836b17)
+
+### Improvements
+* issue: Khmer Language Flag (f878f14)
+* issue: Assignee Item Property (3cde88a)
+* issue: CDATA Rebuild Issue (9da3b5e)
+* issue: Plus Symbol (b0f143e)
+* issue: Plain-Text Canned Responses (19c03ca)
+* issue: Improved Validation for Variable Names (35c8ca8)
+* Revert "issue: List Item Properties On Mouseover" (5c91f64)
+
 osTicket v1.15.4
 ================
 ### Enhancements
@@ -7,22 +65,6 @@ osTicket v1.15.4
 * Issue: Delete Referrals (790c0e6)
 * Show "-Empty-" value for empty due dates in ticket view (64712eb)
 * Issue: Audit Closed Ticket Events (311a600)
-
-### Security
-* security: PwReset Username and Username Discoverability (e282910, 86165c2)
-* security: SSRF External Images (1c6f98e)
-* xss: Stored XSS/Domain Whitelist Bypass (4b4da5b)
-* security: Recipient Injection via User's Name (7c5c584)
-* xss: Advanced Search (4a8d3c8)
-* xss: Tasks (b01c6a2)
-
-osTicket v1.14.8
-================
-### Improvements
-* issue: Auto-Assign Comments Var (c3171c3)
-* issue: List Item Properties On Mouseover (a6a7192)
-* issue: def_assn_role (6ad568f)
-* search: Child Thread Relation (08785f9)
 
 ### Security
 * security: PwReset Username and Username Discoverability (e282910, 86165c2)
@@ -106,6 +148,22 @@ osTicket v1.15.1
 ### Improvements
 * readme: Update PHP Version (a4c85d7)
 * placeholder: Quote and encode html chars (0056d14)
+
+osTicket v1.14.8
+================
+### Improvements
+* issue: Auto-Assign Comments Var (c3171c3)
+* issue: List Item Properties On Mouseover (a6a7192)
+* issue: def_assn_role (6ad568f)
+* search: Child Thread Relation (08785f9)
+
+### Security
+* security: PwReset Username and Username Discoverability (e282910, 86165c2)
+* security: SSRF External Images (1c6f98e)
+* xss: Stored XSS/Domain Whitelist Bypass (4b4da5b)
+* security: Recipient Injection via User's Name (7c5c584)
+* xss: Advanced Search (4a8d3c8)
+* xss: Tasks (b01c6a2)
 
 osTicket v1.14.7
 ================
