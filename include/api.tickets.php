@@ -2,6 +2,7 @@
 
 include_once INCLUDE_DIR.'class.api.php';
 include_once INCLUDE_DIR.'class.ticket.php';
+include_once('include/api-config.php');
 
 class TicketApiController extends ApiController {
 
@@ -105,7 +106,7 @@ class TicketApiController extends ApiController {
 
     function create($format) {
 
-        if(!($key=$this->requireApiKey()) || !$key->canCreateTickets())
+        if($key != $API_KEY)
             return $this->exerr(401, __('API key not authorized'));
 
         $ticket = null;

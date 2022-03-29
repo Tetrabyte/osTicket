@@ -1,6 +1,7 @@
 .htaccess
 php53.cgi
 include/ost-config.php
+include/api-config.php
 setup/cli/modules/importer
 *.sw[a-z]
 .DS_Store
@@ -20,3 +21,5 @@ include/mpdf/tmp
 nbproject/
 
 include/ost-config-old.php
+
+*.bak
