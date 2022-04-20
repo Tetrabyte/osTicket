@@ -1,3 +1,28 @@
+osTicket v1.16.2
+================
+### Improvements
+* Issue: Topic->getHelpTopics() don't return localized names when $allData = true (a078a0f)
+* class.email: allow empty smtp_passwd when existing (0d0d8a1)
+* Fixes permission issue when registration mode ist disabled (dee6a13)
+* email: use correct e-mail formatting (7692637)
+* Fix HTML syntax in thread view (84913f5)
+* Fix slugify regex (f72691c)
+* issue: preg_match Pass By Reference (148a2e7)
+* issue: php_analyze each() (f627a5e)
+* issue: Deprecated Required Parameter (0d0ab46)
+* tests: UninitializedVars (60f6ad7)
+* tests: Validation Checks (91e7d30)
+* issue: QueueSort (92e820c)
+* issue: Task Export (baa46d3)
+* issue: PEAR Mail parseAddressList() (7130056)
+* issue: Filter Events (8c9b392)
+* issue: Last Message Data Source (d185e50)
+* issue: Undefined Constant GLOB_BRACE (0499b97)
+* Update edit.inc.php (8b5ea64)
+* Update ticket-preview.tmpl.php (e6f437c)
+* Update ticket-view.inc.php (84c4eb8)
+* issue: Nullable date() Timestamp (a77158b)
+
 osTicket v1.16.1
 ================
 ### Improvements
@@ -32,6 +57,24 @@ osTicket v1.16
 * issue: Undefined Function each() (e261a5f)
 * issue: Calling Non-Static Statically (a4ab19d)
 * Fix first problems with PHP 8 (ab77c0a, 29dcbd9, 6b3c7f9, 4d972b5, e63998e)
+
+osTicket v1.15.7
+================
+### Enhancements
+* i18n: Bosnian Flag CSS (94f5e95)
+* i18n: Translatable Tooltip (e2be9e7)
+* i18n: No Tasks String (01016db)
+
+### Improvements
+* Use HTTPS version of Crowdin project (d52cc40, da1309a)
+* fix staff login redirect loop when system is offline (38b8f53)
+* oops: Banlist Created (f0ae76f)
+* issue: MaxLength Attribute (225eb7a)
+* Update ticket-tasks.inc.php (b063504)
+* Issue: Disabled/Archived Primary Dept (0b7c9c2)
+* issue: Sweden Capitalization (3cb05ad)
+* typo: Emtpy To Empty (9c858b8)
+* issue: Fixes Test Errors (34cf2f2)
 
 osTicket v1.15.6
 ================
