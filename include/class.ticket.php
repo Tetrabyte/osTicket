@@ -4061,6 +4061,7 @@ implements RestrictedAccess, Threadable, Searchable {
                             $postCreate->logEvent($description['type'], $description['desc'], $username);
 
                     }
+                    if ($f->stopOnMatch()) break;
                 }
             }
         }
