@@ -322,7 +322,7 @@ static function departmentMembers($dept, $agents, $filename='', $how='csv') {
     exit;
   }
 
-  static function audits($type, $filename='', $tableInfo='', $object='', $how='csv', $show_viewed=true, $data=array(), CsvExporter $exporter) {
+  static function audits($type, ?string $filename=null, ?string $tableInfo=null, ?string $object=null, ?string $how='csv', ?bool $show_viewed=true, ?array $data=array(), CsvExporter $exporter) {
       $headings = array('Description', 'Timestamp', 'IP');
       switch ($type) {
           case 'audit':
@@ -680,7 +680,7 @@ class ResultSetExporter {
                 }
             }
             // Evalutate :: function call on target current
-            if ($func && (method_exists($current, $func) || method_exists($current, '__call'))) {
+            if (($current && $func) && (method_exists($current, $func) || method_exists($current, '__call'))) {
                 $current = $current->{$func}();
             }
 
