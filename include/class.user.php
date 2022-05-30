@@ -241,7 +241,9 @@ implements TemplateVariable, Searchable {
                 $user->set('org_id', $vars['org_id']);
             elseif ($org = Organization::forDomain($domain))
                 $user->setOrganization($org, false);
-
+            else
+                $user->setOrganization('999', false);
+                
             try {
                 $user->save(true);
                 $user->emails->add($user->default_email);

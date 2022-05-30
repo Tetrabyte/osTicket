@@ -1002,14 +1002,24 @@ implements RestrictedAccess, Threadable, Searchable {
 
         $prompt = $assignee = '';
         // Possible assignees
+        $assignees = null;
         $dept = $this->getDept();
         switch (strtolower($options['target'])) {
             case 'agents':
+                $assignees = array();
+                foreach ($dept->getAssignees() as $member)
+                    $assignees['s'.$member->getId()] = $member;
+
                 if (!$source && $this->isOpen() && $this->staff)
                     $assignee = sprintf('s%d', $this->staff->getId());
                 $prompt = __('Select an Agent');
                 break;
             case 'teams':
+                $assignees = array();
+                if (($teams = Team::getActiveTeams()))
+                    foreach ($teams as $id => $name)
+                        $assignees['t'.$id] = $name;
+
                 if (!$source && $this->isOpen() && $this->team)
                     $assignee = sprintf('t%d', $this->team->getId());
                 $prompt = __('Select a Team');
@@ -1022,8 +1032,11 @@ implements RestrictedAccess, Threadable, Searchable {
 
         $form = AssignmentForm::instantiate($source, $options);
 
+        if (isset($assignees))
+            $form->setAssignees($assignees);
+
         if (($refer = $form->getField('refer'))) {
-            if (!$assignee) {
+            if ($assignee) {
                 $visibility = new VisibilityConstraint(
                         new Q(array()), VisibilityConstraint::HIDDEN);
                 $refer->set('visibility', $visibility);
@@ -1056,7 +1069,6 @@ implements RestrictedAccess, Threadable, Searchable {
          'isactive' => 1,
          ))
          ->filter(Q::not(array('dept_id' => $dept->getId())));
-
         $staff = Staff::nsort($staff);
         $agents = array();
         foreach ($staff as $s)
@@ -1532,6 +1544,8 @@ implements RestrictedAccess, Threadable, Searchable {
 
                 $ecb = function($t) use ($status) {
                     $t->logEvent('closed', array('status' => array($status->getId(), $status->getName())), null, 'closed');
+                    $type = array('type' => 'closed');
+                    Signal::send('object.edited', $t, $type);
                     $t->deleteDrafts();
                 };
                 break;
@@ -1799,6 +1813,7 @@ implements RestrictedAccess, Threadable, Searchable {
 
     function onResponse($response, $options=array()) {
         $this->isanswered = 1;
+		$this->lastupdate = SqlFunction::NOW();
         $this->save();
 
         $vars = array_merge($options,
@@ -1886,11 +1901,17 @@ implements RestrictedAccess, Threadable, Searchable {
             $options);
     }
 
-    function onMessage($message, $autorespond=true, $reopen=true) {
+    function onMessage($message, $autorespond=true, $reopen=true, $newticket=false) { # Added a value on end to define this as new ticket, later post messages will update due time, originals will set SLA - ASH
         global $cfg;
 
         $this->isanswered = 0;
         $this->lastupdate = SqlFunction::NOW();
+		## Check value to define this as new ticket, later post messages will update due time, originals will set SLA - ASH
+		if ( $newticket == false ) {
+			$this->duedate = SqlFunction::NOW()->plus(SqlInterval::Hour(2));
+			$this->est_duedate = SqlFunction::NOW()->plus(SqlInterval::Hour(2));
+		}
+		$this->status = 1;
         $this->save();
 
 
@@ -2044,6 +2065,7 @@ implements RestrictedAccess, Threadable, Searchable {
             return false;
 
         $user_comments = (bool) $comments;
+        $comments = $comments ?: _S('Ticket Assignment');
         $assigner = $thisstaff ?: _S('SYSTEM (Auto Assignment)');
 
         //Log an internal note - no alerts on the internal note.
@@ -2111,6 +2133,7 @@ implements RestrictedAccess, Threadable, Searchable {
                 $sentlist[] = $staff->getEmail();
             }
         }
+		$this->lastupdate = SqlFunction::NOW();
         return true;
     }
 
@@ -3078,7 +3101,7 @@ implements RestrictedAccess, Threadable, Searchable {
     }
 
     // Insert message from client
-    function postMessage($vars, $origin='', $alerts=true) {
+    function postMessage($vars, $origin='', $alerts=true, $newticket=false) { # Added a value on end to define this as new ticket, later post messages will update due time, originals will set SLA - ASH
         global $cfg;
 
         if ($origin)
@@ -3192,7 +3215,7 @@ implements RestrictedAccess, Threadable, Searchable {
         elseif ($autorespond && isset($vars['autorespond']))
             $autorespond = $vars['autorespond'];
 
-        $ticket->onMessage($message, ($autorespond && $alerts), $reopen); //must be called b4 sending alerts to staff.
+        $ticket->onMessage($message, ($autorespond && $alerts), $reopen, $newticket); //must be called b4 sending alerts to staff. # Added a value on end to define this as new ticket, later post messages will update due time, originals will set SLA - ASH
 
         if ($autorespond && $alerts
             && $cfg && $cfg->notifyCollabsONNewMessage()
@@ -3213,6 +3236,7 @@ implements RestrictedAccess, Threadable, Searchable {
         $options = array('thread'=>$message);
         // If enabled...send alert to staff (New Message Alert)
         if ($cfg->alertONNewMessage()
+            && $dept->getNumMembersForAlerts()
             && ($email = $dept->getAlertEmail())
             && ($tpl = $dept->getTemplate())
             && ($msg = $tpl->getNewMessageAlertMsgTemplate())
@@ -3381,9 +3405,9 @@ implements RestrictedAccess, Threadable, Searchable {
             $this->setStaffId($thisstaff->getId()); //direct assignment;
         }
 
-        $this->onResponse($response, array('assignee' => $assignee)); //do house cleaning..
-
         $this->lastrespondent = $response->staff;
+
+        $this->onResponse($response, array('assignee' => $assignee)); //do house cleaning..
 
         $type = array('type' => 'message');
         Signal::send('object.created', $this, $type);
@@ -3556,6 +3580,7 @@ implements RestrictedAccess, Threadable, Searchable {
         $type = array('type' => 'note');
         Signal::send('object.created', $this, $type);
 
+		$this->lastupdate = SqlFunction::NOW();
         return $note;
     }
 
@@ -4435,7 +4460,7 @@ implements RestrictedAccess, Threadable, Searchable {
         //post the message.
         $vars['title'] = $vars['subject']; //Use the initial subject as title of the post.
         $vars['userId'] = $ticket->getUserId();
-        $message = $ticket->postMessage($vars , $origin, false);
+        $message = $ticket->postMessage($vars , $origin, false, true); # Added a value on end to define this as new ticket, later post messages will update due time, originals will set SLA - ASH
 
         $vars['ticket'] = $ticket;
         self::filterTicketData($origin, $vars,

@@ -15,9 +15,6 @@
 **********************************************************************/
 file_exists('../main.inc.php') or die('System Error');
 
-// APICALL const.
-define('APICALL', true);
-
 // Disable sessions for the API. API should be considered stateless and
 // shouldn't chew up database records to store sessions
 if (!defined('DISABLE_SESSION'))

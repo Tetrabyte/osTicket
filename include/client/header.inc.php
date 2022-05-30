@@ -33,7 +33,7 @@ if (osTicket::is_ie())
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title><?php echo Format::htmlchars($title); ?></title>
     <meta name="description" content="customer support platform">
-    <meta name="keywords" content="osTicket, Customer support system, support ticket system">
+    <meta name="keywords" content="Tetrabyte, Customer support system, support ticket system">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/osticket.css" media="screen">
     <link rel="stylesheet" href="<?php echo ASSETS_PATH; ?>css/theme.css" media="screen">
@@ -50,8 +50,11 @@ if (osTicket::is_ie())
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/select2.min.css">
     <!-- Favicons -->
-    <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/oscar-favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/oscar-favicon-16x16.png" sizes="16x16" />
+    <link rel="shortcut icon" href="<?php echo ROOT_PATH ?>favicon.ico" type="image/x-icon"/>
+    <link rel="apple-touch-icon" href="<?php echo ROOT_PATH ?>images/apple-touch-icon.png" sizes="180x180"/>
+    <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/favicon-16x16.png" sizes="16x16" />
+    <link rel="manifest" href="<?php echo ROOT_PATH ?>images/site.webmanifest" crossorigin="use-credentials"/>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-3.5.1.min.js"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.13.1.custom.min.js"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-timepicker-addon.js"></script>
@@ -62,6 +65,9 @@ if (osTicket::is_ie())
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-plugins.js"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/redactor-osticket.js"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <?php
     if($ost && ($headers=$ost->getExtraHeaders())) {
         echo "\n\t".implode("\n\t", $headers)."\n";
@@ -111,13 +117,13 @@ if (osTicket::is_ie())
             <?php
             } elseif($nav) {
                 if ($cfg->getClientRegistrationMode() == 'public') { ?>
-                    <?php echo __('Guest User'); ?> | <?php
+                    <?php echo __('<span style="font-size:30px;">Not Logged In</span>'); ?> <span style="font-size:30px;">|</span> <?php
                 }
                 if ($thisclient && $thisclient->isValid() && $thisclient->isGuest()) { ?>
                     <a href="<?php echo $signout_url; ?>"><?php echo __('Sign Out'); ?></a><?php
                 }
                 elseif ($cfg->getClientRegistrationMode() != 'disabled') { ?>
-                    <a href="<?php echo $signin_url; ?>"><?php echo __('Sign In'); ?></a>
+                    <a href="<?php echo $signin_url; ?>"><?php echo __('<span style="font-size:30px;">Sign In</span>'); ?></a>
 <?php
                 }
             } ?>

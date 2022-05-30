@@ -7,7 +7,7 @@ header("Content-Security-Policy: frame-ancestors ".$cfg->getAllowIframes().";");
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="refresh" content="7200" />
-    <title>osTicket :: <?php echo __('Agent Login'); ?></title>
+    <title><?php echo __('Agent Login'); ?></title>
     <link rel="stylesheet" href="css/login.css" type="text/css" />
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css">
     <meta name="robots" content="noindex" />

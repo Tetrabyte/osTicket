@@ -44,7 +44,7 @@ class OverviewReport {
         if ($translate) {
             $format = str_replace(
                     array('y', 'Y', 'm'),
-                    array('y', 'yy', 'mm'),
+                    array('yy', 'yyyy', 'mm'),
                     $format);
         }
 

@@ -133,7 +133,7 @@ $tickets->order_by($order.$order_by);
 $tickets->values(
     'ticket_id', 'number', 'created', 'isanswered', 'source', 'status_id',
     'status__state', 'status__name', 'cdata__subject', 'dept_id',
-    'dept__name', 'dept__ispublic', 'user__default_email__address', 'user_id'
+    'dept__name', 'dept__ispublic', 'user__default_email__address', 'user_id', 'user__name', 'updated'
 );
 
 ?>
@@ -182,7 +182,7 @@ foreach (Topic::getHelpTopics(true) as $id=>$name) {
     <i class="icon-file-alt"></i>
     <a class="state <?php if ($status == 'open') echo 'active'; ?>"
         href="?<?php echo Http::build_query(array('a' => 'search', 'status' => 'open')); ?>">
-    <?php echo __('Open'); if ($openTickets > 0) echo sprintf(' (%d)', $openTickets); ?>
+    <?php echo _P('ticket-status', 'Open'); if ($openTickets > 0) echo sprintf(' (%d)', $openTickets); ?>
     </a>
     <?php if ($closedTickets) { ?>
     &nbsp;
@@ -200,7 +200,7 @@ if ($closedTickets) {?>
     </small>
 </div>
 </h1>
-<table id="ticketTable" width="800" border="0" cellspacing="0" cellpadding="0">
+<table id="ticketTable" width="100%" border="0" cellspacing="0" cellpadding="0">
     <caption><?php echo $showing; ?></caption>
     <thead>
         <tr>
@@ -210,11 +210,17 @@ if ($closedTickets) {?>
             <th width="120">
                 <a href="tickets.php?sort=date&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="<?php echo sprintf('%s %s', __('Sort By'), __('Date')); ?>"><?php echo __('Create Date');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
-            <th width="100">
-                <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="<?php echo sprintf('%s %s', __('Sort By'), __('Status')); ?>"><?php echo __('Status');?>&nbsp;<i class="icon-sort"></i></a>
+            <th width="75">
+                <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Status"><?php echo __('Status');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
-            <th width="320">
-                <a href="tickets.php?sort=subject&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="<?php echo sprintf('%s %s', __('Sort By'), __('Subject')); ?>"><?php echo __('Subject');?>&nbsp;<i class="icon-sort"></i></a>
+			<th width="110">
+                <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By From"><?php echo __('From');?>&nbsp;<i class="icon-sort"></i></a>
+            </th>
+            <th nowrap>
+                <a href="tickets.php?sort=subject&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Subject"><?php echo __('Subject');?>&nbsp;<i class="icon-sort"></i></a>
+            </th>
+			<th width="150">
+                <a href="tickets.php?sort=status&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="Sort By Updated"><?php echo __('Updated');?>&nbsp;<i class="icon-sort"></i></a>
             </th>
             <th width="120">
                 <a href="tickets.php?sort=dept&order=<?php echo $negorder; ?><?php echo $qstr; ?>" title="<?php echo sprintf('%s %s', __('Sort By'), __('Department')); ?>"><?php echo __('Department');?>&nbsp;<i class="icon-sort"></i></a>
@@ -251,6 +257,7 @@ if ($closedTickets) {?>
                 </td>
                 <td><?php echo Format::date($T['created']); ?></td>
                 <td><?php echo $status; ?></td>
+                <td><?php echo $T['user__name']; ?></td>
                 <td>
                   <?php if ($isCollab) {?>
                     <div style="max-height: 1.2em; max-width: 320px;" class="link truncate" href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><i class="icon-group"></i> <?php echo $subject; ?></div>
@@ -258,6 +265,7 @@ if ($closedTickets) {?>
                     <div style="max-height: 1.2em; max-width: 320px;" class="link truncate" href="tickets.php?id=<?php echo $T['ticket_id']; ?>"><?php echo $subject; ?></div>
                     <?php } ?>
                 </td>
+                <td><?php echo $T['updated'];?></td>
                 <td><span class="truncate"><?php echo $dept; ?></span></td>
             </tr>
         <?php

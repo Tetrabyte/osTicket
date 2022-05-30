@@ -135,12 +135,14 @@ class StaffNav {
                     'desc' => __('Users'), 'href' => 'users.php', 'title' => __('User Directory')
                 );
             }
+            
             $this->tabs['tasks'] = array('desc'=>__('Tasks'), 'href'=>'tasks.php', 'title'=>__('Task Queue'));
             $this->tabs['tickets'] = array('desc'=>__('Tickets'),'href'=>'tickets.php','title'=>__('Ticket Queue'));
-
             $this->tabs['kbase'] = array('desc'=>__('Knowledgebase'),'href'=>'kb.php','title'=>__('Knowledgebase'));
             if (!is_null($this->getRegisteredApps()))
                 $this->tabs['apps']=array('desc'=>__('Applications'),'href'=>'apps.php','title'=>__('Applications'));
+            $this->tabs['usearch'] = array('desc'=>__('User Search'),'href'=>'UserSearch.php','title'=>__('User Search'));
+            $this->tabs['tsearch'] = array('desc'=>__('Ticket Search'),'href'=>'TicketSearch.php','title'=>__('Ticket Search'));
         }
 
         return $this->tabs;
@@ -220,6 +222,8 @@ class AdminNav extends StaffNav{
             $tabs['staff']=array('desc'=>__('Agents'),'href'=>'staff.php','title'=>__('Manage Agents'));
             if (!is_null($this->getRegisteredApps()))
                 $tabs['apps']=array('desc'=>__('Applications'),'href'=>'apps.php','title'=>__('Applications'));
+            $tabs['usearch']=array('desc'=>__('User Search'),'href'=>'UserSearch.php','title'=>__('User Search'));
+            $tabs['tsearch']=array('desc'=>__('Ticket Search'),'href'=>'TicketSearch.php','title'=>__('Ticket Search'));
             $this->tabs=$tabs;
         }
 
