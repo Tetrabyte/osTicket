@@ -339,7 +339,7 @@ var ticket_onload = function($) {
         var $redirect = $(this).data('redirect');
         var $options = $(this).data('dialog');
         $.dialog(url, [201], function (xhr) {
-            if (!!$redirect)
+            if ($redirect)
                 window.location.href = $redirect;
             else
                 $.pjax.reload('#pjax-container');
