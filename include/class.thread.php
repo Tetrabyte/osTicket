@@ -2646,7 +2646,7 @@ class ResendEvent extends ThreadEvent {
     static $state = 'resent';
 
     function getDescription($mode=self::MODE_STAFF) {
-        return $this->template(__('<b>{somebody}</b> resent <strong><a href="#thread-entry-{data.entry}">a previous response</a></strong> {timestamp}'), $mode);
+        return $this->template(__('<p style="color:red; font-size:22px"><b>{somebody}</b> resent <strong><a href="#thread-entry-{data.entry}">a previous response</a></strong> {timestamp}</p>'), $mode);
     }
 }
 
