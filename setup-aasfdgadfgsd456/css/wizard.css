@@ -15,12 +15,12 @@ a { color: #2a67ac; display: inline-block; }
 #header #logo { width: auto; height: 72px; margin-right: 3em; float: left; }
 #header .info { font-size: 11pt; font-weight: bold; border-bottom: 1px solid #2a67ac; color: #444; text-align: right; float: right; }
 #header ul { margin: 0; padding: 0; text-align: right; }
-#header ul li { list-style: none; margin: 5px 0 0 0; padding: 0; }
+#header ul li { list-style: none; margin: 5px 0 0; padding: 0; }
 #header ul li a { color: #F3811C; text-decoration: none; white-space: nowrap; }
 #header ul li a:hover { color: #2a67ac; }
 
 #sidebar { width: 180px; padding: 10px; border: 1px solid #C8DDFA; float: right; background: #F7FBFE; }
-#sidebar h3 { font-size: 10pt; margin: 0 0 5px 0; padding: 0; padding-left: 32px; background: url('../images/cog.png?1312913866') top left no-repeat; line-height: 1.2em; color: #2a67ac; min-height: 24px; }
+#sidebar h3 { font-size: 10pt; margin: 0 0 5px; padding: 0; padding-left: 32px; background: url('../images/cog.png?1312913866') top left no-repeat; line-height: 1.2em; color: #2a67ac; min-height: 24px; }
 
 #footer { color:#ccc; }
 #footer a, #footer a:hover { text-decoration:none; color:#ccc; }
@@ -54,7 +54,7 @@ ul.progress li.no small {color:red;}
 #bar.error { background: #ffd; text-align: center; color: #a00; font-weight: bold; }
 
 form { margin: 0; padding: 0; }
-form h4.head { display: block; clear: both; border-top: 1px solid #2a67ac; height: 16px; line-height: 16px; padding: 5px 5px 5px 24px; margin: 10px 0 0 0; font-size: 10pt; background-position: 5px 50%; background-repeat: no-repeat; background-color: #e7f1fd; }
+form h4.head { display: block; clear: both; border-top: 1px solid #2a67ac; height: 16px; line-height: 16px; padding: 5px 5px 5px 24px; margin: 10px 0 0; font-size: 10pt; background-position: 5px 50%; background-repeat: no-repeat; background-color: #e7f1fd; }
 form span.subhead { display: block; background: #f4f4f4; border-bottom: 1px solid #cccccc; margin-bottom: 3px; padding: 3px 5px 3px 24px; font-style: italic; font-size: 9pt; }
 form h4.system { background-image: url('../images/system.png?1262713696'); }
 form h4.admin { background-image: url('../images/user.png?1262713720'); }
@@ -180,7 +180,7 @@ i.help-tip:hover {
 #overlay { display: none; position: fixed; background: #000; z-index: 2000; }
 
 #loading { padding: 10px 10px 10px 60px; width: 400px; height: 150px; background: url('../images/ajax-loader.gif?1312925608') 10px 50% no-repeat white; position: fixed; display: none; z-index: 3000; }
-#loading h4 { margin: 3px 0 0 0; padding: 0; color: #d80; }
+#loading h4 { margin: 3px 0 0; padding: 0; color: #d80; }
 
 div.flags { text-align: right; margin-top: 5px; }
 a.flag { text-decoration: none; }
