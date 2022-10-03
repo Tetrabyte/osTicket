@@ -31,14 +31,13 @@ class Config {
     var $defaults = array();                # List of default values
 
     function __construct($section=null, $defaults=array()) {
+        if ($defaults)
+            $this->defaults = $defaults;
         if ($section)
             $this->section = $section;
-
         if ($this->section === null)
             return false;
 
-        if ($defaults)
-            $this->defaults = $defaults;
 
         if (isset($_SESSION['cfg:'.$this->section]))
             $this->session = &$_SESSION['cfg:'.$this->section];
@@ -60,6 +59,10 @@ class Config {
         foreach ($this->config as $key=>$item)
             $info[$key] = $item->value;
         return $info;
+    }
+
+    function toArray() {
+        return $this->getInfo();
     }
 
     function get($key, $default=null) {
@@ -659,12 +662,15 @@ class OsticketConfig extends Config {
         return $this->alertEmail;
     }
 
-    function getDefaultSMTPEmail() {
+    function getDefaultSmtpAccount() {
+        if (!$this->defaultSmtpAccount && $this->get('default_smtp_id'))
+            $this->defaultSmtpAccount = SmtpAccount::lookup($this->get('default_smtp_id'));
 
-        if(!$this->defaultSMTPEmail && $this->get('default_smtp_id'))
-            $this->defaultSMTPEmail = Email::lookup($this->get('default_smtp_id'));
+        return $this->defaultSmtpAccount;
+    }
 
-        return $this->defaultSMTPEmail;
+    function getDefaultMTA() {
+        return $this->getDefaultSmtpAccount();
     }
 
     function getDefaultPriorityId() {

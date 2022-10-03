@@ -63,6 +63,10 @@ if($_POST){
             if (!$errors) {
                 $count=count($_POST['ids']);
 
+                $activeTopics = Topic::getHelpTopics(false, false);
+                $allTopics = count(Topic::getAllHelpTopics());
+                $diff = is_array($_POST['ids']) ? array_intersect($_POST['ids'], array_keys($activeTopics)) : [];
+
                 switch(strtolower($_POST['a'])) {
                     case 'enable':
                         $topics = Topic::objects()->filter(array(
