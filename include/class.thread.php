@@ -897,7 +897,7 @@ implements TemplateVariable {
             // a response to an existing thread entry
             if ($ost)
                 $ost->log(LOG_ERR, _S('Email loop detected'), sprintf(
-                _S('It appears as though &lt;%s&gt; is being used as a forwarded or fetched email account and is also being used as a user / system account. Please correct the loop or seek technical assistance.'),
+                _S('It appears as though %s is being used as a forwarded or fetched email account and is also being used as a user / system account. Please correct the loop or seek technical assistance.'),
                 $mailinfo['email']),
 
                 // This is quite intentional -- don't continue the loop
@@ -2646,7 +2646,7 @@ class ResendEvent extends ThreadEvent {
     static $state = 'resent';
 
     function getDescription($mode=self::MODE_STAFF) {
-        return $this->template(__('<b>{somebody}</b> resent <strong><a href="#thread-entry-{data.entry}">a previous response</a></strong> {timestamp}'), $mode);
+        return $this->template(__('<p style="color:red; font-size:22px"><b>{somebody}</b> resent <strong><a href="#thread-entry-{data.entry}">a previous response</a></strong> {timestamp}</p>'), $mode);
     }
 }
 

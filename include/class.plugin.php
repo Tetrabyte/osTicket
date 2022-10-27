@@ -22,7 +22,7 @@ abstract class PluginConfig extends Config {
         foreach ($this->getOptions() as $name => $field) {
             if ($this->exists($name)) {
                 $val = $this->get($name);
-                $this->_config[$name] = $field->to_php($val) ?: $val;
+                $this->_config[$name] = $field->to_php($val);
             } elseif (($default = $field->get('default')))
                 $this->_config[$name] = $default;
         }
@@ -50,6 +50,17 @@ abstract class PluginConfig extends Config {
         return array();
     }
 
+    // getFields is same as getOptions but can be used downstream to filter
+    // or modify fields based on settings
+    function getFields() {
+        return $this->getOptions();
+    }
+
+    // Returns form options like title and notices as accepted by SimpleForm
+    function getFormOptions() {
+        return array();
+    }
+
     function getInfo() {
         return array_merge(parent::getInfo(), $this->_config);
     }
@@ -72,7 +83,8 @@ abstract class PluginConfig extends Config {
      */
     function getForm($vars=[]) {
         if (!isset($this->form)) {
-            $this->form = new SimpleForm($this->getOptions());
+            $this->form = new SimpleForm($this->getFields(),
+                    null, $this->getFormOptions());
             // set data if any
             if ($_SERVER['REQUEST_METHOD'] != 'POST') {
                 // defaults + current info
@@ -106,15 +118,20 @@ abstract class PluginConfig extends Config {
      */
     function store(SimpleForm $form = null, &$errors=array()) {
 
-        if ($this->hasCustomConfig())
-            return $this->saveConfig($form, $errors);
+        try {
+            if ($this->hasCustomConfig())
+                return $this->saveConfig($form, $errors);
 
-        $form = $form ?: $this->getForm();
-        if (($data=$form->to_db())
-                && $this->pre_save($data, $errors)
-                && count($errors) === 0)
-            return $this->updateAll($data);
-
+            $form = $form ?: $this->getForm();
+            if (($clean=$form->getClean())
+                    && $this->pre_save($clean, $errors)
+                    && count($errors) === 0
+                    && ($data=$form->to_db($clean)))
+                return $this->updateAll($data);
+        } catch (Throwable $t) {
+            if  (!isset($errors['err']))
+                $errors['err'] = $t->getMessage();
+        }
         return false;
     }
 
@@ -366,6 +383,8 @@ class PluginManager {
         ];
         $p = Plugin::create($vars);
         if ($p->save(true)) {
+            // TODO: Trigger enable() for the plugin (for now)
+            $p->getImpl()->enable();
             static::clearCache();
             return $p;
         }
@@ -562,9 +581,11 @@ class Plugin extends VerySimpleModel {
     function __onload() {
         $this->info = PluginManager::getInfoForPath(INCLUDE_DIR.$this->ht['install_path'],
             $this->isPhar());
+        // Auto upgrade / downgrade plugins on-load - if we have version
+        // mismatch. See upgrade routine for more information
+        if ($this->info['version'] && $this->getVersion() != $this->info['verion'])
+            $this->upgrade();
     }
-
-
 
     /*
      * useModalConfig
@@ -577,6 +598,72 @@ class Plugin extends VerySimpleModel {
         return false;
     }
 
+
+    /*
+     * canAddInstance
+     *
+     * Multi-instance plugins can add unlimited instances, otherwise only
+     * one plugin instance is allowed.
+     *
+     */
+    function canAddInstance() {
+
+        // No instances yet
+        if (!$this->getNumInstances())
+            return true;
+
+        // We have at least one instance already.
+        if (!$this->isMultiInstance())
+            return false;
+
+        // Some Plugins DO Not or SHOULDN'T support multiple instances due
+        // design issues or simply because of the fact that it doesn't make
+        // sense to do so.
+
+        // TODO: The Black List is to be removed down the road once plugins
+        // are forced to declare core osTicket version and if it supports
+        // multiple instances.
+        $blackList =[
+            // 2FA Plugin up to v0.3 cannot handle multiple instances
+            'Auth2FAPlugin' => 0.3,
+            // It doesn't make sense for Audit Plugin to have
+            // multiple instances
+            'AuditPlugin' => '*',
+            // File storage plugins don't currently support multiple instances
+            'S3StoragePlugin' => '*',
+            'FsStoragePlugin' => '*',
+        ];
+        foreach ($blackList as $c => $v) {
+            if (is_a($this, $c) && ($v == '*' || $this->getVersion() <= $v))
+                return false;
+        }
+        // Yes, let's make instances - Genesis 9:7
+        return true;
+    }
+
+   /*
+    * Get Namespace of the instance otherwise return plugin's namespace
+    *
+    */
+    function getNamespace() {
+        if (($c=$this->getConfig()) && ($i=$c->getInstance()))
+            return $i->getNamespace();
+
+        return sprintf('plugin.%d', $this->getId());
+    }
+
+    /*
+     *
+     * isMultiInstance
+     *
+     * Indicates if the plugin supports multiple instances
+     * Default is true unless overwritten downstream.
+     *
+     */
+
+    function isMultiInstance() {
+        return true;
+    }
 
     /*
      * getNewInstanceOptions
@@ -687,18 +774,28 @@ class Plugin extends VerySimpleModel {
         return $this->save(true);
     }
 
-    function getConfig(PluginInstance $instance = null) {
-        if (!isset($this->config) && ($class=$this->config_class)) {
-            $this->config = new $class($instance ?
-                    $instance->getNamespace() : null);
-            $this->config->setInstance($instance ?: null);
+    function getConfigClass() {
+        return $this->config_class;
+    }
+
+    function getConfig(PluginInstance $instance = null, $defaults = []) {
+        if ((!isset($this->config) || $instance)
+                && ($class=$this->getConfigClass())) {
+            // We cache instance config for side loading purposes on
+            // plugin instantace boostrapping
+            if ($instance)
+                // Config for an instance.
+                $this->config = $instance->getConfig($defaults);
+            else
+                //  New instance config
+                $this->config = new $class(null, $defaults);
         }
         return $this->config;
     }
 
     function getConfigForm($vars=null) {
         if (!isset($this->form) || $vars)
-            $this->form = $this->getConfig()->getForm($vars);
+            $this->form = $this->getConfig(null, $vars)->getForm($vars);
 
         return $this->form;
     }
@@ -741,6 +838,35 @@ class Plugin extends VerySimpleModel {
     }
 
     /**
+     * upgrade
+     *
+     * Plugins can implement upgrade / downgrade process downsteam as needed.
+     *
+     */
+    function upgrade(&$errors=[]) {
+        if ($this->pre_upgrade($errors) === false)
+            return false;
+
+        // For now we're just updating the version if we have a mismatch
+        // The true version is what is packaged with the plugin
+        if ($this->getVersion() != $this->info['version'])
+            $this->version = $this->info['version'];
+
+        $this->save();
+        return true;
+    }
+
+    /**
+     * pre_upgrade
+     *
+     * Hook function to veto the upgrade request. Return boolean
+     * FALSE if the upgrade operation should be aborted.
+     */
+    function pre_upgrade(&$errors) {
+        return true;
+    }
+
+    /**
      * uninstall
      *
      * Removes the plugin from the plugin registry. The files remain on the
@@ -764,6 +890,10 @@ class Plugin extends VerySimpleModel {
      * FALSE if the uninstall operation should be aborted.
      */
     function pre_uninstall(&$errors) {
+        return true;
+    }
+
+    function enable() {
         return true;
     }
 
@@ -884,6 +1014,8 @@ class PluginInstance extends VerySimpleModel {
         ),
     );
 
+    // Config class that plugin can set.
+    private $config_class = null;
     // Plugin Config for the instance
     var $_config;
     var $_form;
@@ -938,10 +1070,22 @@ class PluginInstance extends VerySimpleModel {
         $this->setFlag(self::FLAG_ENABLED, $status);
     }
 
-    function getConfig() {
-        if (!isset($this->_config))
-            $this->_config = $this->getPlugin()->getConfig($this);
+    function setConfigClass($class) {
+        $this->config_class  = $class;
+        // Clear current config so it can be reloaded
+        $this->_config = null;
+    }
 
+    function getConfigClass() {
+        return $this->config_class ?: $this->getPlugin()->getConfigClass();
+    }
+
+    function getConfig($defaults=[]) {
+        $class = $this->getConfigClass();
+        if (!isset($this->_config) && $class) {
+            $this->_config =  new $class($this->getNamespace(), $defaults);
+            $this->_config->setInstance($this);
+        }
         return $this->_config;
     }
 
@@ -953,7 +1097,12 @@ class PluginInstance extends VerySimpleModel {
     }
 
     function getSignature() {
-        return md5(json_encode(ksort($this->getConfiguration())));
+        // get Config
+        $config = $this->getConfiguration() ?: [];
+        // Key sort to normalize config - key order matters with md5
+        ksort($config);
+        // Json encode and md5
+        return md5(json_encode($config));
     }
 
     function getNamespace() {

@@ -294,7 +294,7 @@
  *  See README at project homepage
  *
  */
-;(function($) {
+(function($) {
 
   var default_opts = {
       fallback_id: '',
@@ -590,7 +590,7 @@
                     default:
                         opts.error(errors[7], files[fileIndex], fileIndex);
                         return false;
-                };
+                }
             };
 
             reader.onloadend = function(e) {

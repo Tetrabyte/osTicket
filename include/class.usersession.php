@@ -116,8 +116,8 @@ class UserSession {
        session_id($new);
        session_start();
        $this->session_id  = $new;
-       // Make sure new session is not set to KAPUT
-       unset($_SESSION['KAPUT']);
+       // Make sure new session is not set to KAPUT and TIME_BOMB
+       unset($_SESSION['KAPUT'], $_SESSION['TIME_BOMB']);
        // Destroy ?
        if ($destroy) {
            // Destrory old session
@@ -160,20 +160,23 @@ trait UserSessionTrait {
     // User class
     var $class = '';
 
-    function refreshSession($force=false) {
-        $time = $this->session->getLastUpdate($this->token);
+    function refreshSession($refreshRate=60): void {
+        // If TIME_BOMB isset and less than the current time we need to regenerate
+        // session to help mitigate session fixation
+        if (isset($_SESSION['TIME_BOMB']) && ($_SESSION['TIME_BOMB'] < time()))
+            $this->regenerateSession();
         // Deadband session token updates to once / 30-seconds
-        if (!$force && time() - $time < 30)
-            return;
-
-        $this->token = $this->getSessionToken();
-        osTicketSession::renewCookie($time, $this->maxidletime);
+        $updated = $this->session->getLastUpdate($this->token);
+        if ($updated + $refreshRate < time()) {
+            $this->token = $this->getSessionToken();
+            osTicketSession::renewCookie($updated, $this->maxidletime);
+        }
     }
 
     function regenerateSession($destroy=false) {
         $this->session->regenerateSession($destroy);
         // Set cookie for the new session id.
-        $this->refreshSession(true);
+        $this->refreshSession(-1);
     }
 
     function getSession() {
@@ -188,6 +191,7 @@ trait UserSessionTrait {
         // Assign memory to token variable
         $this->token = &$_SESSION[':token'][$this->class];
         // Set token
+        $token = $token ?: $this->token;
         $this->token = $token ?: $this->getSessionToken();
     }
 

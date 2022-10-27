@@ -21,25 +21,59 @@ namespace osTicket\Mail {
     use Laminas\Mime\Message as MimeMessage;
     use Laminas\Mime\Mime;
     use Laminas\Mime\Part as MimePart;
+    use Laminas\Mail\Header;
+    use osTicket\Mail\Header\ReturnPath;
 
     class  Message extends MailMessage {
+        // MimeMessage Parts
         private $mimeMessage = null;
-        // Charset
-        private $charset = 'utf-8';
+        // MimeMessage Content
+        private $mimeContent = null;
+        // Default Charset
+        protected $charset = 'utf-8';
+        // Default Encoding (upstream is ASCII)
+        protected $encoding = 'utf-8';
+
         // Internal flags used to set Content-Type
         private $hasHtml = false;
         private $hasAttachments = false;
-        private $hosInlineImages = false;
+        private $hasInlineImages = false;
 
-        public function getMimeMessage() {
+        public function hasAttachments() {
+            return $this->hasAttachments;
+        }
+
+        public function hasInlineImages() {
+            return $this->hasInlineImages;
+        }
+
+        public function hasHtml() {
+            return $this->hasHtml;
+        }
+        // Files either attached or inline
+        public function hasFiles() {
+            return ($this->hasAttachments() || $this->hasInlineImages());
+        }
+
+        public function getMimeMessageParts() {
             if  (!isset($this->mimeMessage))
                 $this->mimeMessage = new MimeMessage();
 
             return $this->mimeMessage;
         }
 
-        public function addHeader($key, $value) {
-            return $this->getHeaders()->addHeaderLine($key, $value);
+        public function getMimeMessageContent() {
+            if  (!isset($this->mimeContent))
+                $this->mimeContent = new ContentMimeMessage();
+
+            return $this->mimeContent;
+        }
+
+        public function addHeader($header, $value=null) {
+            if (isset($value))
+                $this->getHeaders()->addHeaderLine($header, $value);
+            else
+                $this->getHeaders()->addHeader($header);
         }
 
         public function addHeaders(array $headers)  {
@@ -48,7 +82,11 @@ namespace osTicket\Mail {
         }
 
         private function addMimePart(MimePart $part) {
-            $this->getMimeMessage()->addPart($part);
+            $this->getMimeMessageParts()->addPart($part);
+        }
+
+        private function addMimeContent(MimePart $part) {
+            $this->getMimeMessageContent()->addPart($part);
         }
 
         public function setTextBody($text, $encoding=false) {
@@ -56,8 +94,7 @@ namespace osTicket\Mail {
             $part->type = Mime::TYPE_TEXT;
             $part->charset = $this->charset;
             $part->encoding = $encoding ?: Mime::ENCODING_BASE64;
-            $this->addMimePart($part);
-            //$this->setContentType($alt ? 'multipart/alternative' : 'text/plain');
+            $this->addMimeContent($part);
         }
 
         public function setHtmlBody($html, $encoding=false) {
@@ -65,14 +102,16 @@ namespace osTicket\Mail {
             $part->type = Mime::TYPE_HTML;
             $part->charset = $this->charset;
             $part->encoding = $encoding ?: Mime::ENCODING_BASE64;
-            $this->addMimePart($part);
+            $this->addMimeContent($part);
             $this->hasHtml = true;
         }
 
         public function addInlineImage($id, $file) {
             $f = new MimePart($file->getData());
             $f->id = $id;
-            $f->type = $file->getMimeType();
+            $f->type = sprintf('%s; name="%s"',
+                    $file->getMimeType(),
+                    $file->getName());
             $f->filename = $file->getName();
             $f->disposition = Mime::DISPOSITION_INLINE;
             $f->encoding = Mime::ENCODING_BASE64;
@@ -90,16 +129,90 @@ namespace osTicket\Mail {
             $this->hasAttachments = true;
         }
 
-        public function setContentType($type=null) {
-            // We can only set content type for multipart message
-            if ($this->body->isMultiPart())  {
-                // Set Content-Type
-                $contentType = $type ?: 'text/plain';
-                if ($this->hasHtml)
-                    $contentType = 'multipart/alternative';
-                if ($this->hasAttachments)
-                    $contentType = 'multipart/related';
+        // Expects a  valid date e.g date('r')
+        public function setDate(string $date) {
+            $d = new Header\Date($date);
+            // Laminas auto adds Date upstream when any header is added
+            // We're clearing it here to we back that-date up like it's
+            // 99 & 2000 ~ Juvenile
+            $this->getHeaders()->removeHeader('date');
+            $this->addHeader($d);
+        }
 
+        // Please use this method to set Message-Id otherwise it will be
+        // utf-8 endcoded and results is an invalid email & bounces
+        public function setMessageId(string $id) {
+            $mid = new Header\MessageId();
+            $mid->setId($id);
+            $this->addHeader($mid);
+        }
+
+        // Valid email address required or no return "<>" tag
+        public function setReturnPath($email) {
+            try {
+                // Exception is thrown on invalid email address
+                $header = new ReturnPath();
+                $header->addAddress($email);
+                $this->getHeaders()->removeHeader($header->getType());
+                $this->addHeader($header);
+            } catch (\Throwable $t) {
+                // It's not email - perhaps it's a tag?
+                if (!strcmp($email, '<>'))
+                    $this->addHeader($header->getFieldName(), $email);
+                // Silently dropping the invalid path
+            }
+        }
+
+        public function addInReplyTo($inReplyTo) {
+             if (!is_array($inReplyTo))
+                $inReplyTo = explode(' ', $inReplyTo);
+            try {
+                $header = new Header\InReplyTo();
+                $header->setIds($inReplyTo); #nolint
+                $this->addHeader($header);
+            } catch (\Throwable $t) {
+                // Mshenzi
+            }
+        }
+
+        public function addReferences($references) {
+            if (!is_array($references))
+                $references = explode(' ', $references);
+            try {
+                $header = new Header\References();
+                $header->setIds($references); #nolint
+                $this->addHeader($header);
+            } catch (\Throwable $t) {
+                // Mshenzi
+            }
+        }
+
+        // Set Message Sender is useful for SendMail transport, its basically -f
+        // parameter in the mail() interface
+        public function setSender($email, $name=null) {
+            try {
+                // Exception is thrown on invalid email address
+                $header = new Header\Sender();
+                $header->setAddress($email, $name); #nolint
+                $this->addHeader($header);
+            } catch (\Throwable $t) {
+                // Silently ignore invalid email sender defaults to FROM
+                // addresses
+            }
+        }
+
+        public function setFrom($emailOrAddressList, $name=null) {
+            // We're resetting the body here when FROM address changes - e.g
+            // after failed send attempt while trying multiple SMTP accounts
+            unset($this->body);
+            return parent::setFrom($emailOrAddressList, $name);
+        }
+
+        public function setContentType($contentType) {
+            // We can only set content type for multipart message
+            if (isset($this->body)
+                    &&  $this->body->isMultiPart()
+                    && $contentType)  {
                if (($header=$this->getHeaders()->get('Content-Type')))
                    $header->setType($contentType); #nolint
                else
@@ -108,9 +221,59 @@ namespace osTicket\Mail {
         }
 
         public function setBody($body=null) {
-            $body = $body ?: $this->getMimeMessage();
+            // We're ignoring $body param on purpose  - only added for
+            // upstream compatibility - local interfaces should use
+            // prepare() to set the body
+            $body = $this->getMimeMessageContent();
+            $contentType = $this->hasHtml()
+                ? Mime::MULTIPART_ALTERNATIVE
+                : Mime::TYPE_TEXT;
+            // if we have files (inline images or attachments)
+            if ($this->hasFiles()) {
+                // Content MimePart
+                $content = $body->getContentMimePart();
+                // Get attachments parts (inline and files)
+                $parts = $this->getMimeMessageParts()->getParts();
+                // prepend content part to files parts
+                array_unshift($parts, $content);
+                // Create a new Mime Message and set parts
+                $body = new MimeMessage();
+                $body->setParts($parts); #nolint
+                // We we only have inline images then content type is related
+                // otherwise it's mixed.
+                $contentType = $this->hasAttachments()
+                    ? Mime::MULTIPART_MIXED
+                    : Mime::MULTIPART_RELATED;
+            }
+            // Set body beaches
             parent::setBody($body);
-            $this->setContentType();
+            // Set the content type
+            $this->setContentType($contentType);
+        }
+
+        public function prepare() {
+            if (!isset($this->body))
+                $this->setBody();
+        }
+
+    }
+
+    // This is a wrapper class for Mime/Message that generates multipart
+    // alternative content when email is multipart
+    class ContentMimeMessage extends MimeMessage {
+        public function getContent() {
+            // unpack content parts to a content mime part
+            return $this->generateMessage(); #nolint
+        }
+
+        public function getContentMimePart($type=null) {
+            $part = new MimePart($this->getContent()); #nolint
+            $part->type = $type ?: Mime::MULTIPART_ALTERNATIVE;
+            // Set the alternate content boundary
+            $part->setBoundary($this->getMime()->boundary()); #nolint
+            // Clear the encoding
+            $part->encoding =  "";
+            return $part;
         }
     }
 
@@ -118,14 +281,14 @@ namespace osTicket\Mail {
     use Laminas\Mail\Protocol\Imap as ImapProtocol;
     use Laminas\Mail\Protocol\Pop3 as Pop3Protocol;
     trait MailBoxProtocolTrait {
-        final public function init(AccountOptions $accountOptions) {
+        final public function init(AccountSetting $setting) {
             // Attempt to connect to the mail server
-            $connect = $accountOptions->getConnectioOptions();
+            $connect = $setting->getConnectionConfig();
             // Let's go Brandon
             parent::connect($connect['host'], $connect['port'],
                     $connect['ssl']);
             // Attempt authentication based on MailBoxAccount settings
-            $auth = $accountOptions->getAuth();
+            $auth = $setting->getAuthCredentials();
             switch (true) {
                 case $auth instanceof BasicAuthCredentials:
                     if (!$this->basicAuth($auth->getUsername(), $auth->getPassword()))
@@ -148,14 +311,14 @@ namespace osTicket\Mail {
             return $this->login($username, $password);
         }
 
-        abstract public function __construct($accountOptions);
-        abstract private function oauth2Auth(AccessToken $token);
+        abstract public function __construct($accountSetting);
+        abstract protected function oauth2Auth(AccessToken $token);
     }
 
     class ImapMailboxProtocol extends ImapProtocol {
         use MailBoxProtocolTrait;
-         public function __construct($accountOptions) {
-             $this->init($accountOptions);
+         public function __construct($accountSetting) {
+             $this->init($accountSetting);
          }
 
          /*
@@ -194,8 +357,8 @@ namespace osTicket\Mail {
 
     class Pop3MailboxProtocol extends Pop3Protocol {
         use MailBoxProtocolTrait;
-         public function __construct($accountOptions) {
-             $this->init($accountOptions);
+         public function __construct($accountSetting) {
+             $this->init($accountSetting);
          }
 
          /*
@@ -240,6 +403,14 @@ namespace osTicket\Mail {
              return trim($result);
          }
 
+         public function login($user, $password, $tryApop = true) {
+             try {
+                parent::login($user, $password, $tryApop);
+                return true;
+             } catch (\Throwable $e) {
+                 throw new Exception(__('login failed').': '.$e->getMessage());
+             }
+         }
     }
 
     // MailBoxStorageTrait
@@ -248,9 +419,15 @@ namespace osTicket\Mail {
     use RecursiveIteratorIterator;
     trait MailBoxStorageTrait {
         private $folder;
+        private $hostInfo;
 
-        private function init(\MailBoxAccount $mailbox) {
-            $this->folder = $mailbox->getFolder();
+        private function init(AccountSetting $setting) {
+            $this->folder = $setting->getAccount()->getFolder();
+            $this->hostInfo =  $setting->getHostInfo();
+        }
+
+        public function getHostInfo() {
+            return $this->hostInfo;
         }
 
         private function getFolder() {
@@ -271,8 +448,7 @@ namespace osTicket\Mail {
         public function hasFolder($folder, $rootFolder = null) {
             $folders = $this->getFolders($rootFolder);
             if (is_array($folders)
-                    && in_array(strtolower($folder),
-                        array_map('strtolower', $folders)))
+                    && in_array(strtolower($folder), $folders))
                 return true;
 
             // Try selecting the folder.
@@ -295,23 +471,58 @@ namespace osTicket\Mail {
                 foreach ($folders as $name => $folder) {
                     if (!$folder->isSelectable()) #nolint
                         continue;
-                    $this->folders[] =  $folder->getGlobalName(); #nolint
+                    $this->folders[] =  strtolower($folder->getGlobalName()); #nolint
                 }
             }
             return $this->folders;
         }
 
         /*
+         * getRawEmail
+         *
+         * Given message number - get full raw email (headers + content)
+         *
+         */
+        public function getRawEmail(int $i) {
+            return $this->getRawHeader($i) . $this->getRawContent($i);
+        }
+
+        /*
+         * move an existing message to a folder
+         *
+         */
+        public function moveMessage($id, $folder) {
+            try {
+                return parent::moveMessage($id, $folder);
+            } catch (\Throwable $t) {
+                // noop
+            }
+            return false;
+        }
+
+        /*
+         * Remove a message from server.
+         *
+         */
+        public function removeMessage($i) {
+            try {
+                return parent::removeMessage($i);
+            } catch (\Throwable $t) {
+                // noop
+            }
+            return false;
+        }
+
+        /*
          * markAsSeen
          */
-         public function markAsSeen($i) {
-             // noop - storage that implement it should define it
-         }
+        public function markAsSeen($i) {
+            // noop - storage that implement it should define it
+        }
 
-         public function expunge() {
+        public function expunge() {
              // noop - only IMAP
-         }
-
+        }
     }
 
     // Imap
@@ -320,15 +531,19 @@ namespace osTicket\Mail {
         use MailBoxStorageTrait;
         private $folders;
 
-        public function __construct($accountOptions) {
-            $protocol = new ImapMailBoxProtocol($accountOptions);
+        public function __construct($accountSetting) {
+            $protocol = new ImapMailBoxProtocol($accountSetting);
             parent::__construct($protocol);
-            $this->init($accountOptions->getAccount());
+            $this->init($accountSetting);
         }
 
         // Mark message as seen
         public function markAsSeen($i) {
-            $this->setFlags($i, [Storage::FLAG_SEEN]);
+            try {
+                return $this->setFlags($i, [Storage::FLAG_SEEN]);
+            } catch (\Throwable $t) {
+                return false;
+            }
         }
 
         // Expunge mailbox
@@ -341,10 +556,10 @@ namespace osTicket\Mail {
     class Pop3 extends Pop3Storage {
         use MailBoxStorageTrait;
 
-        public function __construct($accountOptions) {
-            $protocol = new Pop3MailboxProtocol($accountOptions);
+        public function __construct($accountSetting) {
+            $protocol = new Pop3MailboxProtocol($accountSetting);
             parent::__construct($protocol);
-            $this->init($accountOptions->getAccount());
+            $this->init($accountSetting);
         }
     }
 
@@ -374,11 +589,9 @@ namespace osTicket\Mail {
         }
 
         public function sendMessage(Message $message) {
-            // Make sure the body is set
-            if (!isset($message->body))
-                $message->setBody();
-
             try {
+                // Make sure the body is set
+                $message->prepare();
                 parent::send($message);
             } catch (\Throwable $ex) {
                 $this->connected = false;
@@ -391,15 +604,15 @@ namespace osTicket\Mail {
     // SmtpOptions
     use Laminas\Mail\Transport\SmtpOptions as SmtpSettings;
     class SmtpOptions extends SmtpSettings {
-        public function __construct(AccountOptions $options) {
-            parent::__construct($this->buildOptions($options));
+        public function __construct(AccountSetting $setting) {
+            parent::__construct($this->buildOptions($setting));
         }
 
-        private function buildOptions(AccountOptions $options) {
+        private function buildOptions(AccountSetting $setting) {
             // Build out SmtpOptions options based on SmtpAccount Settings
             $config = [];
-            $connect = $options->getConnectioOptions();
-            $auth = $options->getAuth();
+            $connect = $setting->getConnectionConfig();
+            $auth = $setting->getAuthCredentials();
             switch (true) {
                 case $auth instanceof NoAuthCredentials:
                     // No Authentication - simply return host and port
@@ -445,16 +658,15 @@ namespace osTicket\Mail {
         }
 
         public function sendMessage(Message $message) {
-            // Make sure the body is set
-            if (!isset($message->body))
-                $message->setBody();
-
             try {
+                // Make sure the body is set
+                $message->prepare();
                 parent::send($message);
                 return true;
             } catch (\Throwable $ex) {
                 throw $ex;
             }
+            return true;
         }
     }
 
@@ -567,8 +779,12 @@ namespace osTicket\Mail {
             return $this->token;
         }
 
-        public function getAccessToken() {
-            return $this->getToken();
+        public function getAccessToken($signature=false) {
+           $token = $this->getToken();
+           // check signature if requested
+           return (!$signature
+                   || !strcmp($signature, $token->getConfigSignature()))
+               ? $token : null;
         }
 
         public function toArray() {
@@ -576,22 +792,24 @@ namespace osTicket\Mail {
         }
     }
 
-    // osTicket/Mail/AccountOptions
-    class AccountOptions {
+    // osTicket/Mail/AccountSetting
+    class AccountSetting {
         private $account;
-        private $connectOptions = [];
+        private $creds;
+        private $connection = [];
+        private $errors = [];
 
         public function __construct(\EmailAccount $account) {
             // Set the account
-            $this->account = $account;
+            $this->account = &$account;
             // Parse Connection Options
             // We allow scheme to hint for encryption for people using ssl or tls
             // on nonstandard ports.
             $host = $account->getHost();
-            $ssl = $account->getEncryption();
+            $ssl = null;
             $matches = [];
             if (preg_match('~^(ssl|tls)://(.*+)$~iu', $host, $matches))
-                list(, $host, $ssl) = $matches;
+                list(, $ssl, $host) = $matches;
             // Set ssl or tls on based on standard ports
             $port = $account->getPort();
             if (!$ssl && $port) {
@@ -601,35 +819,49 @@ namespace osTicket\Mail {
                     $ssl = 'tls';
             }
 
-            $this->connectOptions = [
+            $this->connection = [
                 'host' => $host,
                 'port' => (int) $port,
                 'ssl' => $ssl,
+                'protocol' => strtoupper($account->getProtocol()),
                 'name' => null
             ];
+
+            // Set errors to null to clear validation
+            $this->errors = null;
         }
 
         public function getName() {
-            return $this->connectOptions['name'];
+            return $this->connection['name'];
         }
 
         public function getHost() {
-            return $this->connectOptions['host'];
+            return $this->connection['host'];
         }
 
         public function getPort() {
-            return $this->connectOptions['port'];
+            return $this->connection['port'];
         }
 
         public function getSsl() {
-            return $this->connectOptions['ssl'];
+            return $this->connection['ssl'];
+        }
+
+        public function getProtocol() {
+            return $this->connection['protocol'];
+        }
+
+        public function setCredentials(AuthCredentials $creds) {
+            $this->creds = $creds;
         }
 
         public function getCredentials() {
-            return $this->account->getCredentials();
+            if (!isset($this->creds))
+                $this->creds = $this->account->getCredentials();
+            return $this->creds;
         }
 
-        public function getAuth() {
+        public function getAuthCredentials() {
             return $this->getCredentials();
         }
 
@@ -637,8 +869,48 @@ namespace osTicket\Mail {
             return $this->account;
         }
 
-        public function getConnectioOptions() {
-            return $this->connectOptions;
+        public function getConnectionConfig() {
+            return $this->connection;
+        }
+
+        public function getHostInfo() {
+            return $this->describe();
+        }
+
+        public function asArray() {
+            return $this->getConnectionConfig();
+        }
+
+        public function describe() {
+            return sprintf('%s://%s:%s/%s',
+                    $this->getSsl() ?: 'none',
+                    $this->getHost(),
+                    $this->getPort(),
+                    $this->getProtocol());
+        }
+
+        private function validate() {
+
+            if (!isset($this->errors)) {
+                $this->errors = [];
+                $info = $this->getConnectionConfig();
+                foreach (['host', 'port', 'protocol'] as $p ) {
+                    if (!isset($info[$p]) || !$info[$p])
+                        $this->errors[$p] = sprintf('%s %s',
+                                strtoupper($p), __('Required'));
+                }
+                // TODO: Validate hostname - for now we're punting to be
+                // validated at the protocol connection level
+            }
+            return !count($this->errors);
+        }
+
+        public function isValid() {
+            return $this->validate();
+        }
+
+        public function getErrors() {
+            return $this->errors;
         }
     }
 }
@@ -684,10 +956,34 @@ namespace osTicket\Mail\Protocol\Smtp\Auth {
             if (!($xoauth2=$this->getAuthRequest()))
                 throw new Exception('XOAUTH2 Required');
             $this->_send('AUTH XOAUTH2');
-            $this->_expect(234);
+            $this->_expect(334);
             $this->_send($xoauth2);
             $this->_expect(235);
             $this->auth = true;
+        }
+    }
+}
+
+namespace osTicket\Mail\Header {
+    use Laminas\Mail\Header\AbstractAddressList;
+    use Laminas\Mail\Header\HeaderInterface;
+    use Laminas\Mail\Address;
+
+    class ReturnPath extends AbstractAddressList {
+        protected $fieldName = 'Return-Path';
+        protected static $type = 'return-path';
+
+        public function addAddress($email) {
+            $this->getAddressList()->add(new Address($email)); #nolint
+        }
+
+        public function getFieldValue($format = HeaderInterface::FORMAT_RAW) {
+            // We're simply intercepting Value here to add <> to the email
+            return sprintf('<%s>', parent::getFieldValue($format));
+        }
+
+        public function getType() {
+            return self::$type;
         }
     }
 }

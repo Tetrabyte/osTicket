@@ -73,15 +73,40 @@ class Email extends VerySimpleModel {
         return $this->getAddress();
     }
 
-    function stash($key, $data) {
+    //  TODO: move stash/restore to a  StashableTrait
+    function restore($key, $drop=true) {
+        if (($data = $this->stash($key, null)) && $drop)
+            $this->stash[$key] = null;
+        return $data;
+    }
+
+    function stash($key, $data=null) {
         if (!isset($this->stash))
             $this->stash = &$_SESSION[':email'][$this->getId()];
 
-        $this->stash[$key] = $data;
+        // If data is null then stash is being pop-ed
+        if (!isset($data) && $key && isset($this->stash[$key]))
+            return $this->stash[$key];
+
+        // stash data
+        if ($key && $data)
+            $this->stash[$key] = $data;
     }
 
     function stashFormData(array $data) {
         $this->stash('formdata', array_filter($data));
+    }
+
+    function restoreFormData($drop=true) {
+        return $this->restore('formdata', $drop) ?: [];
+    }
+
+    function restoreErrors($drop=true) {
+        return $this->restore('errors', $drop) ?: [];
+    }
+
+    function restoreNotice($drop=true) {
+        return $this->restore('notice', $drop);
     }
 
     function getEmail() {
@@ -165,6 +190,10 @@ class Email extends VerySimpleModel {
         // SMTP Account Info
         if (($smtp=$this->getSmtpAccount()))
             $info = array_merge($info, $smtp->getInfo());
+        // Restore stahed formdata (if any)
+        if ($_SERVER['REQUEST_METHOD'] == 'GET'
+                && ($data=$this->restoreFormData()))
+            $info = array_merge($info, $data);
 
         return $info;
     }
@@ -393,9 +422,28 @@ class EmailAccount extends VerySimpleModel {
     private $instance;
     // If account supports tls or ssl
     private $encryption = false;
+    // Account settings
+    private $settings;
 
-    public function getAccountOptions() {
-        return new osTicket\Mail\AccountOptions($this);
+
+    public function getAccountSetting($stashed=false) {
+
+        if (!isset($this->settings)) {
+            // Set properties to stashed form data (if any and requested)
+            if ($stashed && ($info=$this->getInfo())) {
+                foreach (['host', 'port', 'protocol'] as $p) {
+                    $k = "{$this->type}_$p";
+                    if (isset($info[$k]))
+                        $this->{$p} = $info[$k];
+                }
+            }
+            $this->settings = new osTicket\Mail\AccountSetting($this);
+        }
+        return $this->settings;
+    }
+
+    public function getHostInfo() {
+        return $this->getAccountSetting()->getHostInfo();
     }
 
     public function getHost() {
@@ -406,8 +454,8 @@ class EmailAccount extends VerySimpleModel {
         return $this->port;
     }
 
-    public function getEncryption() {
-        return $this->encryption;
+    public function getProtocol() {
+        return $this->protocol;
     }
 
     public function getNumErrors() {
@@ -437,15 +485,13 @@ class EmailAccount extends VerySimpleModel {
         if (!$this->isEnabled() || !$this->isOAuthAuth())
             return false;
 
-        // No credentials stored or token expired (referesh failed)
-        if (!($cred=$this->getFreshCredentials())
-                || !($token=$cred->getAccessToken())
-                || $token->isExpired())
-            return true;
+        return (!($cred=$this->getFreshCredentials())
+                // Get token with signature match - mismatch means config
+                // changed somehow
+                || !($token=$cred->getAccessToken($this->getConfigSignature()))
+                // Check if expired
+                || $token->isExpired());
 
-        // Signature mismatch - means config changed
-        return strcasecmp($token->getConfigSignature(),
-                $this->getConfigSignature());
     }
 
     public function getId() {
@@ -512,10 +558,14 @@ class EmailAccount extends VerySimpleModel {
     private function getOAuth2ConfigForm($vars, $auth=null) {
         // Lookup OAuth2 backend & Get basic config form
          if (($bk=$this->getOAuth2Backend($auth)))
-             return $bk->getConfigForm(array_merge(
+             return $bk->getConfigForm(
+                     array_merge(
                          $this->getOAuth2ConfigDefaults(),
                          $vars ?: $bk->getDefaults() #nolint
-                         ), $this->getAuthId());
+                         ),
+                     !strcmp($auth, $this->getAuthBk())
+                     ? $this->getAuthId() : null
+                     );
     }
 
     private function getBasicAuthConfigForm($vars, $auth=null) {
@@ -553,6 +603,11 @@ class EmailAccount extends VerySimpleModel {
             if (isset($this->ht[$var]))
                 $ht[$this->type.'_'.$var] = $this->ht[$var];
         }
+        // Add stashed info (if any)
+        if (($data=$this->email->restoreFormData(false)))
+            $ht = array_merge($ht, $data);
+
+
         return $ht;
     }
 
@@ -578,8 +633,13 @@ class EmailAccount extends VerySimpleModel {
                 case 'basic':
                      $this->form = $this->getBasicAuthConfigForm($vars,
                              $auth);
+                     $setting =  $this->getAccountSetting(true);
+                     if (!$setting  || !$setting->isValid())
+                         $this->form->setNotice(
+                                 __('Host, Port & Protocol Required'));
                     break;
             }
+
         }
         return $this->form;
     }
@@ -593,14 +653,17 @@ class EmailAccount extends VerySimpleModel {
         switch ($type) {
             case 'basic':
                 // Set username and password
-                if (!$vars || !$this->updateCredentials($auth, $vars, $errors))
+                if (!$this->updateCredentials($auth, $vars, $errors)
+                    && !isset($errors['err']))
                     $errors['err'] = sprintf('%s %s',
                             __('Error Saving'),
                             __('Authentication'));
                 break;
             case 'oauth2':
                 // For OAuth we are simply saving configuration -
-                // credetials are saved later.
+                // credetials are saved post successful authorization
+                // redirect.
+
                 // Lookup OAuth backend
                 if (($bk=$this->getOAuth2Backend($auth))) {
                     // Merge form data, post vars and any defaults
@@ -611,10 +674,18 @@ class EmailAccount extends VerySimpleModel {
                     if ($this->getAuthId()
                             && ($i=$bk->getPluginInstance($this->getAuthId()))) {
                         $vars = array_merge($bk->getDefaults(), $vars); #nolint
-                        if (!$i->update($vars, $errors))
+                        if ($i->update($vars, $errors)) {
+                            // Disable account if backend is changed
+                            if (strcasecmp($this->auth_bk, $auth))
+                                $this->active = 0;
+                            // Auth backend can be changed on update
+                            $this->auth_bk = $auth;
+                            $this->save();
+                        } elseif (!isset($errors['err'])) {
                             $errors['err'] = sprintf('%s %s',
                                     __('Error Saving'),
-                                     __('Authentication'));
+                                    __('Authentication'));
+                        }
                     } else {
                         // Ask the backend to add OAuth2 instance for this account
                         if (($i=$bk->addPluginInstance($vars, $errors))) { #nolint
@@ -653,17 +724,20 @@ class EmailAccount extends VerySimpleModel {
 
     public function getCredentials($auth=null, $refresh=false) {
         // Authentication doesn't match - it's getting reconfigured.
-        if ($auth && strncasecmp($this->getAuthBk(), $auth, strlen($auth)))
+        if ($auth
+                && strncasecmp($this->getAuthBk(), $auth, strlen($auth))
+                && !in_array($auth, ['none', 'mailbox']))
             return [];
 
         if (!isset($this->cred) || $refresh)  {
-            $creds = array();
+            $cred = null;
             $auth = $auth ?: $this->getAuthBk();
             list($type, $provider) = explode(':', $auth);
             switch ($type) {
                 case 'mailbox':
-                    if (($mb=$this->email->getMailBoxAccount()))
-                        $cred = $mb->getCredentials(null, $refresh);
+                    if (($mb=$this->email->getMailBoxAccount())
+                            && $mb->getAuthBk())
+                        $cred = $mb->getCredentials($mb->getAuthBk(), $refresh);
                     break;
                 case 'none':
                     // No authentication required (open replay)
@@ -734,7 +808,8 @@ class EmailAccount extends VerySimpleModel {
                     }
                     break;
                 default:
-                    throw Exception(__('Unknown Credential Type'));
+                    throw new Exception(sprintf('%s: %s',
+                                $type, __('Unknown Credential Type')));
             }
             $this->cred = $cred;
         }
@@ -755,8 +830,27 @@ class EmailAccount extends VerySimpleModel {
                 if (!$vars['username']) {
                     $errors['username'] = __('Username Required');
                 } elseif (!$vars['passwd'] && !$creds['password']) {
-                     $errors['passwd'] = __('Password Required');
-                } elseif (!$errors) {
+                    $errors['passwd'] = __('Password Required');
+                } elseif (($setting=$this->getAccountSetting(true))
+                        && !$setting->isValid()) {
+                    $errors['err'] = implode(', ', $setting->getErrors());
+                } elseif ($setting && !$errors) {
+                    // Validate the credentials
+                    try {
+                        $cred = new osTicket\Mail\BasicAuthCredentials([
+                                'username' => $vars['username'],
+                                'password' => $vars['passwd'] ?:
+                                    $creds['password'],
+                        ]);
+                        if (!$this->validateCredentials($cred))
+                            $errors['err'] = __('Invalid Credentials');
+                    } catch (Exception $ex) {
+                         $errors['err'] = $ex->getMessage();
+                    }
+                }
+
+                if (!$errors) {
+                    // Save credentials and get out of here.
                     $info = [
                         // username
                         'username' => $vars['username'],
@@ -765,7 +859,9 @@ class EmailAccount extends VerySimpleModel {
                                 $creds['password'],  SECRET_SALT,
                                  md5($vars['username'].$this->getNamespace()))
                     ];
-                    if (!$this->getConfig()->updateInfo($info))
+                    if ($this->getConfig()->updateInfo($info))
+                        $this->cred = null;
+                    else
                         $errors['err'] = sprintf('%s: %s',
                                 Format::htmlchars($type),
                                 __('Error saving credentials'));
@@ -779,7 +875,7 @@ class EmailAccount extends VerySimpleModel {
                     $errors['resource_owner_email'] =
                         __('Resource Owner Required');
 
-                } else {
+                } elseif (!$errors) {
                     // Encrypt Access Token
                     $vars['access_token'] = Crypto::encrypt(
                             $vars['access_token'],
@@ -819,7 +915,7 @@ class EmailAccount extends VerySimpleModel {
         return false;
     }
 
-    public function logActivity($error= null, $now=null) {
+    public function logActivity($error=null, $now=null) {
         if (isset($error)) {
             $this->num_errors += 1;
             $this->last_error_msg = $error;
@@ -829,7 +925,7 @@ class EmailAccount extends VerySimpleModel {
             $this->last_error = null;
             $this->last_activity =  $now ?: SqlFunction::NOW();
         }
-        $this->save();
+        return $this->save();
     }
 
     function save($refetch=false) {
@@ -906,17 +1002,22 @@ class MailBoxAccount extends EmailAccount {
         return $this->fetchmax;
     }
 
+    protected function validateCredentials(osTicket\Mail\AuthCredentials $creds) {
+        return $this->getMailBox($creds);
+    }
+
     public function getMailBox(osTicket\Mail\AuthCredentials $cred=null) {
         if (!isset($this->mailbox) || $cred) {
             $this->cred = $cred ?: $this->getFreshCredentials();
-            $options = $this->getAccountOptions();
+            $setting = $this->getAccountSetting();
+            $setting->setCredentials($this->cred);
             switch  (strtolower($this->getProtocol())) {
                 case 'imap':
-                    $mailbox = new osTicket\Mail\Imap($options);
+                    $mailbox = new osTicket\Mail\Imap($setting);
                     break;
                 case 'pop3':
                 case 'pop':
-                    $mailbox = new osTicket\Mail\Pop3($options);
+                    $mailbox = new osTicket\Mail\Pop3($setting);
                     break;
                 default:
                     throw new Exception('Unknown Mail protocol:
@@ -929,14 +1030,15 @@ class MailBoxAccount extends EmailAccount {
 
     public function fetchEmails() {
         try {
-            $fetcher = new osTicket\Mail\Fetcher($this);
-            $num = $fetcher->processEmails();
             $this->logLastFetch();
-            return $num;
-        } catch (Exception $ex) {
-            $this->logFetchError($ex->getMessage());
-           // rethrow the exception so caller can handle it
-            throw $ex;
+            $fetcher = new osTicket\Mail\Fetcher($this);
+            return $fetcher->processEmails();
+        } catch (Throwable $t) {
+            // May throw an Exception or Error
+            // Log the message
+            $this->logFetchError($t->getMessage());
+           // rethrow the throwable so caller can handle it
+            throw $t;
         }
         return 0;
     }
@@ -952,12 +1054,8 @@ class MailBoxAccount extends EmailAccount {
                 $errors['mailbox_protocol'] = __('Select protocol');
             elseif (!in_array($vars['mailbox_protocol'], Email::mailboxProtocols()))
                 $errors['mailbox_protocol'] = __('Invalid protocol');
-            // Check to make sure authentication is configured
-            if (!$vars['mailbox_auth_bk']
-                    || in_array($vars['mailbox_auth_bk'], ['none', 'mailbox']))
+            if (!$vars['mailbox_auth_bk'])
                 $errors['mailbox_auth_bk'] = __('Select Authentication');
-            elseif (!($creds=$this->getFreshCredentials($vars['mailbox_auth_bk'])))
-                $errors['mailbox_auth_bk'] = __('Configure Authentication');
             if (!$vars['mailbox_fetchfreq'] || !is_numeric($vars['mailbox_fetchfreq']))
                 $errors['mailbox_fetchfreq'] = __('Fetch interval required');
             if (!$vars['mailbox_fetchmax'] || !is_numeric($vars['mailbox_fetchmax']))
@@ -977,6 +1075,11 @@ class MailBoxAccount extends EmailAccount {
                         $vars['mailbox_archivefolder']))
                 $errors['mailbox_postfetch'] = __('Archive folder cannot be same as fetched folder (INBOX)');
         }
+
+        // Make sure authentication is configured if selection is made
+        if ($vars['mailbox_auth_bk']
+                && !($creds=$this->getFreshCredentials($vars['mailbox_auth_bk'])))
+            $errors['mailbox_auth_bk'] = __('Configure Authentication');
 
         if (!$errors) {
             $this->active = $vars['mailbox_active'] ? 1 : 0;
@@ -1026,7 +1129,11 @@ class MailBoxAccount extends EmailAccount {
     }
 
     public function logLastFetch($now=null) {
-        return $this->logActivity($now);
+        return $this->logActivity(null, $now);
+    }
+
+    private function logFetchError($error) {
+        return $this->logActivity($error ?: __('Mail Fetch Error'));
     }
 
     public function update($vars, &$errors) {
@@ -1074,6 +1181,10 @@ class SmtpAccount extends EmailAccount {
         return ($this->allow_spoofing);
     }
 
+    protected function validateCredentials(osTicket\Mail\AuthCredentials $creds) {
+        return $this->getSmtp($creds);
+    }
+
     public function getSmtpConnection() {
         $this->smtp = $this->getSmtp();
         if (!$this->smtp->connect())
@@ -1085,8 +1196,9 @@ class SmtpAccount extends EmailAccount {
     public function getSmtp(osTicket\Mail\AuthCredentials $cred=null) {
         if (!isset($this->smtp) || $cred) {
             $this->cred = $cred ?: $this->getFreshCredentials();
-            $accountOptions = $this->getAccountOptions();
-            $smtpOptions = new osTicket\Mail\SmtpOptions($accountOptions);
+            $setting = $this->getAccountSetting();
+            $setting->setCredentials($this->cred);
+            $smtpOptions = new osTicket\Mail\SmtpOptions($setting);
             $smtp = new osTicket\Mail\Smtp($smtpOptions);
             // Attempt to connect if Credentials are sent
             if ($cred) $smtp->connect();
@@ -1105,12 +1217,16 @@ class SmtpAccount extends EmailAccount {
                 $_errors['smtp_port'] = __('Port required');
             if (!$vars['smtp_auth_bk'])
                 $_errors['smtp_auth_bk'] = __('Select Authentication');
-            elseif (!($creds=$this->getFreshCredentials($vars['smtp_auth_bk']))) {
+            elseif (!($creds=$this->getFreshCredentials($vars['smtp_auth_bk'])))
                 $_errors['smtp_auth_bk'] = ($vars['smtp_auth_bk'] == 'mailbox')
                     ? __('Configure Mailbox Authentication')
                     : __('Configure Authentication');
-            }
-        }
+        } elseif ($vars['smtp_auth_bk']
+                // We default to mailbox - so we're not going to check
+                // unless account is active, see above!
+                && strcasecmp($vars['smtp_auth_bk'], 'mailbox')
+                && !($creds=$this->getFreshCredentials($vars['smtp_auth_bk'])))
+            $_errors['smtp_auth_bk'] = __('Configure Authentication');
 
         if (!$_errors) {
             $this->active = $vars['smtp_active'] ? 1 : 0;
@@ -1166,40 +1282,45 @@ class EmailAccountConfig extends Config {
  *
  */
 class BasicAuthConfigForm extends AbstractForm {
-    function buildFields() {
-        $passwdhint = '';
-        if (isset($this->_source['passwd']) && $this->_source['passwd'])
-           $passwdhint = __('Enter a new password to change current one');
+    private $account;
+    private $host;
+    private $password;
 
+    function __construct($source=null, $options=array()) {
+        parent::__construct($source, $options);
+    }
+
+    private function getPassword() {
+        return $this->_source['passwd'];
+    }
+
+    function buildFields() {
+        $password = $this->getPassword();
         return array(
             'username' => new TextboxField(array(
                 'required' => true,
                 'label' => __('Username'),
                 'configuration' => array(
+                    'length' => 0,
                     'autofocus' => true,
                 ),
             )),
             'passwd' => new PasswordField(array(
                 'label' => __('Password'),
-                'required' => true,
+                'required' => !$password,
                 'validator' => 'noop',
-                'hint' => $passwdhint,
+                'hint' => $password
+                    ? __('Enter a new password to change current one')
+                    : '',
                 'configuration' => array(
+                    'length' => 0,
                     'classes' => 'span12',
-                    'placeholder' =>  $passwdhint ?
-                    str_repeat('••••••••••••', 2) : __('Password'),
+                    'placeholder' => $password
+                            ? str_repeat('•', strlen($password)*2)
+                            : __('Password'),
                 ),
             )),
         );
-    }
-
-    function isValid($include=false) {
-        $self = $this;
-        return parent::isValid(function ($f) use($self) {
-                return !(($f instanceof PasswordField)
-                        && isset($self->_source['passwd'])
-                        && $f->resetErrors());
-                });
     }
 }
 ?>
