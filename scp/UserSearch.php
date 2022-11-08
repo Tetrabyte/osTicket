@@ -438,6 +438,7 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 	### Update User Notes
 	if( isset($_GET['UserNotes']) AND $_GET['UserNotes'] != "" ) {
 		$UserNotesHTML = str_replace(PHP_EOL,"<br />",$_GET['UserNotes']);
+		$UserNotesHTML = str_replace('"',"'",$UserNotesHTML);
 		$UserNotesHTML = "<p>".$UserNotesHTML."</p>";
 		$query = '	UPDATE 
 						ost_user__cdata 
@@ -503,6 +504,7 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 	### Update Org Notes
 	if( isset($_GET['OrgId']) AND isset($_GET['OrgNotes']) AND $_GET['OrgNotes'] != "" ) {
 		$OrgNotesHTML = str_replace(PHP_EOL,"<br />",$_GET['OrgNotes']);
+		$OrgNotesHTML = str_replace('"',"'",$OrgNotesHTML);
 		$OrgNotesHTML = "<p>".$OrgNotesHTML."</p>";
 		$query = '	UPDATE 
 						ost_organization__cdata 
