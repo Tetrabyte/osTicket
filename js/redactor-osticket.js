@@ -358,7 +358,7 @@ $(function() {
     },
     redact = $.fn.redact = function(el, options) {
         var el = $(el),
-            sizes = {'small': '75px', 'medium': '150px', 'large': '225px'},
+            sizes = {'small': '75%', 'medium': '75%', 'large': '75%'},
             selectedSize = sizes['medium'];
         $.each(sizes, function(k, v) {
             if (el.hasClass(k)) selectedSize = v;
