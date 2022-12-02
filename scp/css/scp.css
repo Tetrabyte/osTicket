@@ -2230,8 +2230,7 @@ time.faq {
     position:fixed;
     padding:1em;
     width:500px;
-    //height:250px;
-    height:75% !important;
+    height:250px;
     background:#f8f8f8;
     border:2px solid #2a67ac;
     display:none;
@@ -2247,10 +2246,12 @@ time.faq {
 }
 .dialog#popup {
     width:650px;
+    height:75% !important;
 }
 
 .dialog.size-normal {
     width:650px !important;
+    height:75% !important;
 }
 
 .dialog.size-large {
