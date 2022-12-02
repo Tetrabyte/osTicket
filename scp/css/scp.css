@@ -2254,7 +2254,7 @@ time.faq {
 }
 
 .dialog.size-large {
-    width:750px !important;
+    width:75% !important;
 }
 
 .dialog #popup-loading {
