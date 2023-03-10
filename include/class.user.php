@@ -742,6 +742,8 @@ implements TemplateVariable {
             $this->address = sprintf('"%s" <%s>',
                     $this->getName(),
                     $this->email);
+        else
+             $this->address =  $this->email;
     }
 
     function __toString() {
@@ -750,7 +752,7 @@ implements TemplateVariable {
 
     function getVar($what) {
 
-        if (!$this->_info)
+        if (!isset($this->_info))
             return '';
 
         switch ($what) {
@@ -765,7 +767,11 @@ implements TemplateVariable {
     }
 
     function getAddress() {
-        return $this->address ?: $this->email;
+        return $this->address ?: $this->getEmail();
+    }
+
+    function getEmail() {
+        return $this->email;
     }
 
     function getHost() {

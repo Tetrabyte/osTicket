@@ -1,3 +1,107 @@
+osTicket v1.17.3
+================
+### Enhancements
+* oauth2: Strict Matching (7275d67b, b7718be4, ca913ba2, cb3625e8, f531718a, c0cd8b16)
+* OAuth2 Resource Owner (5c239adb)
+
+### Improvements
+* session: Regenerate Session Id (d5853245)
+* fetcher: Mail Fetcher / Parser Error Handling (d4d9c424, 0a4498b2)
+* mysql: Support Sidecar Database Proxies (246aaa4d)
+* Misc. Fixes (e6beeb9b, 24fd5075, eac9960a, 10af29a5)
+* fetcher: Default Department (f410d4ec)
+* issue: LDAP Multi-Instance Fatal Error (f6486044)
+* issue: TicketDenied errno (6de7cf4c)
+* session: User Logged Out (00d409d3)
+* Uncaught Error: Call to a member function getId() on bool (af83896d)
+* Mailer: Inline Images (7efbdfd2, 8815d087, 64a8abf3)
+
+osTicket v1.17.2
+================
+### Improvements
+* Fix old reference to SessionData (cf8b8ce7)
+* Email Misc. Fixes (de620fe6, c19a5f03)
+* session: Memcache Max TTL (ea3e03d2)
+* mailer: Use Namespaced Mailer (133585f8)
+
+osTicket v1.17.1
+================
+### Enhancements
+* mail: Add plain:// encryption scheme hint (7c1b97b3, 39d76258)
+
+### Improvements
+* mailer: Make Headers Valid Again (c08a8a8a, aaee6b0f, 00981554, 2223877c, 020fa0d3, 60c8c884)
+* POP3 Configration can not saved (b84547b0, ccd8445e)
+* fetcher: Errors Handling & Logging (384aad13, 22edf2b4, c92006e6)
+* upgrader: Email Account Status (aee25d69)
+* issue: Plugin Config Item Exists (fdf9e412)
+* mailer: Improvements & Enhancements (845e5008, 23a80592, 977cf9aa)
+* smtp: Use proper name when saying What's Up (HELO/EHLO) (b0e5ac83)
+* email: Make sure Email Account is Active 4realz! (5efd9f14, a9b57496)
+* Session++ (ced0ef4d, b943a955, b6b63c99, f58e1c5d, 47df2b44, e2e6c0f4, 9ab5b4f1, da667366, f2c01840, c2be4ebf, db913bd3)
+* setup: Use Bootstrap:ini() to initialize setup dir sessions (48e436f0)
+* issue: Plugin Config Item Exists (fdf9e412)
+* upgrader: Email Account Status (aee25d69)
+* fetcher: Errors Handling & Logging (384aad13, 22edf2b4, c92006e6)
+* fetcher: Mail Fetch Order (f1639d41, 24338c2b)
+* SMTP: Dont send 'QUIT' on __destruct() (dbeae227)
+* issue: MTA Typo (03eeb8e2)
+* sendmail: Strip "To" and "Subject" headers (ac3855a4)
+* Mail Parse Error Handling (320981df, 75c5cfe9, a4e36d39, ba2d31cd, 30ad9cd4, 678098d8, 46b7899b, f85f9036)
+* Issue/session revisited (49d91b05, 4fc5f5cc)
+
+osTicket v1.17
+==============
+### Enhancements
+* email: Set Default Email Message Encoding to UTF-8 (4656cf4c, 8954f05b)
+* plugins: Multi-Instance Blacklist (56077516)
+* mailer: Reset FROM Address when SMTP fails (75605a3f)
+* Issue: File Storage Plugins Blacklist (1ba8d37a)
+* mail: Catch Possible Exceptions and Errors (81d5cb35)
+
+### Improvements
+* Update class.mail.php (d5545b4e)
+* Mail Fetcher Fixes (1eebcd66, 3decbe78)
+* 1.17.x Bug Fixes (6c2ecad2, 5d799ecd, 21e3a407)
+* plugins: Make Plugins Upgradeable Again! (80bcc191)
+* mailer: Skip Invalid Email Recipients (046f4327, 551f7864, d7d37c4c)
+* issue: Wrong Variable Order (12a4cb09)
+* mailer: Skip Missing Attachment Files (2218aaca)
+* fetcher: TicketDenied Exception + Throwable (58f64e65, 79209144, e027dcc4, be178da5)
+* files: Catch possible Storage Backends Errors (e685636e)
+* fetcher: Fail Safely on Email Parse Error (459520e8)
+* forms: Add getNotice func. to DynamicFormEntry (6e54e810)
+* bug: Users Password Policy (ebfc1d89)
+* v1.17 Misc. Fixes (d149ea0d)
+* plugins: Make Plugin Base Class Play Nice (7b26f665, 5787f9ae, 3163972b)
+
+osTicket v1.17-rc4
+==================
+### Enhancements
+* v1.17: Bug Fixes & Enhancements (bd300c44, ab9a8101, 3024d7f5, e705ff0f, 681bea08, bc154434, 246c1445, e4f594c2, 76bf7725, 4ee44d48, a7068668, 5e53b1a1, 481a0475, 2fa077ae, 13888292)
+
+### Improvements
+* mail: Mixed Mime Message with mixed multiparts (6de79a0b, c71ddade)
+* 2fa: Fix 2FA Backend Registry (f8f5d3dd, 2318714e)
+* issue: Dispatcher include_once (dab490dc)
+* plugins: Audit enable() (7796d60c)
+* issue: AuthenticationBackend getBkId() (29f01c09)
+
+osTicket v1.17-rc3
+==================
+### Improvements
+* Oauth2 / Modern Email Auth Latest Fixes (fdc5b0fa, d9b41f4e, fa8dc24d, 265065c1)
+
+osTicket v1.17-rc2
+==================
+### Improvements
+* Oauth2 / Modern Email Auth Latest Fixes (4da6fb07, 90ed880b, 72b2a249, 8a8c1a16, fa6cc040, 97a9b0af)
+
+osTicket v1.17-rc1
+==================
+### Enhancements
+* Oauth2 / Modern Email Authentication Support (d99ff6e1-163c28b5)
+
 osTicket v1.16.6
 ================
 ### Improvements
