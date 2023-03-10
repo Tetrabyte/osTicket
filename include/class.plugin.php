@@ -193,20 +193,14 @@ class PluginManager {
                     = new $class($ht['id']);
             }
             else {
-                // Get instance without calling the constructor. Thanks
-                // http://stackoverflow.com/a/2556089
-                $a = unserialize(
-                    sprintf(
-                        'O:%d:"%s":0:{}',
-                        strlen($class), $class
-                    )
-                );
+                $reflection = new ReflectionClass($class);
+                $a = $reflection->newInstanceWithoutConstructor();
                 // Simulate __construct() and load()
                 $a->id = $ht['id'];
                 $a->ht = $ht;
                 $a->info = $info;
                 static::$plugin_list[$ht['install_path']] = &$a;
-                unset($a);
+                unset($a,$reflection);
             }
         }
         return static::$plugin_list;
@@ -223,6 +217,10 @@ class PluginManager {
     }
 
     static function auditPlugin() {
+        global $ost;
+        if (!$ost || $ost->isUpgradePending())
+            return false;
+
         return self::getPluginByName('Help Desk Audit', true);
     }
 
@@ -341,6 +339,8 @@ class PluginManager {
      * registered in the plugin registry -- the %plugin table.
      */
     function install($path) {
+        // Fixup $path to ensure we are only installing from the plugin dir
+        $path = 'plugins/' . basename($path);
         $is_phar = substr($path, strlen($path) - 5) == '.phar';
         if (!($info = $this->getInfoForPath(INCLUDE_DIR . $path, $is_phar)))
             return false;

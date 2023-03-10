@@ -160,8 +160,8 @@ class AttachmentFile extends VerySimpleModel {
     function display($scale=false, $ttl=86400) {
         $this->makeCacheable($ttl);
 
-        if ($scale && extension_loaded('gd')) {
-            $image = imagecreatefromstring($this->getData());
+        if ($scale && extension_loaded('gd')
+                && ($image = imagecreatefromstring($this->getData()))) {
             $width = imagesx($image);
             if ($scale <= $width) {
                 $height = imagesy($image);
@@ -610,9 +610,16 @@ class AttachmentFile extends VerySimpleModel {
     static function lookupByHash($hash) {
         if (isset(static::$keyCache[$hash]))
             return static::$keyCache[$hash];
-
         // Cache a negative lookup if no such file exists
-        return parent::lookup(array('key' => $hash));
+        try {
+            return parent::lookup(array('key' => $hash));
+        } catch (ObjectNotUnique $e) {
+            // TODO: Figure out why key collission might be happening AND
+            // make key (hash) unique field in the file table as a
+            // protection measure. For now we're returning null to avoid possible wrong file
+            // being displayed.
+            return null;
+        }
     }
 
     static function lookup($id) {
@@ -1047,12 +1054,8 @@ class FileObject extends SplFileObject {
     }
 
     function getMimeType() {
-        if (!isset($this->_mimetype)) {
-            // Try to to auto-detect mime type
-            $finfo = new finfo(FILEINFO_MIME);
-            $this->_mimetype = $finfo->buffer($this->getContents(),
-                    FILEINFO_MIME_TYPE);
-        }
+        if (!isset($this->_mimetype))
+            $this->_mimetype = self::mime_type($this->getRealPath());
 
         return $this->_mimetype;
     }
@@ -1067,6 +1070,21 @@ class FileObject extends SplFileObject {
      */
     function getData() {
         return $this->getContents();
+    }
+
+    /*
+     * Given a filepath - auto detect the mime type
+     *
+     */
+    static function mime_type($filepath) {
+        // Try to to auto-detect mime type
+        $type = null;
+        if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $type = finfo_file($finfo, $filepath);
+            finfo_close($finfo);
+        }
+        return $type ?: mime_content_type($filepath);
     }
 }
 

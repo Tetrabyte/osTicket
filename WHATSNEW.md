@@ -1,3 +1,75 @@
+osTicket v1.16.6
+================
+### Improvements
+* session: Collab View Ticket (6afe0efa)
+* issue: Static forTask() (1079011f)
+* issue: Featured FAQs (8df09581)
+* print: Hidden Thread Events (f63fc67d)
+* issue: Does Not Have A Value (d47fc2b1)
+* issue: Disabled Queues Run Counts (3ff3ce93)
+* issue: Queue Counts Incorrect (2428cc58)
+* jquery: Update jQueryUI 1.13.2 (b896f70d)
+* issue: Department Export (5418cf20)
+* jquery: Update To 3.6.3 (8d39a4cc)
+* i18n: make-pot (74274b5c)
+* update: README PHP Version (6087bc55)
+* issue: mPDF Font Files (427a8aa6)
+* issue: FileUpload False (8dd2ab61)
+* Add translation for "last resort" standard column labels (cb528044)
+* add translation for task status (46c005a0)
+* issue: getRealPath() Stub (32a229aa)
+
+### Security
+* security: Latest Security Patches 03/2023 (86f9693d, 091ddba9, ec604393, daee20fd, 9fb01bc1, 619ce0f6, 343a2b47, 8a55c29f, e2c8f799, ee7ce3d9, 263f71a3)
+
+osTicket v1.16.5
+================
+### Improvements
+* Fix trusted proxy wildcard check (04c0bb3a)
+* issue: Html Typo (50dfe931)
+* mailparse: Parse filenames with complex format (c8067212)
+* validator: Email Domain Verification (3c4a20a8)
+* user: Make sure User has a valid Email on create (55fbfcb5)
+
+osTicket v1.16.4
+================
+### Enhancements
+* i18n: Default Ticket Queue (7a5dd0eb)
+* mailparse: thread_entry_recipients to (a82af698)
+* issue: Unique Variable Names (0dc5a02e)
+* php: 8.1 Support (22b599e3, c24ee575, dd2b9a43)
+* issue: Session Cookie Refresh (1630459a)
+
+### Improvements
+* oops: jQuery UI Images (822a05fe)
+* issue: Manually Sorted Topics (a80db8a7)
+* issue: Queue Export Headings (47449758)
+* installer: Checking Existing Install (a3f2e246)
+* Catch storage error when mailing ticket response (ca5932ac)
+* issue: Staff Ticket Open Session (4f3d3cff)
+* issue: External Auth Regenerate Session (83252260)
+* issue: Searching Numbers (e00003f6)
+* Replace hacky way with ReflectionClass (55f61390)
+* Issue: Installer YAML (6780f29e)
+* issue: Fix Upgrader Session Issues (311089a6)
+* issue: Undefined Variable ORM (4009881a)
+* v1.16: Misc Bug Fixes (4c0341e2)
+* issue: User/Agent Password Reset (d3de1599)
+* issue: imagesx Boolean (5d06ee46)
+* file: Possible Key Collision (21c71c6e)
+* cli: User Import (4c43e46f)
+* issue: Miscellaneous Fixes (50bc1a21, 5002bef9, e036fd9a, 35684189, 9c280b49, c2a15b64, 5e970061)
+* issue: urldecode Dispatcher (c00b8e87)
+* issue: Information and SectionBreak Fields On Edit (7b60c576)
+* issue: Favicons Login Headers (61655ec6)
+* issue: Schedules stops_on (e2dcbb69)
+* Issue: Agent Permission to Assign Tickets (b4732b05)
+* issue: File Upload Size (45f554ad)
+
+### Security
+* security: Username XSS (5213ff13)
+* security: Refresh URL (3702a4fb)
+
 osTicket v1.16.3
 ================
 ### Improvements

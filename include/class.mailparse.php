@@ -208,6 +208,9 @@ class Mail_Parse {
         if (!($header = $this->struct->headers['from']))
             return null;
 
+        if ((strpos($header, '<') !== false) && (strpos($header, '>') === false))
+            $header = $header.'>';
+
         return Mail_Parse::parseAddressList($header, $this->charset);
     }
 
@@ -443,6 +446,11 @@ class Mail_Parse {
                     && $part->headers['content-disposition']
                     && preg_match('/filename="([^"]+)"/', $part->headers['content-disposition'], $matches)) {
                 $filename = Format::mimedecode($matches[1], $this->charset);
+            } elseif (preg_match('/filename\*\d+=([^;]+);/', $part->headers['content-disposition']) === 1) {
+                $filename = '';
+                foreach ($part->d_parameters as $key=>$fname)
+                    if (strpos($key, 'filename*') !== false)
+                        $filename .= Format::decodeRfc5987($fname);
             } else {
                 // Not an attachment?
                 return false;
@@ -691,7 +699,9 @@ class EmailDataParser {
                 }
             }
         }
-        $data['thread_entry_recipients']['to'] = array_unique($data['thread_entry_recipients']['to']);
+        $data['thread_entry_recipients']['to'] = isset($data['thread_entry_recipients']['to'])
+                ? array_unique($data['thread_entry_recipients']['to'])
+                : [];
 
         /*
          * In the event that the mail was delivered to the system although none of the system

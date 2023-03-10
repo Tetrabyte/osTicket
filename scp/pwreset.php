@@ -39,13 +39,14 @@ if($_POST) {
     }
     switch ($_POST['do']) {
         case 'sendmail':
-            if (($staff=Staff::lookup($_POST['userid']))) {
-                if (!$staff->hasPassword()) {
+            $userid = (string) $_POST['userid'];
+            if (Validator::is_userid($userid)
+                    && ($staff=Staff::lookup($userid))) {
+                if (!$staff->hasPassword()
+                        || (($bk=$staff->getAuthBackend()) && !($bk instanceof osTicketStaffAuthentication)))
                     $msg = __('Unable to reset password. Contact your administrator');
-                }
-                elseif (!$staff->sendResetEmail()) {
+                elseif (!$staff->sendResetEmail())
                     $tpl = 'pwreset.sent.php';
-                }
             }
             else
                 $msg = sprintf(__('Unable to verify username %s'),

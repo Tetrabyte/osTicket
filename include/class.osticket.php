@@ -55,16 +55,17 @@ class osTicket {
 
         require_once(INCLUDE_DIR.'class.config.php'); //Config helper
         require_once(INCLUDE_DIR.'class.company.php');
-
-        if (!defined('DISABLE_SESSION') || !DISABLE_SESSION)
-            $this->session = osTicketSession::start(SESSION_TTL); // start DB based session
-
+        // Load the config
         $this->config = new OsticketConfig();
-
+        // Start session  (if not disabled)
+        if (!defined('DISABLE_SESSION') || !DISABLE_SESSION)
+            $this->session = osTicketSession::start(SESSION_TTL,
+                    $this->isUpgradePending());
+        // CSRF Token
         $this->csrf = new CSRF('__CSRFToken__');
-
+        // Company information
         $this->company = new Company();
-
+        // Load Plugin Manager
         $this->plugins = new PluginManager();
     }
 
@@ -365,10 +366,10 @@ class osTicket {
 
     static function get_path_info() {
         if(isset($_SERVER['PATH_INFO']))
-            return $_SERVER['PATH_INFO'];
+            return htmlentities($_SERVER['PATH_INFO']);
 
         if(isset($_SERVER['ORIG_PATH_INFO']))
-            return $_SERVER['ORIG_PATH_INFO'];
+            return htmlentities($_SERVER['ORIG_PATH_INFO']);
 
         //TODO: conruct possible path info.
 
@@ -520,6 +521,38 @@ class osTicket {
     }
 
     /*
+     * get_base_url
+     *
+     * Get base url osTicket is installed on
+     * It Should match help desk url.
+     *
+     */
+    static function get_base_url() {
+        return sprintf('http%s://%s',
+                osTicket::is_https() ? 's' : '',
+                $_SERVER['HTTP_HOST'] . ROOT_PATH);
+    }
+
+    /*
+     * get_client_port
+     *
+     * Get client PORT from "Http_X-Forwarded-PORT" if we have trusted
+     * proxies set.
+     * FIXME: Follow trusted proxies chain
+     *
+     */
+    static function get_client_port($header='HTTP_X_FORWARDED_PORT') {
+        $port = $_SERVER['SERVER_PORT'];
+        // We're just making sure we have Trusted Proxies
+        // FIXME: Validate
+        $proxies = self::getTrustedProxies();
+        if (isset($_SERVER[$header]) &&  $proxies)
+            $port = $_SERVER[$header];
+
+        return $port;
+    }
+
+    /*
      * get_client_ip
      *
      * Get client IP address from "Http_X-Forwarded-For" header by following a
@@ -571,7 +604,7 @@ class osTicket {
         if (!$proxies)
             return false;
         // Wildcard set - trust all proxies
-        else if ($proxies == '*')
+        else if (in_array('*', $proxies))
             return true;
 
         return ($proxies && Validator::check_ip($ip, $proxies));
