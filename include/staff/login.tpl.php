@@ -58,17 +58,12 @@ if ($thisstaff && $thisstaff->is2FAPending())
         } ?>
     </form>
 <?php
-$ext_bks = array();
-foreach (StaffAuthenticationBackend::allRegistered() as $bk)
-    if ($bk instanceof ExternalAuthentication)
-        $ext_bks[] = $bk;
-
-if (count($ext_bks)) { ?>
+if (($bks=StaffAuthenticationBackend::getExternal())) { ?>
 <div class="or">
     <hr/>
 </div><?php
-    foreach ($ext_bks as $bk) { ?>
-<div class="external-auth"><?php $bk->renderExternalLink(); ?></div><?php
+    foreach ($bks as $bk) { ?>
+<div class="external-auth"><?php $bk->renderExternalLink(); ?></div><br/><?php
     }
 } ?>
 
@@ -167,6 +162,6 @@ if (count($ext_bks)) { ?>
         #loginBox:after { background-color: white !important; }
     </style>
     <![endif]-->
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.13.1.custom.min.js"></script>
+    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>js/jquery-ui-1.13.2.custom.min.js"></script>
 </body>
 </html>
