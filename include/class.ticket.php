@@ -2463,7 +2463,7 @@ implements RestrictedAccess, Threadable, Searchable {
 
         $this->logEvent('overdue');
         $this->onOverdue($whine);
-
+        $this->setStatusId(1);
         return true;
     }
 
