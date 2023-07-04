@@ -1,14 +1,5 @@
 <?php
-
-class AnttStaffLogin {
-
-  var $config;
-  function __construct($config) {
-    $this->config = $config;
-  }
-}
-
-class AnttStaffLogin extends ExternalStaffAuthenticationBackend {
+class AnttStaffLoginBackend extends ExternalStaffAuthenticationBackend {
   static $id = "AnttStaffLogin";
   function __construct($config) {
     $this->config = $config;
