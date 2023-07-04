@@ -146,13 +146,13 @@ function __construct($config) {
 
 class MicrosoftOpenIDStaffAuthBackend extends ExternalStaffAuthenticationBackend {
   static $id = "openid_ms.staff";
-  static $name = "Micrsoft OpenID Auth - Staff";
-  static $service_name = "Microsoft OpenID Auth - Staff";
-  static $sign_in_image_url = "https://docs.microsoft.com/en-us/azure/active-directory/develop/media/active-directory-branding-guidelines/sign-in-with-microsoft-light.png";
+  #static $name = "Micrsoft OpenID Auth - Staff";
+  #static $service_name = "Microsoft OpenID Auth - Staff";
+  #static $sign_in_image_url = "https://docs.microsoft.com/en-us/azure/active-directory/develop/media/active-directory-branding-guidelines/sign-in-with-microsoft-light.png";
 
   function __construct($config) {
     $this->config = $config;
-    $sign_in_image_url = $this->config->get('LOGIN_LOGO');
+    #$sign_in_image_url = $this->config->get('LOGIN_LOGO');
     # N.B.: check that "$_SERVER['SCRIPT_NAME']" ends with '/scp/login.php' or '/scp/index.php':
     if (preg_match("#/scp/(login|index)\.php$#", $_SERVER['SCRIPT_NAME'])) {
       if ($this->config->get('HIDE_LOCAL_STAFF_LOGIN')) {
