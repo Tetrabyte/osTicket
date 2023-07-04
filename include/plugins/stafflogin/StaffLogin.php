@@ -1,6 +1,5 @@
 <?php
 class AnttStaffLoginBackend extends ExternalStaffAuthenticationBackend {
-  static $id = "AnttStaffLogin";
   function __construct($config) {
     $this->config = $config;
     if ($this->config->get('HIDE_LOCAL_STAFF_LOGIN')) {
