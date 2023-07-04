@@ -10,7 +10,7 @@ class AnttStaffLogin extends Plugin {
         $config = $this->getConfig();
         $staffAccess = $config->get('HIDE_LOCAL_STAFF_LOGIN');
         if ($staffAccess) {
-          require_once('stafflogin.php');
+          require_once('StaffLogin.php');
             AnttStaffLogin::register(
                 new AnttStaffLogin($this->getConfig()));
         }
