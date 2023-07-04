@@ -3,16 +3,16 @@
 require_once(INCLUDE_DIR.'class.plugin.php');
 require_once('config.php');
 
-class StaffLogin extends Plugin {
-    var $config_class = "stafflogin";
+class AnttStaffLogin extends Plugin {
+    var $config_class = "AnttStaffLogin";
 
     function bootstrap() {
         $config = $this->getConfig();
         $staffAccess = $config->get('HIDE_LOCAL_STAFF_LOGIN');
         if ($staffAccess) {
           require_once('stafflogin.php');
-            StaffLogin::register(
-                new StaffLogin($this->getConfig()));
+            AnttStaffLogin::register(
+                new AnttStaffLogin($this->getConfig()));
         }
     }
 }

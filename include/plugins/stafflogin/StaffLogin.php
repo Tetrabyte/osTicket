@@ -1,6 +1,6 @@
 <?php
 
-class StaffLogin {
+class AnttStaffLogin {
 
   var $config;
   function __construct($config) {
@@ -8,8 +8,8 @@ class StaffLogin {
   }
 }
 
-class StaffLogin extends ExternalStaffAuthenticationBackend {
-  static $id = "StaffLogin";
+class AnttStaffLogin extends ExternalStaffAuthenticationBackend {
+  static $id = "AnttStaffLogin";
   function __construct($config) {
     $this->config = $config;
     if ($this->config->get('HIDE_LOCAL_STAFF_LOGIN')) {
