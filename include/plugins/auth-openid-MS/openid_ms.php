@@ -90,8 +90,8 @@ function __construct($config) {
       } else {
         ?>
         <script>window.onload = function() {
-          var login = document.getElementsByClassName('login');
-          login[0].remove();
+          var loginBox = document.getElementsByClassName('login-box');
+          loginBox[0].remove();
           var eAuth = document.getElementsByClassName('external-auth');
           while (eAuth[0].nextSibling) {
             eAuth[0].nextSibling.remove();
