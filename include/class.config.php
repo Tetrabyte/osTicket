@@ -249,7 +249,7 @@ class OsticketConfig extends Config {
         'client_verify_email' => 1,
         'allow_auth_tokens' => 1,
         'verify_email_addrs' => 1,
-        'enable_stafflogin' => 1,
+        'enable_stafflogin' => '',
         'client_avatar' => 'gravatar.mm',
         'agent_avatar' => 'gravatar.mm',
         'ticket_lock' => 2, // Lock on activity
@@ -1349,7 +1349,7 @@ class OsticketConfig extends Config {
             'enable_richtext' => isset($vars['enable_richtext']) ? 1 : 0,
             'files_req_auth' => isset($vars['files_req_auth']) ? 1 : 0,
             'allow_iframes' => Format::sanitize($vars['allow_iframes']),
-            'enable_stafflogin' => isset($vars['enable_stafflogin']) ? 1 : 0,
+            'enable_stafflogin' => isset($vars['enable_stafflogin']) ? 1 : '',
             'embedded_domain_whitelist' => Format::sanitize($vars['embedded_domain_whitelist']),
             'acl' => Format::sanitize($vars['acl']),
             'acl_backend' => Format::sanitize((int) $vars['acl_backend']) ?: 0,
