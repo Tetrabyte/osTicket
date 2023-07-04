@@ -102,7 +102,7 @@ function __construct($config) {
       }
     }
   }
-  $this->MicrosoftAuth = new MicrosoftProviderAuth($config);
+  #$this->MicrosoftAuth = new MicrosoftProviderAuth($config);
 }
 
     function supportsInteractiveAuthentication() {
