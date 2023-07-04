@@ -2,7 +2,7 @@
 
 require_once INCLUDE_DIR . 'class.plugin.php';
 
-class AnttStaffLogin extends PluginConfig {
+class AntStaffLogin extends PluginConfig {
   function translate() {
     if (!method_exists('Plugin', 'translate')) {
       return array(
