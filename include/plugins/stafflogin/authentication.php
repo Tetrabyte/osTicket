@@ -4,7 +4,7 @@ require_once(INCLUDE_DIR.'class.plugin.php');
 require_once('config.php');
 
 class AnttStaffLogin extends Plugin {
-    var $config_class = "AnttStaffLogin";
+    var $config_class = "AnttStaffLoginConfig";
 
     function bootstrap() {
         $config = $this->getConfig();

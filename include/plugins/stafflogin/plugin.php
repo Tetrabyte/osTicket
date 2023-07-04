@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'id' =>             'auth:AnttStaffLogin',
+    'id' =>             'auth:AntStaffLogin',
     'version' =>        '0.1',
     'name' =>           'Hide Staff Login',
     'author' =>         'Antt1995',
