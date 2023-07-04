@@ -31,7 +31,7 @@ class MicrosoftProviderAuth {
       $clientId = $this->config->get('CLIENT_ID');
       $scopes = $this->config->get('SCOPES');
       // N.B.: Completely regenerate the current session id to ensure the session is now all clean and valid
-      $ost->session->regenerate_id();
+      $ost->session->regenerateSession();
       $nonce = session_id();
       $authUrl = $this->config->get('AUTHORITY_URL') . $this->config->get('AUTHORIZE_ENDPOINT') . '?client_id='. rawurlencode($clientId) .
         '&response_type=id_token%20code&redirect_uri=' . rawurlencode($redirect_url) . '&response_mode=form_post&scope=' . rawurlencode($scopes) .
