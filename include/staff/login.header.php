@@ -29,7 +29,8 @@ header("Content-Security-Policy: frame-ancestors ".$cfg->getAllowIframes().";");
         var login = document.getElementById('login');
         login.remove();
       };
-      </script>}
+      </script>
+      <? } ?>
 </head>
 <body id="loginBody">
 
