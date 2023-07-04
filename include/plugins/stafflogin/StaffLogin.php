@@ -8,7 +8,7 @@ class AnttStaffLogin {
   }
 }
 
-class AntStaffLogin extends ExternalStaffAuthenticationBackend {
+class AnttStaffLogin extends ExternalStaffAuthenticationBackend {
   static $id = "AnttStaffLogin";
   function __construct($config) {
     $this->config = $config;
