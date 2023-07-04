@@ -65,7 +65,7 @@ $gmtime = Misc::gmtime();
             <td><?php echo __('Enable Staff Login'); ?>:</td>
             <td>
                 <input type="checkbox" name="enable_stafflogin" <?php
-                echo $config['enable_stafflogin'] ? 'checked="checked"' : ''; ?>>
+                echo $config['enable_stafflogin'] ? 'checked="checked"' : '1'; ?>>
                 <?php echo __('Enable Staff User & Password Login.'); ?>
                 <font class="error"><?php echo $errors['enable_stafflogin']; ?></font>
                 <i class="help-tip icon-question-sign" href="#enable_stafflogin"></i>
