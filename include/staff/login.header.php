@@ -23,7 +23,7 @@ header("Content-Security-Policy: frame-ancestors ".$cfg->getAllowIframes().";");
          });
     </script>
     <?php
-    if (isStaffLoginEnabled('0')){
+    if ($cfg->isStaffLoginEnabled('0')){
         ?>
     <script type="text/javascript">window.onload = function() {
         var login = document.getElementById('login');
