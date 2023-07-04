@@ -249,6 +249,7 @@ class OsticketConfig extends Config {
         'client_verify_email' => 1,
         'allow_auth_tokens' => 1,
         'verify_email_addrs' => 1,
+        'enable_stafflogin' => 1,
         'client_avatar' => 'gravatar.mm',
         'agent_avatar' => 'gravatar.mm',
         'ticket_lock' => 2, // Lock on activity
@@ -501,6 +502,10 @@ class OsticketConfig extends Config {
 
     function getAllowIframes() {
         return str_replace(array(', ', ','), array(' ', ' '), $this->get('allow_iframes')) ?: "'self'";
+    }
+
+    function isStaffLoginEnabled() {
+        return $this->get('enable_stafflogin');
     }
 
     function getIframeWhitelist() {
@@ -1267,6 +1272,7 @@ class OsticketConfig extends Config {
         $f['helpdesk_title']=array('type'=>'string',   'required'=>1, 'error'=>__('Helpdesk title is required'));
         $f['default_dept_id']=array('type'=>'int',   'required'=>1, 'error'=>__('Default Department is required'));
         $f['autolock_minutes']=array('type'=>'int',   'required'=>1, 'error'=>__('Enter lock time in minutes'));
+        $f['enable_stafflogin']=array('type'=>'int',   'required'=>1, 'error'=>__('Enable Staff Login'));
         $f['allow_iframes']=array('type'=>'cs-url',   'required'=>0, 'error'=>__('Enter comma separated list of urls'));
         $f['embedded_domain_whitelist']=array('type'=>'cs-domain',   'required'=>0, 'error'=>__('Enter comma separated list of domains'));
         $f['acl']=array('type'=>'ipaddr',   'required'=>0, 'error'=>__('Enter comma separated list of IP addresses'));
@@ -1343,6 +1349,7 @@ class OsticketConfig extends Config {
             'enable_richtext' => isset($vars['enable_richtext']) ? 1 : 0,
             'files_req_auth' => isset($vars['files_req_auth']) ? 1 : 0,
             'allow_iframes' => Format::sanitize($vars['allow_iframes']),
+            'enable_stafflogin' => isset($vars['enable_stafflogin']) ? 1 : 0,
             'embedded_domain_whitelist' => Format::sanitize($vars['embedded_domain_whitelist']),
             'acl' => Format::sanitize($vars['acl']),
             'acl_backend' => Format::sanitize((int) $vars['acl_backend']) ?: 0,

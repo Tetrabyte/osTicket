@@ -22,11 +22,14 @@ header("Content-Security-Policy: frame-ancestors ".$cfg->getAllowIframes().";");
             $("input:not(.dp):visible:enabled:first").focus();
          });
     </script>
+    <?php
+    if (isStaffLoginEnabled('0')){
+        ?>
     <script type="text/javascript">window.onload = function() {
         var login = document.getElementById('login');
         login.remove();
       };
-      </script>
+      </script>}
 </head>
 <body id="loginBody">
 
