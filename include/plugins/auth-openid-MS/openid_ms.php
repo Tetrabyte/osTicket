@@ -165,7 +165,7 @@ class MicrosoftOpenIDStaffAuthBackend extends ExternalStaffAuthenticationBackend
       <?php
       }
     }
-    $this->MicrosoftAuth = new MicrosoftProviderAuth($config);
+    #$this->MicrosoftAuth = new MicrosoftProviderAuth($config);
   }
 
   function supportsInteractiveAuthentication() {
