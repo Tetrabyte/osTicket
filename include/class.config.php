@@ -1272,7 +1272,7 @@ class OsticketConfig extends Config {
         $f['helpdesk_title']=array('type'=>'string',   'required'=>1, 'error'=>__('Helpdesk title is required'));
         $f['default_dept_id']=array('type'=>'int',   'required'=>1, 'error'=>__('Default Department is required'));
         $f['autolock_minutes']=array('type'=>'int',   'required'=>1, 'error'=>__('Enter lock time in minutes'));
-        $f['enable_stafflogin']=array('type'=>'int',   'required'=>1, 'error'=>__('Enable Staff Login'));
+        $f['enable_stafflogin']=array('type'=>'string',   'required'=>1, 'error'=>__('Enable Staff Login'));
         $f['allow_iframes']=array('type'=>'cs-url',   'required'=>0, 'error'=>__('Enter comma separated list of urls'));
         $f['embedded_domain_whitelist']=array('type'=>'cs-domain',   'required'=>0, 'error'=>__('Enter comma separated list of domains'));
         $f['acl']=array('type'=>'ipaddr',   'required'=>0, 'error'=>__('Enter comma separated list of IP addresses'));
