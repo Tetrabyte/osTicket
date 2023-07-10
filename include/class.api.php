@@ -209,7 +209,7 @@ class ApiController extends Controller {
         if (!$this->key
                 && ($key=$this->getApiKey())
                 && ($ip=$this->getRemoteAddr()))
-            $this->key = API::lookupByKey($key, $ip);
+            $this->key = API::lookupByKey($key);
 
         return $this->key;
     }
