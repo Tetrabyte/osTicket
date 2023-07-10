@@ -32,10 +32,6 @@ $context  = stream_context_create($options);
 $result = file_get_contents($config['url'], false, $context);
 if ($result === FALSE) { die("FAILED"); }
 
-print_r("<br><br>");
-print_r($data);
-print_r("<br><br>");
-print_r($context);
 echo($result);
 
 ?>
