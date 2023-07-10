@@ -4,7 +4,7 @@
 include_once 'include/api-config.php';
 
 $config = [
-    'url' => 'https://tickets.remoteit.co.uk/api/http.php/tickets.json',
+    'url' => 'https://tickets.remoteit.co.uk/api/tickets.json',
 ];
 
 $name = $_GET['name'] ?? null;
