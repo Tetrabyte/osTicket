@@ -17,14 +17,13 @@ $data = array(
     'message' =>    $message,
     'notes'       =>    $notes,
     'phone'      =>    $phone,
-    'ip'             =>    '80.244.186.132',
 	'topicId'   =>      '10',
 );
 
 set_time_limit(30);
 $options = array(
   'http' => array(
-    'header'  => "X-API-Key: " . $API_KEY . "\r\n" . "X-Forwarded-For: 80.244.186.132",
+    'header'  => "X-API-Key: " . $API_KEY,
     'method' => 'POST',
     'content' => json_encode($data)
    )
