@@ -24,7 +24,7 @@ $data = array(
 set_time_limit(30);
 $options = array(
   'http' => array(
-    'header'  => "X_API_Key: ".$API_KEY,
+    'header'  => "X-API-Key: ".$API_KEY,
     'method' => 'POST',
     'content' => json_encode($data)
    )
