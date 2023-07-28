@@ -2230,16 +2230,14 @@ time.faq {
     position:fixed;
     padding:1em;
     width:500px;
-    height:250px;
-    height:auto !important;
     background:#f8f8f8;
     border:2px solid #2a67ac;
     display:none;
     z-index:10;
     box-shadow: 0 5px 60px #001;
     border-radius: 5px;
-    max-height: 72%;
-    min-height: 50px;
+    max-height: 75%;
+    min-height: 150px;
     overflow-y: auto;
 }
 .dialog .table td:not(:empty) {
@@ -2254,7 +2252,7 @@ time.faq {
 }
 
 .dialog.size-large {
-    width:750px !important;
+    width:75% !important;
 }
 
 .dialog.size-xl {

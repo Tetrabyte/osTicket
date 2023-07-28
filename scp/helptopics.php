@@ -61,7 +61,7 @@ if($_POST){
                         __('one help topic'));
             }
             if (!$errors) {
-                $count=count($_POST['ids']);
+                $count=$_POST['ids']?count($_POST['ids']):0;
 
                 $activeTopics = Topic::getHelpTopics(false, false);
                 $allTopics = count(Topic::getAllHelpTopics());

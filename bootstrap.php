@@ -54,6 +54,15 @@ class Bootstrap {
             }
         }
 
+        if (!function_exists('exif_imagetype')) {
+            function exif_imagetype ($filename) {
+                if ((list($width,$height,$type,) = getimagesize($filename)) !== false)
+                    return $type;
+
+                return false;
+            }
+        }
+
         if (!isset($_SERVER['REMOTE_ADDR']))
             $_SERVER['REMOTE_ADDR'] = '';
     }
@@ -202,13 +211,21 @@ class Bootstrap {
                 'key' => DBSSLKEY
             );
 
-        if (!db_connect(DBHOST, DBUSER, DBPASS, $options)) {
-            $ferror=sprintf('Unable to connect to the database — %s',db_connect_error());
-        }elseif(!db_select_database(DBNAME)) {
-            $ferror=sprintf('Unknown or invalid database: %s',DBNAME);
+        $hosts = explode(',', DBHOST);
+        foreach ($hosts as $host) {
+            $ferror  = null;
+            if (!db_connect($host, DBUSER, DBPASS, $options)) {
+                $ferror = sprintf('Unable to connect to the database — %s',
+                        db_connect_error());
+            }elseif(!db_select_database(DBNAME)) {
+                $ferror = sprintf('Unknown or invalid database: %s',
+                        DBNAME);
+           }
+           // break if no error
+           if (!$ferror) break;
         }
 
-        if($ferror) //Fatal error
+        if ($ferror) //Fatal error
             self::croak($ferror);
     }
 
@@ -351,7 +368,7 @@ define('CLI_DIR', INCLUDE_DIR.'cli/');
 
 #Current version && schema signature (Changes from version to version)
 define('GIT_VERSION','$git');
-define('MAJOR_VERSION', '1.17');
+define('MAJOR_VERSION', '1.18');
 define('THIS_VERSION', MAJOR_VERSION.'-git'); //Shown on admin panel
 //Path separator
 if(!defined('PATH_SEPARATOR')){
