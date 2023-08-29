@@ -2115,6 +2115,7 @@ class ThreadEvent extends VerySimpleModel {
                 case 'timestamp':
                     $timeFormat = null;
                     if ($mode != self::MODE_CLIENT && $thisstaff
+                            && (!isset($_REQUEST['a']) || $_REQUEST['a']!='print')
                             && !strcasecmp($thisstaff->datetime_format,
                                 'relative')) {
                         $timeFormat = function ($timestamp) {
@@ -2285,7 +2286,7 @@ class Event extends VerySimpleModel {
     static function getStates($dropdown=false) {
         $names = array();
         if ($dropdown)
-            $names = array(__('All'));
+            $names = array('All');
 
         $events = self::objects()->values_flat('name');
         foreach ($events as $val)
