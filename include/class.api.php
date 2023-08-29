@@ -198,7 +198,7 @@ class ApiController extends Controller {
         // see getApiKey method.
         if (!($key=$this->getKey()))
             return $this->exerr(401, __('Valid API key required'));
-        elseif (!$key->isActive() || $key->getIPAddr() != $this->getRemoteAddr())
+        elseif (!$key->isActive())
             return $this->exerr(401, __('API key not found/active or source IP not authorized'));
 
         return $key;
@@ -209,7 +209,7 @@ class ApiController extends Controller {
         if (!$this->key
                 && ($key=$this->getApiKey())
                 && ($ip=$this->getRemoteAddr()))
-            $this->key = API::lookupByKey($key, $ip);
+            $this->key = API::lookupByKey($key);
 
         return $this->key;
     }

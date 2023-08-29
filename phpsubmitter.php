@@ -17,14 +17,13 @@ $data = array(
     'message' =>    $message,
     'notes'       =>    $notes,
     'phone'      =>    $phone,
-    'ip'             =>    '80.244.186.132',
 	'topicId'   =>      '10',
 );
 
 set_time_limit(30);
 $options = array(
   'http' => array(
-    'header'  => "X_API_Key: ".$API_KEY,
+    'header'  => "X-API-Key: " . $API_KEY,
     'method' => 'POST',
     'content' => json_encode($data)
    )
@@ -32,6 +31,7 @@ $options = array(
 $context  = stream_context_create($options);
 $result = file_get_contents($config['url'], false, $context);
 if ($result === FALSE) { die("FAILED"); }
+
 echo($result);
 
 ?>

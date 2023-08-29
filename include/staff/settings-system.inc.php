@@ -62,6 +62,16 @@ $gmtime = Misc::gmtime();
             </td>
         </tr>
         <tr>
+            <td><?php echo __('Enable Staff Login'); ?>:</td>
+            <td>
+                <input type="checkbox" name="enable_stafflogin" <?php
+                echo $config['enable_stafflogin'] ? 'checked="checked"' : ''; ?>>
+                <?php echo __('Enable Staff User & Password Login.'); ?>
+                <font class="error"><?php echo $errors['enable_stafflogin']; ?></font>
+                <i class="help-tip icon-question-sign" href="#enable_stafflogin"></i>
+            </td>
+        </tr>
+        <tr>
             <td><?php echo __('Force HTTPS'); ?>:</td>
             <td>
                 <input type="checkbox" name="force_https" <?php

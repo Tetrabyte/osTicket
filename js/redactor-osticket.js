@@ -361,7 +361,7 @@ $(function() {
     },
     redact = $.fn.redact = function(el, options) {
         var el = $(el),
-            sizes = {'small': '75px', 'medium': '150px', 'large': '225px'},
+            sizes = {'small': '100px', 'medium': '150px', 'large': '225px'},
             selectedSize = sizes['medium'];
         $.each(sizes, function(k, v) {
             if (el.hasClass(k)) selectedSize = v;
@@ -375,7 +375,7 @@ $(function() {
                     'file', 'table', 'link', 'line', 'fullscreen'],
                 'buttonSource': !el.hasClass('no-bar'),
                 'autoresize': !el.hasClass('no-bar') && !el.closest('.dialog').length,
-                'maxHeight': el.closest('.dialog').length ? selectedSize : false,
+                'maxHeight': '75%',
                 'minHeight': selectedSize,
                 'maxWidth': el.hasClass('fullscreen') ? '100%' : false,
                 'focus': false,
