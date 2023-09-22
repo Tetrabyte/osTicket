@@ -61,7 +61,12 @@ function MergeUser ($OrigUser, $DestUser) {
 	
 }
 
-
+function SilentAssignJames ($TikID) {
+	$query = "UPDATE ost_ticket SET staff_id = '6' WHERE ticket_id = '$TikID';";
+	echo $query."</BR>";
+	$commit = db_query($query, $logError=true, $buffered=true);
+	return $commit;
+}
 
 
 if ( isset($_GET['TikNum']) AND isset($_GET['PostID']) ) {
@@ -78,6 +83,14 @@ if ( isset($_GET['OrigUser']) AND isset($_GET['DestUser']) ) {
 	$result = MergeUser ($_GET['OrigUser'], $_GET['DestUser']);
 	if( $result == $true ) { $usermerged = 1; }
 	}	
+
+if ( isset($_GET['SilentJamesTikID'])) {
+	$result = SilentAssignJames ($_GET['SilentJamesTikID']);
+	if( $result == $true ) { $AssignedJames = 1; }
+	}	
+
+
+
 
 ?>
 
@@ -164,6 +177,30 @@ body {
 		?>
 		
 		<hr>
+		
+		<div class="row">
+			<div class="col-md-11">
+			<h3>Silent Assign to James</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<form role="form" method="GET" class="form">
+					<div class="input-group" style="padding-bottom:5px">
+							<input type="text" class="form-control" id="SilentJamesTikID" name="SilentJamesTikID" placeholder="TicketID"/>
+							<button type="submit" class="form-control btn btn-primary">Assign</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<?php 
+			if ( isset($UserMerged) ) {
+				Echo "Ticket Assigned to James";
+			}
+		?>
+		
+		<hr>		
+		
 		
 		
 		
