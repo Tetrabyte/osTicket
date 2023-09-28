@@ -531,7 +531,6 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 		$commit = db_query($query, $logError=true, $buffered=true);	
 		$commit = db_query($query2, $logError=true, $buffered=true);		
 	}
-	header('Location: /scp/UserSearch.php?UserId='.$_GET['UserId']);
 }
 ?>
 
@@ -545,9 +544,10 @@ $ost->addExtraHeader('<title>User Search Tool</title>');
   <head>
 	  <meta charset="utf-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1">
-	  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-	  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-	  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+	  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+	  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 	  <style>
 *, ::after, ::before {
   box-sizing: content-box;
@@ -564,7 +564,11 @@ body {
   letter-spacing: 0.15px;
   -webkit-font-smoothing:antialiased;
           font-smoothing:antialiased;
-}</style>
+}
+.usersearch {
+	--bs-table-bg: transparent !important;
+}
+</style>
     
 	<title>User Search Tool</title>
 	<link rel="icon" type="image/png" href="favicon2.png">
@@ -611,7 +615,7 @@ body {
 						
 						?>
 						
-						<table class="table">
+						<table class="table usersearch">
 							<thead>
 								<tr>
 									<th scope="col">Select</th>
@@ -648,33 +652,25 @@ body {
 									echo '<td> <a href="/scp/UserSearch.php?UserId='.$row["UserId"].'" class="btn btn-primary" role="button">Select User</a></td> ';
 									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
 									echo '<td>';
-									if ( $row["UserPhone"] != "" ) {
+									if (!empty($row["UserPhone"])) {
 										echo $row["UserPhone"];
 										echo '
 											<div style="float:right">
-												<div style="float:left" id="UpdateNumber" data-bs-toggle="modal" data-UserId="'.$row["UserId"].'" data-bs-target="#UpdateNumberModal">
-													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-														<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-														<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-													</svg>
+												<div style="float:left" id="UpdateNumber" data-bs-toggle="modal" data-UserId="'.$row["UserId"].'" data-bs-target="#UpdateNumberModal-'.$row["UserId"].'">
+												<i class="bi bi-pencil-square pe-none"></i>
 												</div>
 												&nbsp&nbsp
 												<a href="dial:'.$row["UserPhone"].'">
-													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-telephone-outbound-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-													  <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511zM11 .5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V1.707l-4.146 4.147a.5.5 0 0 1-.708-.708L14.293 1H11.5a.5.5 0 0 1-.5-.5z"/>
-													</svg>
+													<i class="bi bi-telephone-outbound-fill"></i>
 												</a>
 											</div>';
-									}
+									}									
 									else
 									{
 										echo '	
 											<div style="float:right">	
-												<div style="float:left" id="UpdateNumber" data-bs-toggle="modal" data-UserId="'.$row["UserId"].'" data-bs-target="#UpdateNumberModal">
-													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-													  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-													  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-													</svg>
+											<div style="float:left" id="UpdateNumber" data-bs-toggle="modal" data-UserId="'.$row["UserId"].'" data-bs-target="#UpdateNumberModal-'.$row["UserId"].'">
+													<i class="bi bi-pencil-square"></i>
 												</div>
 											</div>
 											';
@@ -683,11 +679,8 @@ body {
 									echo '<td> <a href="mailto:'.$row["UserEmail"].'">'.$row["UserEmail"].'</a></td> ';
 									echo '<td>
 											<div style="float:right">
-												<div style="float:left" id="UpdateUserNotes" data-bs-toggle="modal" data-UserId="'.$row["UserId"].'" data-bs-target="#UpdateUserNotesModal">
-													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-														<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-														<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-													</svg>
+												<div style="float:left" id="UpdateUserNotes" data-bs-toggle="modal" data-UserId="'.$row["UserId"].'" data-bs-target="#UpdateUserNotesModal-'.$row["UserId"].'">
+													<i class="bi bi-pencil-square"></i>
 												</div>
 											</div>';
 										echo $row["UserNotes"];
@@ -698,17 +691,12 @@ body {
 										echo $row["OrgPhone"];
 										echo '
 											<div style="float:right">
-												<div style="float:left" id="UpdateOrgPhone" data-bs-toggle="modal" data-UserId="'.$row["OrgId"].'" data-bs-target="#UpdateOrgPhoneModal">
-													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-													  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-													  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-													</svg>
+												<div style="float:left" id="UpdateOrgPhone" data-bs-toggle="modal" data-UserId="'.$row["OrgId"].'" data-bs-target="#UpdateOrgPhoneModal-'.$row["UserId"].'">
+													<i class="bi bi-pencil-square"></i>
 												</div>
 												&nbsp&nbsp
 												<a href="dial:'.$row["OrgPhone"].'">
-													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-telephone-outbound-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-													  <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511zM11 .5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V1.707l-4.146 4.147a.5.5 0 0 1-.708-.708L14.293 1H11.5a.5.5 0 0 1-.5-.5z"/>
-													</svg>
+													<i class="bi bi-telephone-outbound-fill"></i>
 												</a>
 											</div>
 											';
@@ -717,11 +705,8 @@ body {
 									{
 										echo '	
 												<div style="float:right">
-													<div style="float:left" id="UpdateOrgPhone" data-bs-toggle="modal" data-UserId="'.$row["OrgId"].'" data-bs-target="#UpdateOrgPhoneModal">
-														<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-														  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-														  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-														</svg>
+													<div style="float:left" id="UpdateOrgPhone" data-bs-toggle="modal" data-UserId="'.$row["OrgId"].'" data-bs-target="#UpdateOrgPhoneModal-'.$row["UserId"].'">
+														<i class="bi bi-pencil-square"></i>
 													</div>
 												<div>
 										';
@@ -729,11 +714,8 @@ body {
 									echo '</td>
 										<td>
 											<div style="float:right">
-												<div style="float:left" id="UpdateOrgNotes" data-bs-toggle="modal" data-UserId="'.$row["OrgId"].'" data-bs-target="#UpdateOrgNotesModal">
-													<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-														<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-														<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-													</svg>
+												<div style="float:left" id="UpdateOrgNotes" data-bs-toggle="modal" data-UserId="'.$row["OrgId"].'" data-bs-target="#UpdateOrgNotesModal-'.$row["UserId"].'">
+													<i class="bi bi-pencil-square"></i>
 												</div>
 											</div>';
 										echo $row["OrgNotes"];
@@ -742,45 +724,33 @@ body {
 									echo '<td> <a target="_blank" href="/scp/tickets.php?a=open&uid='.$row["UserId"].'"class="btn btn-success" role="button" > OPEN TICKET </a></td> ';	
 									
 									echo '</tr>';
-								}
-							}
-?>
-							</tbody>
-						</table>
-						
-						
 
-<?php
+############################################################ Modals #################################################################
 
-					if ( isset($commit) AND mysqli_num_rows($commit) == 1 ) {
-############################################################ Modals #################################################################						
-					?>
-
-						<!-- START UpdateNumber MODAL -->
-							<div class="modal fade" id="UpdateNumberModal">
-								<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h5 class="modal-title">Update Number</h5>
-											<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+								echo '<!-- START UpdateNumber MODAL -->
+									<div class="modal fade" id="UpdateNumberModal-'.$row["UserId"].'">
+										<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title">Update Number</h5>
+													<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+												</div>
+												<form id="UserNumberUpdate" action="UserSearch.php" method="GET">
+													<div class="modal-body">
+														<input type="text" name="UserNumber" id="UserNumber" class="form-control" style="box-sizing: border-box !important;" placeholder="01234 567 890" value="'.$row["UserPhone"].'" />
+														<input type="hidden" class="form-control" id="UserId" name="UserId" value="'.$row["UserId"].'" />
+													</div>
+													<div class="modal-footer">
+														<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+														<button type="sumbit" id="UpdateNumberNowBtn" class="btn btn-primary">Update</button>
+													</div>
+												</form>
+											</div>
 										</div>
-										<form id="UserNumberUpdate" action="UserSearch.php" method="GET">
-											<div class="modal-body">
-												<input type="text" name="UserNumber" id="UserNumber" class="form-control" style="box-sizing: border-box !important;" placeholder="01234 567 890" value="<?php echo $UserPhone;
-												?>" />
-												<input type="hidden" class="form-control" id="UserId" name="UserId" value="<?php echo $UserId; ?>" />
-											</div>
-											<div class="modal-footer">
-												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-												<button type="sumbit" id="UpdateNumberNowBtn" class="btn btn-primary">Update</button>
-											</div>
-										</form>
 									</div>
-								</div>
-							</div>
-						<!-- END UpdateNumber MODAL -->
-						<!-- START UpdateUserNotes MODAL -->
-							<div class="modal fade" id="UpdateUserNotesModal">
+								<!-- END UpdateNumber MODAL -->
+								<!-- START UpdateUserNotes MODAL -->
+							<div class="modal fade" id="UpdateUserNotesModal-'.$row["UserId"].'">
 								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -789,8 +759,8 @@ body {
 										</div>
 										<form id="UserNotesUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
-												<input type="hidden" class="form-control" id="UserId" name="UserId" value="<?php echo $UserId; ?>" />
-												<textarea rows="5" name="UserNotes" id="UserNotes" class="form-control" placeholder="User Notes" style="box-sizing: border-box !important;"><?php echo $UserNotesPHP; ?></textarea>
+												<input type="hidden" class="form-control" id="UserId" name="UserId" value="'.$row["UserId"].'" />
+												<textarea rows="5" name="UserNotes" id="UserNotes" class="form-control" placeholder="User Notes" style="box-sizing: border-box !important;">'.$row["UserNotes"].'</textarea>
 											</div>
 											<div class="modal-footer">
 												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -802,7 +772,7 @@ body {
 							</div>
 						<!-- END UpdateUserNotes MODAL -->
 						<!-- START UpdateOrgPhone MODAL -->
-							<div class="modal fade" id="UpdateOrgPhoneModal">
+							<div class="modal fade" id="UpdateOrgPhoneModal-'.$row["UserId"].'">
 								<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -811,9 +781,9 @@ body {
 										</div>
 										<form id="OrgPhoneUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
-												<input type="hidden" class="form-control" id="UserId" name="UserId" value="<?php echo $UserId; ?>" />
+												<input type="hidden" class="form-control" id="UserId" name="UserId" value="'.$row["UserId"].'" />
 												<input type="hidden" class="form-control" id="OrgId" name="OrgId" value="<?php echo $OrgId; ?>" />
-												<input type="text" name="OrgPhone" id="OrgPhone" class="form-control" style="box-sizing: border-box !important;" placeholder="01234 567 890" value="<?php echo $OrgPhone; ?>"/>
+												<input type="text" name="OrgPhone" id="OrgPhone" class="form-control" style="box-sizing: border-box !important;" placeholder="01234 567 890" value="'.$row["OrgPhone"].'"/>
 											</div>
 											<div class="modal-footer">
 												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -825,7 +795,7 @@ body {
 							</div>
 						<!-- END UpdateOrgPhone MODAL -->
 						<!-- START UpdateOrgNotes MODAL -->
-							<div class="modal fade" id="UpdateOrgNotesModal">
+							<div class="modal fade" id="UpdateOrgNotesModal-'.$row["UserId"].'">
 								<div class="modal-dialog modal-dialog-centered">
 									<div class="modal-content">
 										<div class="modal-header">
@@ -834,9 +804,9 @@ body {
 										</div>
 										<form id="OrgNotesUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
-												<input type="hidden" class="form-control" id="UserId" name="UserId" value="<?php echo $UserId; ?>" />
-												<input type="hidden" class="form-control" id="OrgId" name="OrgId" value="<?php echo $OrgId; ?>" />
-												<textarea rows="5" name="OrgNotes" id="OrgNotes" class="form-control" placeholder="Org Notes" style="box-sizing: border-box !important;"><?php echo $OrgNotesPHP; ?></textarea>
+												<input type="hidden" class="form-control" id="UserId" name="UserId" value="'.$row["UserId"].'" />
+												<input type="hidden" class="form-control" id="OrgId" name="OrgId" value="'.$row["OrgId"].'" />
+												<textarea rows="5" name="OrgNotes" id="OrgNotes" class="form-control" placeholder="Org Notes" style="box-sizing: border-box !important;">'.$row["OrgNotes"].'</textarea>
 											</div>
 											<div class="modal-footer">
 												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -846,10 +816,13 @@ body {
 									</div>
 								</div>
 							</div>
-						<!-- END UpdateOrgNotes MODAL -->
-					<?php
-					}
-					?>
+						<!-- END UpdateOrgNotes MODAL -->';
+								}
+							}
+						?>
+							</tbody>
+						</table>
+						
 					<!-- START Info MODAL -->
 							<div class="modal fade" id="InfoModal">
 								<div class="modal-dialog" style="width:75%; max-width:none">
@@ -913,7 +886,7 @@ body {
 								$o_c_commit = getclosedorgtickets($OrgId);
 ?>
 						
-						<table class="table">
+						<table class="table usersearch">
 							<thead>
 								<tr>
 									<th scope="col">Ticket</th>
@@ -933,7 +906,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
-									echo '<td><b>= Users Open Tickets =</b></td>';
+									echo '<td class="text-center"><b>= Users Open Tickets =</b></td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
@@ -943,7 +916,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
-									echo '<td><b>= No Open User Tickets =</b></td>';
+									echo '<td class="text-center"><b>= No Open User Tickets =</b></td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
@@ -971,7 +944,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
-									echo '<td><b>= Users Last 5 Closed Tickets =</b></td>';
+									echo '<td class="text-center"><b>= Users Last 5 Closed Tickets =</b></td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
@@ -981,7 +954,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
-									echo '<td><b>= No Closed User Tickets =</b></td>';
+									echo '<td class="text-center"><b>= No Closed User Tickets =</b></td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
@@ -1009,7 +982,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
-									echo '<td><b>= Open Company Tickets =</b></td>';
+									echo '<td class="text-center"><b>= Open Company Tickets =</b></td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
@@ -1019,7 +992,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
-									echo '<td><b>= No Open Company Tickets =</b></td>';
+									echo '<td class="text-center"><b>= No Open Company Tickets =</b></td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
@@ -1047,7 +1020,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
-									echo '<td><b>= Last 100 Company Closed Tickets =</b></td>';
+									echo '<td class="text-center"><b>= Last 100 Company Closed Tickets =</b></td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
@@ -1057,7 +1030,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
-									echo '<td><b>= No Closed Company Tickets =</b></td>';
+									echo '<td class="text-center"><b>= No Closed Company Tickets =</b></td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
@@ -1097,9 +1070,8 @@ body {
 
 
 <?php
-$ost->addExtraHeader('<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>');
-$ost->addExtraHeader('<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>');
-$ost->addExtraHeader('<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>');
+$ost->addExtraHeader('<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>');
+$ost->addExtraHeader('<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>');
 ?>
 
 
@@ -1107,66 +1079,33 @@ $ost->addExtraHeader('<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/
     
 	<script>
 		$(document).ready(function() {
-				var keywordInput = $('#keyword');
-				var strLength = keywordInput.val().length * 2;
-				keywordInput.focus();
-				keywordInput[0].setSelectionRange(strLength, strLength);
-			
-			
-			$('#UpdateNumberModal').on("shown.bs.modal", function() {
-				var UserNumberInput = $('#UserNumber');
-				var strLength = UserNumberInput.val().length * 2;
-				UserNumberInput.focus();
-				UserNumberInput[0].setSelectionRange(strLength, strLength);
+			function setSelectionRange(inputId) {
+				var input = $(inputId);
+				var strLength = input.val().length * 2;
+				input.focus();
+				input[0].setSelectionRange(strLength, strLength);
+			}
+	
+			$('#keyword').on("shown.bs.modal", function() {
+				setSelectionRange('#keyword');
 			});
-			$('#UpdateNumberModal').on("hide.bs.modal", function() {
-				var keywordInput = $('#keyword');
-				var strLength = keywordInput.val().length * 2;
-				keywordInput.focus();
-				keywordInput[0].setSelectionRange(strLength, strLength);
+	
+			$('#UpdateNumberModal').on("shown.bs.modal hide.bs.modal", function() {
+				setSelectionRange('#UserNumber');
 			});
-			
-			$('#UpdateUserNotesModal').on("shown.bs.modal", function() {
-				var UserNotesInput = $('#UserNotes');
-				var strLength = UserNotesInput.val().length * 2;
-				UserNotesInput.focus();
-				UserNotesInput[0].setSelectionRange(strLength, strLength);
+	
+			$('#UpdateUserNotesModal').on("shown.bs.modal hide.bs.modal", function() {
+				setSelectionRange('#UserNotes');
 			});
-			$('#UpdateUserNotesModal').on("hide.bs.modal", function() {
-				var keywordInput = $('#keyword');
-				var strLength = keywordInput.val().length * 2;
-				keywordInput.focus();
-				keywordInput[0].setSelectionRange(strLength, strLength);
+	
+			$('#UpdateOrgPhoneModal').on("shown.bs.modal hide.bs.modal", function() {
+				setSelectionRange('#OrgPhone');
 			});
-			
-			$('#UpdateOrgPhoneModal').on("shown.bs.modal", function() {
-				var OrgPhoneInput = $('#OrgPhone');
-				var strLength = OrgPhoneInput.val().length * 2;
-				OrgPhoneInput.focus();
-				OrgPhoneInput[0].setSelectionRange(strLength, strLength);
+	
+			$('#UpdateOrgNotesModal').on("shown.bs.modal hide.bs.modal", function() {
+				setSelectionRange('#OrgNotes');
 			});
-			$('#UpdateOrgPhoneModal').on("hide.bs.modal", function() {
-				var keywordInput = $('#keyword');
-				var strLength = keywordInput.val().length * 2;
-				keywordInput.focus();
-				keywordInput[0].setSelectionRange(strLength, strLength);
-			});
-			
-			$('#UpdateOrgNotesModal').on("shown.bs.modal", function() {
-				var OrgNotesInput = $('#OrgNotes');
-				var strLength = OrgNotesInput.val().length * 2;
-				OrgNotesInput.focus();
-				OrgNotesInput[0].setSelectionRange(strLength, strLength);
-			});
-			$('#UpdateOrgNotesModal').on("hide.bs.modal", function() {
-				var keywordInput = $('#keyword');
-				var strLength = keywordInput.val().length * 2;
-				keywordInput.focus();
-				keywordInput[0].setSelectionRange(strLength, strLength);
-			});
-			
 		});
-
 	</script>
   </body>
 </html>
