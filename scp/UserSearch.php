@@ -570,6 +570,7 @@ body {
 }
 #searchbox {
 	--bs-body-bg : white;
+	background: white !important;
 }
 </style>
     
