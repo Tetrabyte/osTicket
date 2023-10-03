@@ -568,7 +568,7 @@ body {
 .usersearch {
 	--bs-table-bg: transparent !important;
 }
-#searchbox {
+.searchbox {
 	--bs-body-bg : white;
 	background: white !important;
 }
