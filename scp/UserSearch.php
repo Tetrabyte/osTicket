@@ -568,6 +568,9 @@ body {
 .usersearch {
 	--bs-table-bg: transparent !important;
 }
+#searchbox {
+	--bs-body-bg : white;
+}
 </style>
     
 	<title>User Search Tool</title>
@@ -580,7 +583,7 @@ body {
 				<form role="form" method="GET" class="form">
 					<div class="row g-3" style="padding-bottom:5px">
 						<div class="input-group mb-3">
-							<input type="text" class="form-control" id="keyword" name="keyword" <?php if ( isset($_GET['keyword']) ) { echo 'value="'.$_GET['keyword'].'" ';} ?> autofocus>
+							<input type="text" class="form-control searchbox" id="keyword" name="keyword" <?php if ( isset($_GET['keyword']) ) { echo 'value="'.$_GET['keyword'].'" ';} ?> autofocus>
 							<button type="submit" class="btn btn-primary btn-lg">Search</button>
 						</div>
 					</div>
