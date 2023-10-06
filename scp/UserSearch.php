@@ -764,7 +764,7 @@ body {
 										<form id="UserNotesUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
 												<input type="hidden" class="form-control" id="UserId" name="UserId" value="'.$row["UserId"].'" />
-												<textarea rows="5" name="UserNotes" id="UserNotes" class="form-control" placeholder="User Notes" style="box-sizing: border-box !important;">'.$row["UserNotes"].'</textarea>
+												<textarea rows="5" name="UserNotes" id="UserNotes" class="form-control" placeholder="User Notes" style="box-sizing: border-box !important;">'.$row["UserNotesPHP"].'</textarea>
 											</div>
 											<div class="modal-footer">
 												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -810,7 +810,7 @@ body {
 											<div class="modal-body">
 												<input type="hidden" class="form-control" id="UserId" name="UserId" value="'.$row["UserId"].'" />
 												<input type="hidden" class="form-control" id="OrgId" name="OrgId" value="'.$row["OrgId"].'" />
-												<textarea rows="5" name="OrgNotes" id="OrgNotes" class="form-control" placeholder="Org Notes" style="box-sizing: border-box !important;">'.$row["OrgNotes"].'</textarea>
+												<textarea rows="5" name="OrgNotes" id="OrgNotes" class="form-control" placeholder="Org Notes" style="box-sizing: border-box !important;">'.$row["OrgNotesPHP"].'</textarea>
 											</div>
 											<div class="modal-footer">
 												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
