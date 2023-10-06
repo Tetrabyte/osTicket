@@ -646,12 +646,10 @@ body {
 										$UserNotesPHP = str_replace("<br />",PHP_EOL,$row["UserNotes"]);
 										$UserNotesPHP = str_replace("<p>","",$UserNotesPHP);
 										$UserNotesPHP = str_replace("</p>","",$UserNotesPHP);
-										$row["UserNotesPHP"] = $UserNotesPHP;
 										$OrgPhone = $row["OrgPhone"];
 										$OrgNotesPHP = str_replace("<br />",PHP_EOL,$row["OrgNotes"]);
 										$OrgNotesPHP = str_replace("<p>","",$OrgNotesPHP);
 										$OrgNotesPHP = str_replace("</p>","",$OrgNotesPHP);
-										$row['OrgNotesPHP'] = $OrgNotesPHP;
 										
 									}
 									echo '<tr>';
