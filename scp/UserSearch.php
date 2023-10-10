@@ -652,6 +652,10 @@ body {
 										$OrgNotesPHP = str_replace("</p>","",$OrgNotesPHP);
 										
 									}
+
+									$row["UserNotesPHP"] = str_replace("<br />",PHP_EOL,$row["UserNotes"]);
+									$row["UserNotesPHP"] = str_replace("<p>","",$row["UserNotesPHP"]);
+									$row["UserNotesPHP"] = str_replace("</p>","",$row["UserNotesPHP"]);
 									echo '<tr>';
 									echo '<td> <a href="/scp/UserSearch.php?UserId='.$row["UserId"].'" class="btn btn-primary" role="button">Select User</a></td> ';
 									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
@@ -764,7 +768,7 @@ body {
 										<form id="UserNotesUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
 												<input type="hidden" class="form-control" id="UserId" name="UserId" value="'.$row["UserId"].'" />
-												<textarea rows="5" name="UserNotes" id="UserNotes" class="form-control" placeholder="User Notes" style="box-sizing: border-box !important;">'.$row["UserNotes"].'</textarea>
+												<textarea rows="5" name="UserNotes" id="UserNotes" class="form-control" placeholder="User Notes" style="box-sizing: border-box !important;">'.$row["UserNotesPHP"].'</textarea>
 											</div>
 											<div class="modal-footer">
 												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
