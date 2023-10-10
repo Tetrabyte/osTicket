@@ -656,6 +656,9 @@ body {
 									$row["UserNotesPHP"] = str_replace("<br />",PHP_EOL,$row["UserNotes"]);
 									$row["UserNotesPHP"] = str_replace("<p>","",$row["UserNotesPHP"]);
 									$row["UserNotesPHP"] = str_replace("</p>","",$row["UserNotesPHP"]);
+									$row["OrgNotesPHP"] = str_replace("<br />",PHP_EOL,$row["OrgNotes"]);
+									$row["OrgNotesPHP"] = str_replace("<p>","",$row["OrgNotesPHP"]);
+									$row["OrgNotesPHP"] = str_replace("</p>","",$row["OrgNotesPHP"]);
 									echo '<tr>';
 									echo '<td> <a href="/scp/UserSearch.php?UserId='.$row["UserId"].'" class="btn btn-primary" role="button">Select User</a></td> ';
 									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
@@ -814,7 +817,7 @@ body {
 											<div class="modal-body">
 												<input type="hidden" class="form-control" id="UserId" name="UserId" value="'.$row["UserId"].'" />
 												<input type="hidden" class="form-control" id="OrgId" name="OrgId" value="'.$row["OrgId"].'" />
-												<textarea rows="5" name="OrgNotes" id="OrgNotes" class="form-control" placeholder="Org Notes" style="box-sizing: border-box !important;">'.$row["OrgNotes"].'</textarea>
+												<textarea rows="5" name="OrgNotes" id="OrgNotes" class="form-control" placeholder="Org Notes" style="box-sizing: border-box !important;">'.$row["OrgNotesPHP"].'</textarea>
 											</div>
 											<div class="modal-footer">
 												<button type="button" id="closeBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
