@@ -793,7 +793,7 @@ body {
 										<form id="OrgPhoneUpdate" action="UserSearch.php" method="GET">
 											<div class="modal-body">
 												<input type="hidden" class="form-control" id="UserId" name="UserId" value="'.$row["UserId"].'" />
-												<input type="hidden" class="form-control" id="OrgId" name="OrgId" value="<?php echo $OrgId; ?>" />
+												<input type="hidden" class="form-control" id="OrgId" name="OrgId" value="'.$row["OrgId"].'" />
 												<input type="text" name="OrgPhone" id="OrgPhone" class="form-control" style="box-sizing: border-box !important;" placeholder="01234 567 890" value="'.$row["OrgPhone"].'"/>
 											</div>
 											<div class="modal-footer">
