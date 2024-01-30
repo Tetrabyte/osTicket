@@ -318,15 +318,15 @@ if ($_POST)
 
         <?php
         if($thisstaff->hasPerm(Ticket::PERM_ASSIGN, false)) { ?>
-        <tr>
-            <td width="160"><?php echo __('Assign To');?>:</td>
-            <?php
-              $default=$thisstaff->getId();
-              $defaultname=$thisstaff->getName();
-            ?>
-            <td>
-                <select id="assignId" name="assignId">
-                    <option value="0" selected="selected"><?=$defaultname?></option>
+          <tr>
+              <td width="160"><?php echo __('Assign To');?>:</td>
+              <?php
+                $defaultid=$thisstaff->getId();
+                $defaultname=$thisstaff->getName();
+              ?>
+              <td>
+                  <select id="assignId" name="assignId">
+                      <option value="s<?=$defaultid?>" selected="selected"><?=$defaultname?></option>
                     <?php
                     $users = Staff::getStaffMembers(array(
                                 'available' => true,
