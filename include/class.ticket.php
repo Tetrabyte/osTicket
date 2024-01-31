@@ -4689,6 +4689,11 @@ implements RestrictedAccess, Threadable, Searchable {
                 $vars['note'] = new TextThreadEntryBody($vars['note']);
             $ticket->logNote(_S('New Ticket'), $vars['note'], $thisstaff, false);
         }
+        if (!empty($vars['assignId']) && $vars['note']) {
+            if (!$cfg->isRichTextEnabled())
+                $vars['note'] = new TextThreadEntryBody($vars['note']);
+            $ticket->logNote(_S('New Ticket'), $vars['note'], $thisstaff, false);
+        }
 
         if (!$cfg->notifyONNewStaffTicket()
             || !$alert
