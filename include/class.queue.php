@@ -2414,7 +2414,7 @@ extends VerySimpleModel {
         case 'ellipsis':
             $class[] = 'truncate';
             return sprintf('<span class="%s">%s</span>',
-                implode(' ', $class), $width, $text);
+                implode(' ', $class), $text);
         default:
         case 'wrap':
             return $text;
