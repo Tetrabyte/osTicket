@@ -2397,7 +2397,6 @@ extends VerySimpleModel {
         $offset = 0;
         foreach ($this->getAnnotations() as $a)
             $offset += $a->getWidth($row);
-            $width = $a->getWidth($row);
 
         $class = array();
         switch ($this->truncate) {
@@ -2413,8 +2412,8 @@ extends VerySimpleModel {
             $class[] = 'bleed';
         case 'ellipsis':
             $class[] = 'truncate';
-            return sprintf('<span class="%s" style="max-width:%dpx">%s</span>',
-                implode(' ', $class), $width, $text);
+            return sprintf('<span class="%s" >%s</span>',
+                implode(' ', $class), $text);
         default:
         case 'wrap':
             return $text;
