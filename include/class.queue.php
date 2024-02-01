@@ -2413,7 +2413,7 @@ extends VerySimpleModel {
             $class[] = 'bleed';
         case 'ellipsis':
             $class[] = 'truncate';
-            return sprintf('<span class="%s" style="max-width:%dpx">%s</span>',
+            return sprintf('<span class="%s">%s</span>',
                 implode(' ', $class), $width, $text);
         default:
         case 'wrap':
