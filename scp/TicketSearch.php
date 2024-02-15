@@ -15,7 +15,6 @@ $dev = 0;
 function run_search ($keyword) {
 	global $dev;
 	$query = "SELECT
-				ost_thread_entry.type AS entry_type, 
 				ost_ticket.ticket_id AS ticket_id, 
 				ost_ticket.number AS ticket_number, 
 				ost_ticket__cdata.`subject` AS ticket_subject, 
@@ -44,22 +43,30 @@ function run_search ($keyword) {
 					ost_ticket.status_id = ost_ticket_status.id
 			WHERE
 				";
-	$keyword_arr = explode(" ", $keyword);  
-	foreach($keyword_arr as $text)  
-	{  
-		if ( $_GET['andor'] == "or" )  {
-			$query .= " ost_thread_entry.body LIKE '%".$text."%'  OR";  
-		}
-		elseif ( $_GET['andor'] == "and" )
-		{
-			$query .= " ost_thread_entry.body LIKE '%".$text."%' AND"; 
-		}
-		else
-		{
-			die("Oh no! You broke it - 1");
-		}
-	}  
-	$query = substr($query, 0, -4);  #deduct the last ' AND' or '  OR' both 4 chars
+	
+	
+	if ( $_GET['andor'] == "phrase" )  {
+		$query .= " ost_thread_entry.body LIKE '%".$keyword."%'";		
+	}else{	
+		$keyword_arr = explode(" ", $keyword);  
+		foreach($keyword_arr as $text)  
+		{  
+			if ( $_GET['andor'] == "or" )  {
+				$query .= " ost_thread_entry.body LIKE '%".$text."%'  OR";  
+			}
+			elseif ( $_GET['andor'] == "and" )
+			{
+				$query .= " ost_thread_entry.body LIKE '%".$text."%' AND"; 
+			}
+			else
+			{
+				die("Oh no! You broke it - 1");
+			}
+		} 
+		$query = substr($query, 0, -4);  #deduct the last ' AND' or '  OR' both 4 chars
+	}
+
+	
 	$query .= " AND ost_thread_entry.created > '".$_GET['since']."' 
 			ORDER BY
 				ost_thread_entry.created DESC
@@ -129,48 +136,52 @@ body {
   </head>
   <body>
 		<div class="row">
-			<div class="col-md-12">
-				<form role="form" method="GET" class="form">
+				<form role="form" method="GET" class="form-inline">
 					<div class="form-row" style="padding-bottom:5px">
-						<div class="input-group">
-							<input type="text" class="form-control" name="keyword" <?php if ( isset($_GET['keyword']) ) { echo 'value="'.$_GET['keyword'].'" ';}?> autofocus>
-							<button type="submit" class="form-control btn btn-primary">Search</button>
-						</div>
-						<div class="input-group">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" id="andorand" value="and" name="andor" 
-									<?php
-										if ( ($_GET['andor'] == "and") OR ( !isset($_GET['andor']) ) ) {
-											echo 'checked ';
-										}
-									?> >
-								<label class="form-check-label" for="andorand"> AND</label>
+						<div class="col-12">
+							<div class="input-group">
+								<div class="row">
+
+
+									<div class="col-4">
+										<input type="text" class="form-control" name="keyword" value="<?php echo $_GET['keyword'] ?? ''; ?>" autofocus style="height: 40px;">
+									</div><div class="col-1">
+									<button type="submit" class="form-control btn btn-primary" style="height: 35px;">Search</button>
+									</div>
+									
+									<div class="col-1"></div>
+									
+									
+								</div>
+								<div class="row" style="padding-top: 10px;">
+
+									<div class="col-2" style="font-size: 18px;">
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" id="andorand" value="phrase" name="andor" <?php echo ($_GET['andor'] ?? 'phrase') === 'phrase' ? 'checked' : ''; ?>>
+											<label class="form-check-label" for="andorand">  Phrase</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" id="andorand" value="and" name="andor" <?php echo ($_GET['andor'] ?? '') === 'and' ? 'checked' : ''; ?>>
+											<label class="form-check-label" for="andorand">  AND</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" id="andoror" value="or" name="andor" <?php echo ($_GET['andor'] ?? '') === 'or' ? 'checked' : ''; ?>>
+											<label class="form-check-label" for="andoror">  OR</label>
+										</div>
+									</div>
+									<div class="col-1 text-end" style="font-size: 25px;">
+										Since Date: </div>
+									<div class="col-1">
+										<input class="form-control" type="date" value="<?php echo $_GET['since'] ?? date("Y-m-d",strtotime("-3 year")); ?>" id="since" name="since">
+									</div>
+									<div class="col-7"></div>
+								</div>
 							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" id="andoror" value="or" name="andor"  
-									<?php
-										if ( $_GET['andor'] == "or" ) {
-											echo 'checked ';
-										}
-									?> >
-								<label class="form-check-label" for="andoror"> OR</label>
-							</div>				
-							<label for="since" class="col-3 col-form-label">Since Date</label>
-								<input class="form-control" type="date" value="<?php 
-									if ( isset($_GET['since']) ) {
-										echo $_GET['since'];
-									}
-									else
-									{
-										echo date("Y-m-d",strtotime("-3 year"));
-									}
-								?>" id="since" name="since">
 						</div>
 					</div>
 				</form>
-			</div>
 		</div>
-		<hr>
+	<hr>
 		
 		
 			<!-- START Info MODAL -->
@@ -223,12 +234,11 @@ body {
 						<table class="table">
 							<thead>
 								<tr>
-									<th scope="col">type</th> 
 									<th scope="col">Company</th>
 									<th scope="col">Poster</th> 
-									<th scope="col">Ticket_number</th>
+									<th scope="col">Ticket number</th>
 									<th scope="col">Subject</th>
-									<th scope="col">Ticket_status</th>
+									<th scope="col">Ticket status</th>
 									<th scope="col">Posted</th>
 								</tr>
 							</thead>
@@ -238,7 +248,6 @@ body {
 									$UserOrg = mysqli_fetch_assoc(OrgName($row["user_id"]));
 									echo '	
 									<tr>
-										<td scope="row"> '.$row["entry_type"].' </td>
 										<td> <a href="/scp/orgs.php?id='.$UserOrg['OrgId'].'#tickets">'.$UserOrg["OrgName"].' </a></td>
 									';	
 									if ( $row['user_id'] != 0) {
@@ -250,7 +259,7 @@ body {
 									}
 										
 									echo '		
-										<td> <a href="/scp/tickets.php?id='.$row["ticket_id"].'#note">'.$row["ticket_number"].' </a> </td>
+										<td> <a href="/scp/tickets.php?id='.$row["ticket_id"].'#note">'.$row["ticket number"].' </a> </td>
 										<td> <a href="/scp/tickets.php?id='.$row["ticket_id"].'#note">'.$row["ticket_subject"].'</a> </td>
 										<td> '.$row["status"].' </td>
 										<td> '.$row["entry_posted"].' </td>
