@@ -239,7 +239,8 @@ function getopenusertickets($UserId) {
 		ost_ticket.created AS TicketCreated, 
 		ost_ticket__cdata.`subject` AS TicketSubject, 
 		ost_user.id AS UserId, 
-		ost_user.`name` AS UserName
+		ost_user.`name` AS UserName,
+		ost_staff.firstname AS Staff
 	FROM
 		ost_ticket
 		INNER JOIN
@@ -254,6 +255,10 @@ function getopenusertickets($UserId) {
 		ost_ticket_status
 		ON 
 			ost_ticket.status_id = ost_ticket_status.id
+		INNER JOIN
+		ost_staff
+		ON 
+			ost_ticket.staff_id = ost_staff.staff_id
 	WHERE
 		ost_ticket.user_id = ".$UserId." AND
 		ost_ticket.status_id IN (1,6,7,8,9)
@@ -282,7 +287,8 @@ function getclosedusertickets($UserId) {
 		ost_ticket.created AS TicketCreated, 
 		ost_ticket__cdata.`subject` AS TicketSubject, 
 		ost_user.id AS UserId, 
-		ost_user.`name` AS UserName
+		ost_user.`name` AS UserName,
+		ost_staff.firstname AS Staff
 	FROM
 		ost_ticket
 		INNER JOIN
@@ -297,6 +303,10 @@ function getclosedusertickets($UserId) {
 		ost_ticket_status
 		ON 
 			ost_ticket.status_id = ost_ticket_status.id
+		INNER JOIN
+		ost_staff
+		ON 
+			ost_ticket.staff_id = ost_staff.staff_id
 	WHERE
 		ost_ticket.user_id = ".$UserId." AND
 		ost_ticket.status_id IN (3)
@@ -327,7 +337,8 @@ function getopenorgtickets($OrgId, $UserId) {
 		ost_ticket.created AS TicketCreated, 
 		ost_ticket__cdata.`subject` AS TicketSubject, 
 		ost_user.id AS UserId, 
-		ost_user.`name` AS UserName
+		ost_user.`name` AS UserName,
+		ost_staff.firstname AS Staff
 	FROM
 		ost_ticket
 		INNER JOIN
@@ -342,6 +353,10 @@ function getopenorgtickets($OrgId, $UserId) {
 		ost_ticket_status
 		ON 
 			ost_ticket.status_id = ost_ticket_status.id	
+		INNER JOIN
+		ost_staff
+		ON 
+			ost_ticket.staff_id = ost_staff.staff_id
 	WHERE
 		ost_user.org_id = ".$OrgId." AND
 		ost_ticket.status_id IN (1,6,7,8,9) AND
@@ -373,7 +388,8 @@ function getclosedorgtickets($OrgId) {
 		ost_ticket.created AS TicketCreated, 
 		ost_ticket__cdata.`subject` AS TicketSubject, 
 		ost_user.id AS UserId, 
-		ost_user.`name` AS UserName
+		ost_user.`name` AS UserName,
+		ost_staff.firstname AS Staff
 	FROM
 		ost_ticket
 		INNER JOIN
@@ -388,6 +404,10 @@ function getclosedorgtickets($OrgId) {
 		ost_ticket_status
 		ON 
 			ost_ticket.status_id = ost_ticket_status.id
+		INNER JOIN
+		ost_staff
+		ON 
+			ost_ticket.staff_id = ost_staff.staff_id
 	WHERE
 		ost_user.org_id = ".$OrgId." AND
 		ost_ticket.status_id = 3
@@ -907,6 +927,7 @@ body {
 									<th scope="col">Due</th>
 									<th scope="col">LastUpdated</th>
 									<th scope="col">Created</th>
+									<th scope="col">Assigned</th>
 
 								</tr>
 							</thead>
@@ -921,6 +942,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
+									echo '<td>-</td>';
 									echo '</tr>';
 								}else{
 									echo '<tr>';
@@ -928,6 +950,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td class="text-center"><b>= No Open User Tickets =</b></td>';
+									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
@@ -947,6 +970,7 @@ body {
 									}
 									echo '<td>'.$row['TicketLastUpdate'].'</td>';
 									echo '<td>'.$row['TicketCreated'].'</td>';
+									echo '<td>'.$row['Staff'].'</td>';
 									echo '</tr>';
 								}
 								
@@ -959,6 +983,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
+									echo '<td>-</td>';
 									echo '</tr>';
 								}else{
 									echo '<tr>';
@@ -966,6 +991,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td class="text-center"><b>= No Closed User Tickets =</b></td>';
+									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
@@ -985,6 +1011,7 @@ body {
 									}
 									echo '<td>'.$row['TicketLastUpdate'].'</td>';
 									echo '<td>'.$row['TicketCreated'].'</td>';
+									echo '<td>'.$row['Staff'].'</td>';
 									echo '</tr>';
 								}
 								
@@ -997,6 +1024,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
+									echo '<td>-</td>';
 									echo '</tr>';
 								}else{
 									echo '<tr>';
@@ -1004,6 +1032,7 @@ body {
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td class="text-center"><b>= No Open Company Tickets =</b></td>';
+									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
 									echo '<td>-</td>';
@@ -1023,6 +1052,7 @@ body {
 									}
 									echo '<td>'.$row['TicketLastUpdate'].'</td>';
 									echo '<td>'.$row['TicketCreated'].'</td>';
+									echo '<td>'.$row['Staff'].'</td>';
 									echo '</tr>';
 								}
 								
@@ -1061,6 +1091,7 @@ body {
 									}
 									echo '<td>'.$row['TicketLastUpdate'].'</td>';
 									echo '<td>'.$row['TicketCreated'].'</td>';
+									echo '<td>'.$row['Staff'].'</td>';
 									echo '</tr>';
 								}								
 								
