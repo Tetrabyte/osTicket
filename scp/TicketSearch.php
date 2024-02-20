@@ -236,9 +236,9 @@ body {
 								<tr>
 									<th scope="col">Company</th>
 									<th scope="col">Poster</th> 
-									<th scope="col">Ticket number</th>
+									<th scope="col">Ticket Number</th>
 									<th scope="col">Subject</th>
-									<th scope="col">Ticket status</th>
+									<th scope="col">Ticket Status</th>
 									<th scope="col">Posted</th>
 								</tr>
 							</thead>
@@ -259,7 +259,7 @@ body {
 									}
 										
 									echo '		
-										<td> <a href="/scp/tickets.php?id='.$row["ticket_id"].'#note">'.$row["ticket number"].' </a> </td>
+										<td> <a href="/scp/tickets.php?id='.$row["ticket_id"].'#note">'.$row["ticket_number"].' </a> </td>
 										<td> <a href="/scp/tickets.php?id='.$row["ticket_id"].'#note">'.$row["ticket_subject"].'</a> </td>
 										<td> '.$row["status"].' </td>
 										<td> '.$row["entry_posted"].' </td>
