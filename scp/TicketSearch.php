@@ -154,19 +154,18 @@ body {
 									
 								</div>
 								<div class="row" style="padding-top: 10px;">
-
 									<div class="col-2" style="font-size: 18px;">
 										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="radio" id="andorand" value="phrase" name="andor" <?php echo ($_GET['andor'] ?? 'phrase') === 'phrase' ? 'checked' : ''; ?>>
-											<label class="form-check-label" for="andorand">  Phrase</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="radio" id="andorand" value="and" name="andor" <?php echo ($_GET['andor'] ?? '') === 'and' ? 'checked' : ''; ?>>
+											<input class="form-check-input" type="radio" id="andorand" value="and" name="andor" <?php echo ($_GET['andor'] ?? 'and') === 'and' ? 'checked' : ''; ?>>
 											<label class="form-check-label" for="andorand">  AND</label>
 										</div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" id="andoror" value="or" name="andor" <?php echo ($_GET['andor'] ?? '') === 'or' ? 'checked' : ''; ?>>
 											<label class="form-check-label" for="andoror">  OR</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" id="andorand" value="phrase" name="andor" <?php echo ($_GET['andor'] ?? '') === 'phrase' ? 'checked' : ''; ?>>
+											<label class="form-check-label" for="andorand">  Phrase</label>
 										</div>
 									</div>
 									<div class="col-1 text-end" style="font-size: 25px;">
