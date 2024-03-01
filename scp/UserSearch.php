@@ -226,45 +226,36 @@ function ticketstatusid2rowbgcolor($status_id) {
 }
 
 function getopenusertickets($UserId) {
-	$query = "
-	SELECT
-		ost_ticket.ticket_id AS TicketId, 
-		ost_ticket.number AS TicketNumber, 
-		ost_ticket.status_id AS TicketStatus, 
-		ost_ticket_status.`name` AS TicketStatusName, 
-		ost_ticket.staff_id AS TicketStaffId, 
-		ost_ticket.duedate AS TicketDue, 
-		ost_ticket.isoverdue AS TicketOverdue, 
-		ost_ticket.lastupdate AS TicketLastUpdate, 
-		ost_ticket.created AS TicketCreated, 
-		ost_ticket__cdata.`subject` AS TicketSubject, 
-		ost_user.id AS UserId, 
-		ost_user.`name` AS UserName,
-		ost_staff.firstname AS Staff
-	FROM
-		ost_ticket
-		INNER JOIN
-		ost_user
-		ON 
-			ost_ticket.user_id = ost_user.id
-		INNER JOIN
-		ost_ticket__cdata
-		ON 
-			ost_ticket.ticket_id = ost_ticket__cdata.ticket_id
-		INNER JOIN
-		ost_ticket_status
-		ON 
-			ost_ticket.status_id = ost_ticket_status.id
-		INNER JOIN
-		ost_staff
-		ON 
-			ost_ticket.staff_id = ost_staff.staff_id
-	WHERE
-		ost_ticket.user_id = ".$UserId." AND
-		ost_ticket.status_id IN (1,6,7,8,9)
-	ORDER BY
-		ost_ticket.lastupdate DESC
-	LIMIT 100";
+    $query = "
+    SELECT
+        ost_ticket.ticket_id AS TicketId,
+        ost_ticket.number AS TicketNumber,
+        ost_ticket.status_id AS TicketStatus,
+        ost_ticket_status.`name` AS TicketStatusName,
+        ost_ticket.staff_id AS TicketStaffId,
+        ost_ticket.duedate AS TicketDue,
+        ost_ticket.isoverdue AS TicketOverdue,
+        ost_ticket.lastupdate AS TicketLastUpdate,
+        ost_ticket.created AS TicketCreated,
+        ost_ticket__cdata.`subject` AS TicketSubject,
+        ost_user.id AS UserId,
+        ost_user.`name` AS UserName,
+        CASE
+            WHEN ost_ticket.staff_id = 0 THEN '-'
+            ELSE ost_staff.firstname
+        END AS Staff
+    FROM
+        ost_ticket
+        INNER JOIN ost_user ON ost_ticket.user_id = ost_user.id
+        INNER JOIN ost_ticket__cdata ON ost_ticket.ticket_id = ost_ticket__cdata.ticket_id
+        INNER JOIN ost_ticket_status ON ost_ticket.status_id = ost_ticket_status.id
+        LEFT JOIN ost_staff ON ost_ticket.staff_id = ost_staff.staff_id AND ost_ticket.staff_id != 0
+    WHERE
+        ost_ticket.user_id = ".$UserId."
+        AND ost_ticket.status_id IN (1, 6, 7, 8, 9)
+    ORDER BY
+        ost_ticket.lastupdate DESC
+    LIMIT 100";
 	
 	#echo $query."<br/>";
 	
@@ -288,7 +279,10 @@ function getclosedusertickets($UserId) {
 		ost_ticket__cdata.`subject` AS TicketSubject, 
 		ost_user.id AS UserId, 
 		ost_user.`name` AS UserName,
-		ost_staff.firstname AS Staff
+		CASE
+			WHEN ost_ticket.staff_id = 0 THEN '-'
+			ELSE ost_staff.firstname
+		END AS Staff
 	FROM
 		ost_ticket
 		INNER JOIN
@@ -303,10 +297,7 @@ function getclosedusertickets($UserId) {
 		ost_ticket_status
 		ON 
 			ost_ticket.status_id = ost_ticket_status.id
-		INNER JOIN
-		ost_staff
-		ON 
-			ost_ticket.staff_id = ost_staff.staff_id
+		LEFT JOIN ost_staff ON ost_ticket.staff_id = ost_staff.staff_id AND ost_ticket.staff_id != 0
 	WHERE
 		ost_ticket.user_id = ".$UserId." AND
 		ost_ticket.status_id IN (3)
@@ -338,7 +329,10 @@ function getopenorgtickets($OrgId, $UserId) {
 		ost_ticket__cdata.`subject` AS TicketSubject, 
 		ost_user.id AS UserId, 
 		ost_user.`name` AS UserName,
-		ost_staff.firstname AS Staff
+		CASE
+			WHEN ost_ticket.staff_id = 0 THEN '-'
+			ELSE ost_staff.firstname
+		END AS Staff
 	FROM
 		ost_ticket
 		INNER JOIN
@@ -353,10 +347,7 @@ function getopenorgtickets($OrgId, $UserId) {
 		ost_ticket_status
 		ON 
 			ost_ticket.status_id = ost_ticket_status.id	
-		INNER JOIN
-		ost_staff
-		ON 
-			ost_ticket.staff_id = ost_staff.staff_id
+		LEFT JOIN ost_staff ON ost_ticket.staff_id = ost_staff.staff_id AND ost_ticket.staff_id != 0
 	WHERE
 		ost_user.org_id = ".$OrgId." AND
 		ost_ticket.status_id IN (1,6,7,8,9) AND
@@ -389,7 +380,10 @@ function getclosedorgtickets($OrgId) {
 		ost_ticket__cdata.`subject` AS TicketSubject, 
 		ost_user.id AS UserId, 
 		ost_user.`name` AS UserName,
-		ost_staff.firstname AS Staff
+		CASE
+			WHEN ost_ticket.staff_id = 0 THEN '-'
+			ELSE ost_staff.firstname
+		END AS Staff
 	FROM
 		ost_ticket
 		INNER JOIN
@@ -404,10 +398,7 @@ function getclosedorgtickets($OrgId) {
 		ost_ticket_status
 		ON 
 			ost_ticket.status_id = ost_ticket_status.id
-		INNER JOIN
-		ost_staff
-		ON 
-			ost_ticket.staff_id = ost_staff.staff_id
+		LEFT JOIN ost_staff ON ost_ticket.staff_id = ost_staff.staff_id AND ost_ticket.staff_id != 0
 	WHERE
 		ost_user.org_id = ".$OrgId." AND
 		ost_ticket.status_id = 3
