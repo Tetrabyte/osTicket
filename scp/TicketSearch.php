@@ -143,11 +143,13 @@ body {
 								<div class="row">
 
 
-									<div class="col-4">
+									<div class="col-5">
 										<input type="text" class="form-control" name="keyword" value="<?php echo $_GET['keyword'] ?? ''; ?>" autofocus style="height: 40px;">
 									</div><div class="col-1">
 									<button type="submit" class="form-control btn btn-primary" style="height: 35px;">Search</button>
 									</div>
+									<div class="col-1"></div>
+									<div class="col-3">Advanced searching with <a href="https://www.w3schools.com/sql/sql_wildcards.asp">SQL Syntax</a> in the 'Phrase' Option is possible</div>
 									
 									<div class="col-1"></div>
 									
