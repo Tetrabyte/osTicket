@@ -116,7 +116,7 @@ div.hr {
     <div class="hr">&nbsp;</div>
     <table width="100%"><tr><td class="flush-left">
         Task #<?php echo $task->getNumber(); ?> printed by
-        <?php echo $thisstaff->getUserName(); ?> on
+        <?php echo $thisstaff->getFirstName(); ?> on
         <?php echo Format::daydatetime(Misc::gmtime()); ?>
     </td>
     <td class="flush-right">
