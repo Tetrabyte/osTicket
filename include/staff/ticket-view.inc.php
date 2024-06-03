@@ -815,7 +815,7 @@ if ($errors['err'] && isset($_POST['a'])) {
 			if (!($blockReply)) { 
 			?>
 				<li>
-					<a href="#note" <?php echo isset($errors['postnote']) ?  'class="error"' : ''; ?> id="post-note-tab" > 
+					<a href="#note" <?php echo isset($errors['postnote']) ?  'class="error"' : ''; ?> id="post-note-tab" style="background: rgb(242, 177, 177);" > 
 						<?php echo __('Post Internal Note');?>
 					</a>
 				</li>
@@ -824,7 +824,7 @@ if ($errors['err'] && isset($_POST['a'])) {
 			if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) { 
 			?>
 				<li class="active <?php echo isset($errors['reply']) ? 'error' : ''; ?>">
-					<a href="#reply" id="post-reply-tab">
+					<a href="#reply" id="post-reply-tab" style="background: rgb(255, 224, 179);">
 						<?php echo __('Post Reply');?>
 					</a>
 				</li>	
@@ -841,7 +841,7 @@ if ($errors['err'] && isset($_POST['a'])) {
         data-lock-object-id="ticket/<?php echo $ticket->getId(); ?>"
         data-lock-id="<?php echo $mylock ? $mylock->getId() : ''; ?>"
         action="tickets.php?id=<?php
-        echo $ticket->getId(); ?>#reply" name="reply" method="post" enctype="multipart/form-data">
+        echo $ticket->getId(); ?>#reply" name="reply" method="post" enctype="multipart/form-data" style="background: rgb(255, 224, 179);">
         <?php csrf_token(); ?>
         <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
         <input type="hidden" name="msgId" value="<?php echo $msgId; ?>">
@@ -1165,7 +1165,7 @@ if ($errors['err'] && isset($_POST['a'])) {
         data-lock-object-id="ticket/<?php echo $ticket->getId(); ?>"
         data-lock-id="<?php echo $mylock ? $mylock->getId() : ''; ?>"
         action="tickets.php?id=<?php echo $ticket->getId(); ?>#note"
-        name="note" method="post" enctype="multipart/form-data">
+        name="note" method="post" enctype="multipart/form-data" style="background: rgb(242, 177, 177);">
         <?php csrf_token(); ?>
         <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
         <input type="hidden" name="locktime" value="<?php echo $cfg->getLockTime() * 60; ?>">
