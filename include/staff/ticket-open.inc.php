@@ -371,12 +371,12 @@ if ($_POST)
         //is the user allowed to post replies??
         if ($thisstaff->getRole()->hasPerm(Ticket::PERM_REPLY)) { ?>
         <tr>
-            <th colspan="2">
+            <th colspan="2" style="background: rgb(255, 224, 179);">
                 <em><strong><?php echo __('Response');?></strong>: <?php echo __('Optional response to the above issue.');?></em>
             </th>
         </tr>
         <tr>
-            <td colspan=2>
+            <td colspan="2" style="background: rgb(255, 224, 179);">
             <?php
             if($cfg->isCannedResponseEnabled() && ($cannedResponses=Canned::getCannedResponses())) {
                 ?>
@@ -463,13 +463,13 @@ print $response_form->getField('attachments')->render();
         } //end canPostReply
         ?>
         <tr>
-            <th colspan="2">
+            <th colspan="2" style="background: rgb(242, 177, 177);">
                 <em><strong><?php echo __('Internal Note');?></strong>
                 <font class="error">&nbsp;<?php echo $errors['note']; ?></font></em>
             </th>
         </tr>
-        <tr>
-            <td colspan=2>
+        <tr >
+            <td colspan="2" style="background: rgb(242, 177, 177);">
                 <textarea
                     class="<?php if ($cfg->isRichTextEnabled()) echo 'richtext';
                         ?> draft draft-delete"
