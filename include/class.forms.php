@@ -3457,10 +3457,10 @@ class AssigneeField extends ChoiceField {
         switch (strtolower($config['target'])) {
         case 'agents':
             if ($dept)
-                foreach ($dept->getAssignees(array('staff' => $staff)) as $a)
+                foreach ($dept->getAssignees2(array('staff' => $staff)) as $a)
                     $assignees['s'.$a->getId()] = $a;
             else
-                foreach (Staff::getStaffMembers(array('staff' => $staff)) as $id => $name)
+                foreach (Staff::getStaffMembers2(array('staff' => $staff)) as $id => $name)
                     $assignees['s'.$id] = $name;
             break;
         case 'teams':
@@ -3476,10 +3476,10 @@ class AssigneeField extends ChoiceField {
             $criteria = $this->getCriteria();
             $agents = array();
             if ($dept)
-                foreach ($dept->getAssignees(array('staff' => $staff)) as $a)
+                foreach ($dept->getAssignees2(array('staff' => $staff)) as $a)
                     $A['s'.$a->getId()] = $a;
             else
-                foreach (Staff::getStaffMembers(array('staff' => $staff)) as $a => $name)
+                foreach (Staff::getStaffMembers2(array('staff' => $staff)) as $a => $name)
                     $A['s'.$a] = $name;
 
             next($assignees);
@@ -5762,7 +5762,7 @@ class AssignmentForm extends Form {
             $f->addError(__('Unknown assignee'));
         } elseif ($assignee instanceof Staff) {
             // Make sure the agent is available
-            if (!$assignee->isAvailable())
+            if (!$assignee->isAvailable2())
                 $f->addError(__('Agent is unavailable for assignment'));
         } elseif ($assignee instanceof Team) {
             // Make sure the team is active and has members
@@ -6043,7 +6043,7 @@ class ReferralForm extends Form {
         switch (true) {
         case $referee instanceof Staff:
             // Make sure the agent is available
-            if (!$referee->isAvailable())
+            if (!$referee->isAvailable2())
                 $f->addError(__('Agent is unavailable for assignment'));
         break;
         case $referee instanceof Team:

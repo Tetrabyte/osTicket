@@ -241,6 +241,14 @@ implements TemplateVariable, Searchable {
         ));
     }
 
+    function getAvailableMembers2() {
+        $members = clone $this->getMembers();
+        return $members->filter(array(
+            'ticketable' => 1,
+            'isactive' => 1,
+        ));
+    }
+
     function getPrimaryMembers() {
         if (!isset($this->_primary_members)) {
             $members = clone $this->getMembers();
@@ -286,6 +294,31 @@ implements TemplateVariable, Searchable {
         } else {
             //this gets just the members of the dept including extended access
             $members = clone $this->getAvailableMembers();
+
+            //Restrict to the primary members only
+            if ($this->assignPrimaryOnly())
+                $members->filter(array('dept_id' => $this->getId()));
+        }
+
+        // Restrict agents based on visibility of the assigner
+        if (($staff=$criteria['staff']))
+            $members = $staff->applyDeptVisibility($members);
+
+        // Sort based on set name format
+        return Staff::nsort($members);
+    }
+
+    function getAssignees2($criteria=array()) {
+        if (!$this->assignPrimaryOnly() && !$this->assignMembersOnly()) {
+            // this is for if all agents is set - assignment is not restricted
+            // based on department membership.
+            $members =  Staff::objects()->filter(array(
+                'ticketable' => 1,
+                'isactive' => 1,
+            ));
+        } else {
+            //this gets just the members of the dept including extended access
+            $members = clone $this->getAvailableMembers2();
 
             //Restrict to the primary members only
             if ($this->assignPrimaryOnly())

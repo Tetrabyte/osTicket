@@ -1007,7 +1007,7 @@ implements RestrictedAccess, Threadable, Searchable {
         switch (strtolower($options['target'])) {
             case 'agents':
                 $assignees = array();
-                foreach ($dept->getAssignees() as $member)
+                foreach ($dept->getAssignees2() as $member)
                     $assignees['s'.$member->getId()] = $member;
 
                 if (!$source && $this->isOpen() && $this->staff)
@@ -1066,7 +1066,8 @@ implements RestrictedAccess, Threadable, Searchable {
         $dept = $this->getDept();
         // Agents
         $staff = Staff::objects()->filter(array(
-         'isactive' => 1,
+            'ticketable' => 1,
+            'isactive' => 1,
          ))
          ->filter(Q::not(array('dept_id' => $dept->getId())));
         $staff = Staff::nsort($staff);
@@ -1560,7 +1561,7 @@ implements RestrictedAccess, Threadable, Searchable {
                     if ($autoassign
                             && $staff
                             // Is agent on vacation ?
-                            && $staff->isAvailable()
+                            && $staff->isAvailable2()
                             // Does the agent have access to dept?
                             && $staff->canAccessDept($dept))
                         $this->setStaffId($staff->getId());
@@ -1747,7 +1748,7 @@ implements RestrictedAccess, Threadable, Searchable {
 
                 foreach ($recipients as $k=>$staff) {
                     if (!is_object($staff)
-                        || !$staff->isAvailable()
+                        || !$staff->isAvailable2()
                         || in_array($staff->getEmail(), $sentlist)
                     ) {
                         continue;
@@ -2123,7 +2124,7 @@ implements RestrictedAccess, Threadable, Searchable {
                 : array();
             foreach ($recipients as $k=>$staff) {
                 if (!is_object($staff)
-                    || !$staff->isAvailable()
+                    || !$staff->isAvailable2()
                     || in_array($staff->getEmail(), $sentlist)
                 ) {
                     continue;
@@ -2781,7 +2782,7 @@ implements RestrictedAccess, Threadable, Searchable {
             }
             foreach ($recipients as $k=>$staff) {
                 if (!is_object($staff)
-                    || !$staff->isAvailable()
+                    || !$staff->isAvailable2()
                     || in_array($staff->getEmail(), $sentlist)
                 ) {
                     continue;
@@ -2804,7 +2805,7 @@ implements RestrictedAccess, Threadable, Searchable {
                 || !$thisstaff
                 || $thisstaff->getId() != $assignee->getId()) {
             $errors['err'] = __('Unknown assignee');
-        } elseif (!$assignee->isAvailable()) {
+        } elseif (!$assignee->isAvailable2()) {
             $errors['err'] = __('Agent is unavailable for assignment');
         } elseif (!$dept->canAssign($assignee)) {
             $errors['err'] = __('Permission denied');
@@ -2821,7 +2822,7 @@ implements RestrictedAccess, Threadable, Searchable {
         if(!is_object($staff) && !($staff = Staff::lookup($staff)))
             return false;
 
-        if (!$staff->isAvailable() || !$this->setStaffId($staff->getId()))
+        if (!$staff->isAvailable2() || !$this->setStaffId($staff->getId()))
             return false;
 
         $this->onAssign($staff, $note, $alert);
@@ -2881,7 +2882,7 @@ implements RestrictedAccess, Threadable, Searchable {
                         __('Ticket'),
                         __('the agent')
                         );
-            } elseif (!$assignee->isAvailable()) {
+            } elseif (!$assignee->isAvailable2()) {
                 $errors['assignee'] = __('Agent is unavailable for assignment');
             } elseif (!$dept->canAssign($assignee)) {
                 $errors['err'] = __('Permission denied');
@@ -2983,7 +2984,7 @@ implements RestrictedAccess, Threadable, Searchable {
                         __('Ticket'),
                         __('the agent')
                         );
-            } elseif(!$referee->isAvailable()) {
+            } elseif(!$referee->isAvailable2()) {
                 $errors['agent'] = sprintf(__('Agent is unavailable for %s'),
                         __('referral'));
             } else {

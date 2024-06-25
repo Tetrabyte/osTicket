@@ -660,6 +660,10 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
         return ($this->isActive() && !$this->onVacation());
     }
 
+    function isAvailable2() {
+        return ($this->isActive());
+    }
+
     function showAssignedOnly() {
         return $this->assigned_only;
     }
@@ -1013,6 +1017,35 @@ implements AuthenticatedUser, EmailContact, TemplateVariable, Searchable {
 
     static function getAvailableStaffMembers() {
         return self::getStaffMembers(array('available'=>true));
+    }
+    static function getStaffMembers2($criteria=array()) {
+        global $cfg;
+
+        $members = static::objects();
+
+        if (isset($criteria['available'])) {
+            $members = $members->filter(array(
+                'ticketable' => 1,
+                'isactive' => 1,
+            ));
+        }
+
+        // Restrict agents based on visibility of the assigner
+        if (($staff=$criteria['staff']))
+            $members = $staff->applyDeptVisibility($members);
+
+        $members = self::nsort($members);
+
+        $users=array();
+        foreach ($members as $M) {
+            $users[$M->getId()] = $M->getName();
+        }
+
+        return $users;
+    }
+
+    static function getAvailableStaffMembers2() {
+        return self::getStaffMembers2(array('available'=>true));
     }
 
     //returns agents in departments this agent has access to
