@@ -51,6 +51,20 @@ if(isset($_POST['edit_note'])) {
     }
     header("Location: " . $_SERVER["HTTP_REFERER"]);
 }
+if(isset($_POST['delete_note'])) {
+    $id_note = $_POST['id_note'];
+    $expiryDate = date('Y-m-d', strtotime('-1 year'));
 
+    $query = "UPDATE notes SET expiry = '$expiryDate' WHERE id_note = '$id_note'";
+
+    $result = db_query($query, $logError = true, $buffered = true);
+    
+    if ($result) {
+        echo "Note Deleted successfully!";
+    } else {
+        echo "Error saving note. Please try again.";
+    }
+    header("Location: " . $_SERVER["HTTP_REFERER"]);
+}
 
 ?>
