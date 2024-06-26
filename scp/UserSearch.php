@@ -543,6 +543,9 @@ if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['Org
 		$commit = db_query($query2, $logError=true, $buffered=true);		
 	}
 }
+
+require('includes/notes_function.php')
+
 ?>
 
 <?php
@@ -747,6 +750,8 @@ body {
 									
 									echo '</tr>';
 
+									require_once('includes/note_add_modal.php');
+
 ############################################################ Modals #################################################################
 
 								echo '<!-- START UpdateNumber MODAL -->
@@ -844,7 +849,17 @@ body {
 						?>
 							</tbody>
 						</table>
-						
+						<?php if(isset($OrgId)) { ?><div class="row" >
+								<div class="col-md"><?php company_notes($OrgId); ?></div>
+								<div class="col-md-1"><button type="button" class="btn btn-primary" id="add" data-bs-toggle="modal" data-bs-target="#addCNoteModal">
+								<i class="bi bi-building-add"></i> New Org Note</button></div> 
+							</div> <?php } ?>
+						<hr>
+						<?php if(isset($UserId)) { ?><div class="row" >
+							<div class="col-md"><?php user_notes($UserId); ?></div>
+							<div class="col-md-1"><button type="button" class="btn btn-primary" id="add" data-bs-toggle="modal" data-bs-target="#addNoteModal">
+								<i class="bi bi-person-plus"></i> New User Note</button></div> 
+						</div> <?php } ?>
 					<!-- START Info MODAL -->
 							<div class="modal fade" id="InfoModal">
 								<div class="modal-dialog" style="width:75%; max-width:none">
@@ -1138,6 +1153,12 @@ $ost->addExtraHeader('<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/
 			$('#UpdateOrgNotesModal').on("shown.bs.modal hide.bs.modal", function() {
 				setSelectionRange('#OrgNotes');
 			});
+		});
+		document.addEventListener('DOMContentLoaded', function() {
+		const editButton = document.getElementById('add');
+		editButton.addEventListener('click', function() {
+			const clientId = this.getAttribute('data-id');
+		});
 		});
 	</script>
   </body>
