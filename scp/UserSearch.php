@@ -558,10 +558,10 @@ $ost->addExtraHeader('<title>User Search Tool</title>');
   <head>
 	  <meta charset="utf-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1">
-	  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-	  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+	  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 	  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	  <script src="/scp/js/tinymce/tinymce.min.js"></script>
 	  <style>
 *, ::after, ::before {
@@ -636,7 +636,7 @@ body {
 						<table class="table usersearch">
 							<thead>
 								<tr>
-									<th scope="col">Select</th>
+									<?php if ( mysqli_num_rows($commit) == 1 ) {echo '<th scope="col">Open Ticket</th>';} else {echo '<th scope="col">Select</th>';} ?>
 									<th scope="col">User Name</th> 
 									<th scope="col">User Phone</th>
 									
@@ -646,7 +646,7 @@ body {
 									<th scope="col">Org Phone</th>
 
 									<th scope="col">Org Notes</th>
-									<th scope="col">Open Ticket</th>
+									<?php if ( mysqli_num_rows($commit) == 1 ) {echo '<th scope="col">Open Ticket</th>';} else {echo '<th scope="col">Select</th>';} ?>
 									
 								</tr>
 							</thead>
@@ -674,7 +674,11 @@ body {
 									$row["OrgNotesPHP"] = str_replace("<p>","",$row["OrgNotesPHP"]);
 									$row["OrgNotesPHP"] = str_replace("</p>","",$row["OrgNotesPHP"]);
 									echo '<tr>';
-									echo '<td> <a href="/scp/UserSearch.php?UserId='.$row["UserId"].'" class="btn btn-primary" role="button">Select User</a></td> ';
+									if ( mysqli_num_rows($commit) == 1 ) {
+										echo '<td> <a target="_blank" href="/scp/tickets.php?a=open&uid='.$row["UserId"].'"class="btn btn-success" role="button" > OPEN TICKET </a></td> ';
+									} else {
+										echo '<td> <a href="/scp/UserSearch.php?UserId='.$row["UserId"].'" class="btn btn-primary" role="button">Select User</a></td> ';
+									}
 									echo '<td> <a target="_blank" href="/scp/users.php?id='.$row["UserId"].'">'.$row["UserName"].'</a></td> ';
 									echo '<td>';
 									if (!empty($row["UserPhone"])) {
@@ -745,9 +749,11 @@ body {
 											</div>';
 										echo $row["OrgNotes"];
 									echo '</td>';
-									
-									echo '<td> <a target="_blank" href="/scp/tickets.php?a=open&uid='.$row["UserId"].'"class="btn btn-success" role="button" > OPEN TICKET </a></td> ';	
-									
+									if ( mysqli_num_rows($commit) == 1 ) {
+										echo '<td> <a target="_blank" href="/scp/tickets.php?a=open&uid='.$row["UserId"].'"class="btn btn-success" role="button" > OPEN TICKET </a></td> ';	
+									} else {
+										echo '<td> <a href="/scp/UserSearch.php?UserId='.$row["UserId"].'" class="btn btn-primary" role="button">Select User</a></td> ';
+									}
 									echo '</tr>';
 
 									require_once('includes/note_add_modal.php');
@@ -1150,6 +1156,26 @@ body {
 		editButton.addEventListener('click', function() {
 			const clientId = this.getAttribute('data-id');
 		});
+		});
+	</script>
+	<script>
+		tinymce.init({
+			selector: 'textarea#noteText',
+			forced_root_block: 'asda',
+			license_key: 'gpl',
+			plugins: 'link',
+			menubar: 'edit insert format',
+			link_context_toolbar: true,
+			branding: false,
+			promotion: false,
+			toolbar: false,
+			link_default_target: '_blank',
+			contextmenu: false
+		});
+		document.addEventListener('focusin', (e) => {
+			if (e.target.closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+				e.stopImmediatePropagation();
+			}
 		});
 	</script>
   </body>

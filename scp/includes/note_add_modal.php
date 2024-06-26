@@ -1,11 +1,9 @@
 <div class="modal fade" id="addNoteModal" tabindex="-1" role="dialog" aria-labelledby="addNoteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document" style="max-width: 35%;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 35%;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addNoteModalLabel">Add New Note</h5>
-                <button type="button" class="btn close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action='../scp/includes/notes.php' method="post" autocomplete="off" id="addNoteForm">
@@ -43,13 +41,11 @@
     </div>
 </div>
 <div class="modal fade" id="addCNoteModal" tabindex="-1" role="dialog" aria-labelledby="addCNoteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document" style="max-width: 35%;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 35%;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addNoteModalLabel">Add New Note</h5>
-                <button type="button" class="btn close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action='../scp/includes/notes.php' method="post" autocomplete="off" id="addCNoteForm">
@@ -86,16 +82,4 @@
         </div>
     </div>
 </div>
-<script>
-  tinymce.init({
-    selector: 'textarea#noteText',
-    forced_root_block: 'asda',
-    license_key: 'gpl',
-    plugins: 'link',
-    menubar: 'edit insert format',
-    link_context_toolbar: true,
-    branding: false,
-    promotion: false,
-    toolbar: false
-  });
-</script>
+
