@@ -328,7 +328,7 @@ if ($_POST)
                   <select id="assignId" name="assignId">
                       <option value="s<?=$defaultid?>" selected="selected"><?=$defaultname?></option>
                     <?php
-                    $users = Staff::getStaffMembers(array(
+                    $users = Staff::getStaffMembers2(array(
                                 'available' => true,
                                 'staff' => $thisstaff,
                                 ));
