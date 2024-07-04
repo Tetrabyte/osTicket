@@ -436,7 +436,7 @@ implements TemplateVariable, Searchable {
         }
 
         // Make sure agent / team  is availabe for assignment
-        if (!$assignee->isAvailable())
+        if (!$assignee->isAvailable2())
              return false;
 
         return true;
