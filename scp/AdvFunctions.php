@@ -268,7 +268,7 @@ body {
 		</div>
 		<?php 
 			if ( isset($TicketsUnmerged) ) {
-				Echo "<b>Tickets Unmerged</b> <br/>Please click the links at teh top of the page to access each unmerged ticket, then you can re-merge them where you need. <br/>";
+				Echo "<b>Tickets Unmerged</b> <br/>Please click the links below to access each unmerged ticket, then you can re-merge them where you need. <br/><br/>";
 				Echo $TicketLinks;
 			}
 		?>
