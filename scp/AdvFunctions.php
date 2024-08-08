@@ -24,7 +24,7 @@ function TicketNum2ThreadID ($TikNum) {
 				WHERE
 					ost_ticket.number = '".$TikNum."'
 					";		
-	 echo $query."</BR>";
+#	 echo $query."</BR>";
 	$commit = db_query($query, $logError=true, $buffered=true);
 	return $commit;
 }
@@ -68,6 +68,41 @@ function SilentAssignJames ($TikID) {
 	return $commit;
 }
 
+function UnmergeTickets($TikID) {
+#	echo "id: ".$TikID;
+#	echo "<br/>";
+	$TicketLinks = "";
+	
+	$query1 = "	SELECT
+					ost_ticket.ticket_id
+				FROM
+					ost_ticket
+				WHERE
+					ost_ticket.ticket_pid = '".$TikID."'
+			";		
+#	echo "Unmerged: ".$query1."</BR>";
+	$commit1 = db_query($query1, $logError=true, $buffered=true);  #returns all child ticket id's merged into this one
+	
+	while ($row = mysqli_fetch_assoc($commit1)) {
+		foreach ($row as $key => $value) {
+#			echo "$value <br/>";
+			$query2 = "
+				UPDATE ost_ticket
+				SET ticket_pid = NULL, flags = 0, status_id = 1,
+				WHERE Ticket_id = '".$value."'
+				";
+#			echo "$query2 <br/>";		
+	#		$commit2 = db_query($query2, $logError=true, $buffered=true);
+			$TicketLinks .= '<a class="no-pjax" href="https://tickets.remoteit.co.uk/scp/tickets.php?id='.$value.'" target="_blank"> Ticket </a> <br/>';
+
+		}
+	}
+	return $TicketLinks;
+}
+
+
+
+
 
 if ( isset($_GET['TikNum']) AND isset($_GET['PostID']) ) {
 		$result = TicketNum2ThreadID($_GET['TikNum']);
@@ -88,6 +123,21 @@ if ( isset($_GET['SilentJamesTikID'])) {
 	$result = SilentAssignJames ($_GET['SilentJamesTikID']);
 	if( $result == $true ) { $AssignedJames = 1; }
 	}	
+
+
+if ( isset($_GET['TicketNumber']) ) {
+#	echo $_GET['TicketNumber'];
+	$TikID = TicketNum2ThreadID($_GET['TicketNumber']);
+	$TikID = mysqli_fetch_array($TikID);
+#	echo "<br/>";
+#	print_r($TikID);
+#	echo "<br/>";
+#	echo $TikID['TicketId'];
+#	echo "<br/>";
+	$TicketLinks = UnmergeTickets($TikID['TicketId']);
+	$TicketsUnmerged = 1;
+	}
+
 
 
 
@@ -201,7 +251,27 @@ body {
 		
 		<hr>		
 		
-		
+		<div class="row">
+			<div class="col-md-11">
+			<h3>Unmerge Tickets</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<form role="form" method="GET" class="form">
+					<div class="input-group" style="padding-bottom:5px">
+							<input type="text" class="form-control" id="TicketNumber" name="TicketNumber" placeholder="Parent Ticket Number" />
+							<button type="submit" class="form-control btn btn-primary">Unmerge</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<?php 
+			if ( isset($TicketsUnmerged) ) {
+				Echo "<b>Tickets Unmerged</b> <br/>Please click the links at teh top of the page to access each unmerged ticket, then you can re-merge them where you need. <br/>";
+				Echo $TicketLinks;
+			}
+		?>
 		
 		
 		<div class="">
