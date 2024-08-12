@@ -111,7 +111,7 @@ function run_idsearch ($UserId) {
 	#echo $query;
 	
 	$commit = db_query($query, $logError=true, $buffered=true);
-	
+
 	return $commit;
 }
 
@@ -414,6 +414,20 @@ function getclosedorgtickets($OrgId) {
 	return $commit;
 }		
 
+function update_contacts($UserId) {
+	$check_user_query = "SELECT id FROM contact WHERE id = ".$UserId;
+	$check_user_result = db_query($check_user_query);
+
+	if ($check_user_result && mysqli_num_rows($check_user_result) > 0) {
+		$update_query = "UPDATE contact SET date = NOW() WHERE id = '$UserId'";
+		$contact = db_query($update_query);
+	} else {
+		$insert_query = "INSERT INTO contact (id, date) VALUES ('$UserId', NOW())";
+		$contact = db_query($insert_query);
+	}
+	$contact;
+}
+
 if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['OrgNotes']) OR isset($_GET['OrgPhone'])) AND (isset($_GET['UserId']))  ) {
 	
 	### Update User Number
@@ -676,6 +690,7 @@ body {
 									echo '<tr>';
 									if ( mysqli_num_rows($commit) == 1 ) {
 										echo '<td> <a target="_blank" href="/scp/tickets.php?a=open&uid='.$row["UserId"].'"class="btn btn-success" role="button" > OPEN TICKET </a></td> ';
+										update_contacts($UserId);
 									} else {
 										echo '<td> <a href="/scp/UserSearch.php?UserId='.$row["UserId"].'" class="btn btn-primary" role="button">Select User</a></td> ';
 									}
