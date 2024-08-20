@@ -1203,7 +1203,10 @@ body {
 			$(function() {
 				$("#expiryDate").datepicker({
 					showButtonPanel: true,
-					dateFormat: 'yy-mm-dd'
+					dateFormat: 'yy-mm-dd',
+					numberOfMonths: 2,
+					changeMonth: true,
+					changeYear: true
 				});
 			});
 		});
@@ -1213,7 +1216,10 @@ body {
 			$(function() {
 				$("#cexpiryDate").datepicker({
 					showButtonPanel: true,
-					dateFormat: 'yy-mm-dd'
+					dateFormat: 'yy-mm-dd',
+					numberOfMonths: 2,
+					changeMonth: true,
+					changeYear: true
 				});
 			});
 		});

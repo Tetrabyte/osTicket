@@ -1,4 +1,17 @@
 <div class="modal fade" id="editNoteModal-<?php echo $id_note ?>" tabindex="-1" role="dialog" aria-labelledby="editNoteModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+<script>
+    $('#editNoteModal-<?php echo $id_note ?>').on('shown.bs.modal', function () {
+        $(function() {
+            $("#expiryDate").datepicker({
+                showButtonPanel: true,
+                dateFormat: 'yy-mm-dd',
+                numberOfMonths: 2,
+                changeMonth: true,
+                changeYear: true
+            });
+        });
+    });
+</script>
     <div class="modal-dialog modal-dialog-centered" style="max-width: 35%;">
         <div class="modal-content">
             <div class="modal-header">
@@ -28,7 +41,7 @@
                         </div>
                         <div class="col-md mb-4">
                             <label for="expiryDate">Expiry Date</label>
-                            <input type="date" class="form-control" id="expiryDate" name="expiryDate" style="width: 80%;" value="<?php echo $expiry ?>">
+                            <input type="text" class="form-control" id="expiryDate" name="expiryDate" style="width: 80%;" value="<?php echo $expiry ?>">
                         </div>
                     </div>
                     <div class="modal-footer">
