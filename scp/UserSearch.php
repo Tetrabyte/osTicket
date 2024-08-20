@@ -1199,20 +1199,23 @@ body {
 		});
 	</script>
 	<script>
-	$('#addNoteModal').on('shown.bs.modal', function () {
-		$( function() {
-			$( "#expiryDate" ).datepicker({
-			showButtonPanel: true
+		$('#addNoteModal').on('shown.bs.modal', function () {
+			$(function() {
+				$("#expiryDate").datepicker({
+					showButtonPanel: true,
+					dateFormat: 'yy-mm-dd'
+				});
 			});
-		} );
-	});
-	$('#addCNoteModal').on('shown.bs.modal', function () {
-		$( function() {
-			$( "#expiryDate" ).datepicker({
-			showButtonPanel: true
+		});
+
+		$('#addCNoteModal').on('shown.bs.modal', function () {
+			$(function() {
+				$("#expiryDate").datepicker({
+					showButtonPanel: true,
+					dateFormat: 'yy-mm-dd'
+				});
 			});
-		} );
-	});
+		});
 	</script>
 
   </body>
