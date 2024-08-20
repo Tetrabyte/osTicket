@@ -577,6 +577,8 @@ $ost->addExtraHeader('<title>User Search Tool</title>');
 	  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	  <script src="/scp/js/tinymce/tinymce.min.js"></script>
+	  <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
+	  <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
 	  <style>
 *, ::after, ::before {
   box-sizing: content-box;
@@ -1193,6 +1195,23 @@ body {
 			}
 		});
 	</script>
+	<script>
+	$('#addNoteModal').on('shown.bs.modal', function () {
+		$( function() {
+			$( "#expiryDate" ).datepicker({
+			showButtonPanel: true
+			});
+		} );
+	});
+	$('#addCNoteModal').on('shown.bs.modal', function () {
+		$( function() {
+			$( "#expiryDate" ).datepicker({
+			showButtonPanel: true
+			});
+		} );
+	});
+	</script>
+
   </body>
 </html>
 <?php
