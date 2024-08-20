@@ -1207,7 +1207,8 @@ body {
 				});
 			});
 		});
-
+	</script>
+	<script>
 		$('#addCNoteModal').on('shown.bs.modal', function () {
 			$(function() {
 				$("#expiryDate").datepicker({
