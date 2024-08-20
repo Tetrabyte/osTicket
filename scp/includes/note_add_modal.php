@@ -69,8 +69,8 @@
                             </select>
                         </div>
                         <div class="col-md mb-4">
-                            <label for="expiryDate">Expiry Date</label>
-                            <input type="text" class="form-control" id="expiryDate" name="expiryDate" style="width: 80%;" value="<?php echo date('Y-m-d', strtotime('+1000 years')); ?>">
+                            <label for="cexpiryDate">Expiry Date</label>
+                            <input type="text" class="form-control" id="cexpiryDate" name="cexpiryDate" style="width: 80%;" value="<?php echo date('Y-m-d', strtotime('+1000 years')); ?>">
                         </div>
                     </div>
                     <div class="modal-footer">

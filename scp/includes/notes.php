@@ -21,7 +21,7 @@ if (isset($_POST['save_user'])) {
 if (isset($_POST['save_company'])) {
     $id = intval($_POST['id']);
     $noteText = $_POST['noteText'];
-    $expiryDate = $_POST['expiryDate'];
+    $expiryDate = $_POST['cexpiryDate'];
     $noteColour = $_POST['noteColour'];
     $query = "INSERT INTO notes (text, colour, type, id, expiry) VALUES ('$noteText', '$noteColour', 'c', '$id', '$expiryDate')";
 
