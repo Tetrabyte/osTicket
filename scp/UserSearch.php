@@ -603,6 +603,9 @@ body {
 	--bs-body-bg : white;
 	background: white !important;
 }
+#ui-datepicker-div {
+	z-index: 1056 !important;
+}
 </style>
     
 	<title>User Search Tool</title>
