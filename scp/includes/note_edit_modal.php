@@ -6,8 +6,6 @@
                 showButtonPanel: true,
                 dateFormat: 'yy-mm-dd',
                 numberOfMonths: 2,
-                changeMonth: true,
-                changeYear: true
             });
         });
     });
