@@ -37,7 +37,7 @@ if (isset($_POST['save_company'])) {
 if(isset($_POST['edit_note'])) {
     $id_note = $_POST['id_note'];
     $noteText = $_POST['noteText'];
-    $expiryDate = $_POST['expiryDate'];
+    $expiryDate = $_POST['eexpiryDate'];
     $noteColour = $_POST['noteColour'];
 
     $query = "UPDATE notes SET text = '$noteText', colour = '$noteColour', expiry = '$expiryDate' WHERE id_note = '$id_note'";
