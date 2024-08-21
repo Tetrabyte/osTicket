@@ -102,7 +102,8 @@ function UnmergeTickets($TikID) {
 
 function ChangeSubject($TikID, $Subject) {
     $q1 = db_query("SELECT `ost_ticket__cdata`.`ticket_id` AS `ticket_id`, `ost_form_entry_values`.`entry_id` AS `entry_id` FROM `ost_ticket__cdata` JOIN `ost_form_entry` ON `ost_ticket__cdata`.`ticket_id` = `ost_form_entry`.`object_id` JOIN `ost_form_entry_values` ON `ost_form_entry`.`id` = `ost_form_entry_values`.`entry_id` WHERE `ost_form_entry`.`form_id` = 2 AND `ost_form_entry_values`.`value_id` IS NULL AND `ost_ticket__cdata`.`ticket_id` = '$TikID';");
-    $entryid = $q1[0]['entry_id'];
+    $row = mysqli_fetch_assoc($q1);
+    $entryid = $row['entry_id'];
     $q2 = db_query("UPDATE ost_ticket__cdata SET value = '6' WHERE ticket_id = '$TikID';");
     $q3 = "UPDATE ost_form_entry_values SET value = '$Subject' WHERE entry_id = '$entryid' AND field_id = '20';";
     echo $q3 . "</br>";
