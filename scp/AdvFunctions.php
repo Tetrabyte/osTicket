@@ -205,7 +205,7 @@ body {
 			<div class="col-md-12">
 				<form role="form" method="GET" class="form">
 					<div class="input-group" style="padding-bottom:5px">
-							<input type="text" class="form-control" id="PostID" name="PostID" placeholder="Current Entry Number" />
+							<input type="text" class="form-control" id="PostID" name="PostID" placeholder="Current Entry ID" />
 							<input type="text" class="form-control" id="TikNum" name="TikNum" placeholder="Destination Ticket Number" autofocus />
 							<button type="submit" class="form-control btn btn-primary">Switch</button>
 					</div>
