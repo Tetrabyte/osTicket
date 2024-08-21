@@ -100,7 +100,17 @@ function UnmergeTickets($TikID) {
 	return $TicketLinks;
 }
 
-
+function ChangeSubject ($TikID, $Subject) {
+	$q1 = db_query("select `ost_ticket__cdata`.`ticket_id` AS `ticket_id`,`ost_form_entry_values`.`entry_id` AS `entry_id` from ((`ost_ticket__cdata` join `ost_form_entry` on(`ost_ticket__cdata`.`ticket_id` = `ost_form_entry`.`object_id`)) join `ost_form_entry_values` on(`ost_form_entry`.`id` = `ost_form_entry_values`.`entry_id`)) where `ost_form_entry`.`form_id` = 2 and `ost_form_entry_values`.`value_id` is null and `ost_ticket__cdata`.`ticket_id` = '$TikID';");
+	echo $q1."</BR>";
+	$entryid = $q1['entry_id'];
+	$q2 = db_query("UPDATE ost_ticket__cdata SET value = '6' WHERE ticket_id = '$TikID';");
+	echo $q2."</BR>";
+	$q3 = "UPDATE ost_form_entry_values SET value = '$Subject' WHERE entry_id = '$entryid' and field_id = '20';";
+	echo $q3."</BR>";
+	$commit = db_query($q3, $logError=true, $buffered=true);
+	return $commit;
+}
 
 
 
@@ -122,7 +132,12 @@ if ( isset($_GET['OrigUser']) AND isset($_GET['DestUser']) ) {
 if ( isset($_GET['SilentJamesTikID'])) {
 	$result = SilentAssignJames ($_GET['SilentJamesTikID']);
 	if( $result == $true ) { $AssignedJames = 1; }
-	}	
+	}
+
+if ( isset($_GET['ChangeSubject']) AND isset($_GET['ChangeTicket'])) {
+	$result = ChangeSubject ($_GET['ChangeTicket'], $_GET['ChangeSubject']);
+	if( $result == $true ) { $ChangeSubject = 1; }
+	}
 
 
 if ( isset($_GET['TicketNumber']) ) {
@@ -249,7 +264,30 @@ body {
 			}
 		?>
 		
-		<hr>		
+		<hr>
+		<div class="row">
+			<div class="col-md-11">
+			<h3>Change Ticket Subject</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<form role="form" method="GET" class="form">
+					<div class="input-group" style="padding-bottom:5px">
+							<input type="text" class="form-control" id="ChangeTicket" name="ChangeTicket" placeholder="TicketID"/>
+							<input type="text" class="form-control" id="ChangeSubject" name="ChangeSubject" placeholder="Subject"/>
+							<button type="submit" class="form-control btn btn-primary">Change</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<?php 
+			if ( isset($ChangeTicket) ) {
+				Echo "Subject Changed";
+			}
+		?>
+		
+		<hr>	
 		
 		<div class="row">
 			<div class="col-md-11">
