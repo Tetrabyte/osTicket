@@ -104,7 +104,7 @@ function ChangeSubject($TikID, $Subject) {
     $q1 = db_query("SELECT `ost_ticket__cdata`.`ticket_id` AS `ticket_id`, `ost_form_entry_values`.`entry_id` AS `entry_id` FROM `ost_ticket__cdata` JOIN `ost_form_entry` ON `ost_ticket__cdata`.`ticket_id` = `ost_form_entry`.`object_id` JOIN `ost_form_entry_values` ON `ost_form_entry`.`id` = `ost_form_entry_values`.`entry_id` WHERE `ost_form_entry`.`form_id` = 2 AND `ost_form_entry_values`.`value_id` IS NULL AND `ost_ticket__cdata`.`ticket_id` = '$TikID';");
     $row = mysqli_fetch_assoc($q1);
     $entryid = $row['entry_id'];
-    $q2 = db_query("UPDATE ost_ticket__cdata SET value = '6' WHERE ticket_id = '$TikID';");
+    $q2 = db_query("UPDATE ost_ticket__cdata SET subject = '$Subject' WHERE ticket_id = '$TikID';");
     $q3 = "UPDATE ost_form_entry_values SET value = '$Subject' WHERE entry_id = '$entryid' AND field_id = '20';";
     echo $q3 . "</br>";
     $commit = db_query($q3, $logError = true, $buffered = true);
@@ -275,7 +275,7 @@ body {
 				<form role="form" method="GET" class="form">
 					<div class="input-group" style="padding-bottom:5px">
 							<input type="text" class="form-control" id="ChangeTicket" name="ChangeTicket" placeholder="TicketID"/>
-							<input type="text" class="form-control" id="ChangeSubject" name="ChangeSubject" placeholder="Subject"/>
+							<input type="text" class="form-control" id="ChangeSubject" name="ChangeSubject" placeholder="New Subject"/>
 							<button type="submit" class="form-control btn btn-primary">Change</button>
 					</div>
 				</form>
