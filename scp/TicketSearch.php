@@ -173,7 +173,7 @@ body {
 									<div class="col-1 text-end" style="font-size: 25px;">
 										Since Date: </div>
 									<div class="col-1">
-										<input class="form-control" type="date" value="<?php echo $_GET['since'] ?? date("Y-m-d",strtotime("-3 year")); ?>" id="since" name="since">
+										<input class="form-control" type="text" value="<?php echo $_GET['since'] ?? date("Y-m-d",strtotime("-3 year")); ?>" id="since" name="since">
 									</div>
 									<div class="col-7"></div>
 								</div>
@@ -282,7 +282,17 @@ body {
 
 
 
-
+	<script>
+		$(document).ready(function() {
+			$(function() {
+				$("#since").datepicker({
+					showButtonPanel: true,
+					dateFormat: 'dd-mm-yyyy',
+					numberOfMonths: 2,
+				});
+			});
+		});
+	</script>							
 
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
