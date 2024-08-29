@@ -24,57 +24,59 @@ if ($user && $cfg->isAvatarsEnabled())
 <?php } ?>
     <div class="header">
         <div class="pull-right">
-<?php   if ($entry->hasActions()) {
-            $actions = $entry->getActions(); ?>
-        <span class="muted-button pull-right" data-dropdown="#entry-action-more-<?php echo $entry->getId(); ?>">
-            <i class="icon-caret-down"></i>
-        </span>
-        <div id="entry-action-more-<?php echo $entry->getId(); ?>" class="action-dropdown anchor-right">
-            <ul class="title">
-<?php       foreach ($actions as $group => $list) {
-                foreach ($list as $id => $action) { ?>
-                <li>
-                    <a class="no-pjax" href="#" onclick="javascript:
-                    <?php echo str_replace('"', '\\"', $action->getJsStub()); ?>; return false;">
-                    <i class="<?php echo $action->getIcon(); ?>"></i> <?php
-                    echo $action->getName();
-                ?></a></li>
-<?php           }
-            } ?>
-            </ul>
-        </div>
-<?php   } ?>
-        <span class="textra light">
-<?php   if ($entry->flags & ThreadEntry::FLAG_EDITED) { ?>
-            <span class="label label-bare" title="<?php
-            echo sprintf(__('Edited on %s by %s'), Format::datetime($entry->updated),
-                ($editor = $entry->getEditor()) ? $editor->getName() : '');
-                ?>"><?php echo __('Edited'); ?></span>
-<?php   }
-        if ($entry->flags & ThreadEntry::FLAG_RESENT) { ?>
-            <span class="label label-bare"><?php echo __('Resent'); ?></span>
-<?php   }
-        if ($entry->flags & ThreadEntry::FLAG_REPLY_ALL) { ?>
-            <span class="label label-bare"><i class="icon-group"></i></span>
-<?php   }
-        if ($entry->flags & ThreadEntry::FLAG_REPLY_USER) { ?>
-            <span class="label label-bare"><i class="icon-user"></i></span>
-<?php   }
-        if ($ticket && (get_class($this) != 'TaskThread' && $entry->thread_id != $ticket->getThreadId()) || $entry->getMergeData()) {
-            if ($number) { ?>
-                <span data-toggle="tooltip" title="<?php echo sprintf(__('Ticket #%s'), $number); ?>" class="label label-bare"><i class="icon-code-fork"></i></span>
-    <?php   }
-        }
-        if ($entry->flags & ThreadEntry::FLAG_COLLABORATOR && $entry->type == 'M') { ?>
-            <span class="label label-bare"><?php echo __('Cc Collaborator'); ?></span>
-        <?php   } ?>
-        </span>
+<?php   	if ($entry->hasActions()) {
+				$actions = $entry->getActions(); ?>
+			<span class="muted-button pull-right" data-dropdown="#entry-action-more-<?php echo $entry->getId(); ?>">
+				<i class="icon-ellipsis-horizontal"></i>
+			</span>
+			<div id="entry-action-more-<?php echo $entry->getId(); ?>" class="action-dropdown">
+				<ul class="title">
+<?php   	    foreach ($actions as $group => $list) {
+					foreach ($list as $id => $action) { ?>
+					<li>
+						<a class="no-pjax" href="#" onclick="javascript:
+						<?php echo str_replace('"', '\\"', $action->getJsStub()); ?>; return false;">
+						<i class="<?php echo $action->getIcon(); ?>"></i> <?php
+						echo $action->getName(); ?>
+						</a>
+					</li>
+<?php   	        }
+				} ?>
+				</ul>
+			</div>
+<?php   	} ?>
+		
+			<span class="textra light">
+<?php   	if ($entry->flags & ThreadEntry::FLAG_EDITED) { ?>
+				<span class="label label-bare" title="<?php
+				echo sprintf(__('Edited on %s by %s'), Format::datetime($entry->updated),
+					($editor = $entry->getEditor()) ? $editor->getName() : '');
+					?>"><?php echo __('Edited'); ?></span>
+<?php   	}
+			if ($entry->flags & ThreadEntry::FLAG_RESENT) { ?>
+				<span class="label label-bare"><?php echo __('Resent'); ?></span>
+<?php   	}
+			if ($entry->flags & ThreadEntry::FLAG_REPLY_ALL) { ?>
+				<span class="label label-bare"><i class="icon-group" title="Email was sent to all recipients. Go to details to see all recipients"></i></span>
+<?php   	}
+			if ($entry->flags & ThreadEntry::FLAG_REPLY_USER) { ?>
+				<span class="label label-bare"><i class="icon-user" title="Email was sent only to ticket creator. Go to details to see all recipients"></i></span>
+<?php   	}
+			if ($ticket && (get_class($this) != 'TaskThread' && $entry->thread_id != $ticket->getThreadId()) || $entry->getMergeData()) {
+				if ($number) { ?>
+					<span data-toggle="tooltip" title="<?php echo sprintf(__('Ticket #%s'), $number); ?>" class="label label-bare"><i class="icon-code-fork"></i></span>
+		<?php   }
+			}
+			if ($entry->flags & ThreadEntry::FLAG_COLLABORATOR && $entry->type == 'M') { ?>
+				<span class="label label-bare"><?php echo __('Cc Collaborator'); ?></span>
+			<?php   } ?>
+			</span>
         </div>
 <?php
         if ($entry->type == 'N') {echo "<span style='color:red;font-weight: bold;'>INTERNAL: </span>";};
 		echo sprintf(__('<b>%s</b> posted %s'), $name,
             sprintf('<a name="entry-%d" href="#entry-%1$s"><time %s
-                datetime="%s" data-toggle="tooltip" title="%s">%s</time></a>',
+                datetime="%s" data-toggle="tooltip" title="%s">posted %s</time></a>',
                 $entry->id,
                 $timeFormat ? 'class="relative"' : '',
                 date(DateTime::W3C, Misc::db2gmtime($entry->created)),
@@ -82,9 +84,9 @@ if ($user && $cfg->isAvatarsEnabled())
                 $timeFormat ? $timeFormat($entry->created) : Format::datetime($entry->created)
             )
         ); ?>
-        <span style="max-width:400px" class="faded title truncate"><?php
-            echo $entry->title; ?>
-        </span>
+        <span class="title truncate"> 
+			<?php if ($entry->title != '') { echo ' | '.$entry->title; } ?>
+		</span>
     </div>
     <div class="thread-body no-pjax">
         <div><?php echo $entry->getBody()->toHtml(); ?></div>
