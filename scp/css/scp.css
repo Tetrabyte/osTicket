@@ -1551,7 +1551,9 @@ h5 a:hover {
 }
 #ticket_info_msg_warning span {
 	display: block;
-	font-weight: 300;
+	font-weight: bold;
+    font-size: 20px;
+    padding-bottom: 5px;
 }
 .ticket_info.custom-data thead th {
     border-bottom: 1px solid lightgray;
@@ -1657,13 +1659,12 @@ img.avatar {
     border-top: 4px solid var(--accent-a100);
 }
 .thread-entry.response .header {
-    background: var(--content-bg);
-	background: linear-gradient(180deg, var(--gray-100), var(--content-bg));
-    border-top: 4px solid var(--gray-400);
+	background: #FFE0B3;
+    border-top: 4px solid #FFC776;
 }
 .thread-entry.note .header {
-    background:#F2B1B1;
-	border-top: 4px solid var(--gray-300);
+    background: #F2B1B1;
+	border-top: 4px solid var(--red-shadow-a70)
 }
 .thread-entry .thread-body {
 	min-height: 2em;
