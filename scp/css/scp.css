@@ -1017,7 +1017,7 @@ a time {
 	box-shadow: 0 -11px 10px -15px var(--black-shadow-a30);
 }
 #response_options {
-	padding: 10px 0 0;
+	padding-top: 250px;
 }
 #footer {
 	min-width: 800px;
