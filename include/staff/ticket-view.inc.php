@@ -290,13 +290,13 @@ if($ticket->isOverdue())
 				<?php
                 if ($role->hasPerm(Ticket::PERM_REPLY)) { ?>
 				<a href="#reply" id="post-reply" class="post-response action-button"
-				 data-toggle="tooltip"
+				 data-toggle="tooltip" style="background: rgb(255, 224, 179);"
 				 title="<?php echo __('Reply'); ?>"><i class="icon-mail-reply"></i></a>
                 <?php
                 } ?>
 				
                 <a href="#note" id="post-note" class="post-response action-button"
-                 data-toggle="tooltip"
+                 data-toggle="tooltip" style="background: rgb(242, 177, 177);"
                  title="<?php echo __('Post Internal Note'); ?>"><i class="icon-file-text"></i></a>
         </div>
 		<h3>
@@ -343,8 +343,8 @@ if($ticket->isOverdue())
                                     $ticket->getThreadId(),
                                     $ticket->getThreadId(),
                                     $recipients);
-                             }?>
-<?php                   } # end if ($user) ?>
+                             
+<?php                    # ]# end if ($user) ?>
                     </td>
                 </tr>
                 <script>
@@ -429,7 +429,7 @@ if($ticket->isOverdue())
                       <?php
                          } else {
                             echo Format::htmlchars($ticket->getSource());
-                        }
+                        } ?>
 
 		<div id="ticket_tabs_container">
 		<div id="ticket_thread" class="tab_content">
@@ -872,111 +872,6 @@ if($ticket->isOverdue())
 	</div>
 </div>
 
-<div class="sticky bar stop actions" id="response_options">
-    <ul class="tabs" id="response-tabs">
-			<?php 
-			if (!($blockReply)) { 
-			?>
-				<li>
-					<a href="#note" <?php echo isset($errors['postnote']) ?  'class="error"' : ''; ?> id="post-note-tab" style="background: rgb(242, 177, 177);" > 
-						<?php echo __('Post Internal Note');?>
-					</a>
-				</li>
-			<?php
-			} 
-			if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) { 
-			?>
-				<li class="active <?php echo isset($errors['reply']) ? 'error' : ''; ?>">
-					<a href="#reply" id="post-reply-tab" style="background: rgb(255, 224, 179);">
-						<?php echo __('Post Reply');?>
-					</a>
-				</li>	
-			<?php
-			}
-			?>
-		</ul>
-    <?php
-    if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) {
-        $replyTo = $_POST['reply-to'] ?: 'all';
-        $emailReply = ($replyTo != 'none');
-        ?>
-    <form id="reply" class="tab_content spellcheck exclusive save"
-        data-lock-object-id="ticket/<?php echo $ticket->getId(); ?>"
-        data-lock-id="<?php echo $mylock ? $mylock->getId() : ''; ?>"
-        action="tickets.php?id=<?php
-        echo $ticket->getId(); ?>#reply" name="reply" method="post" enctype="multipart/form-data" style="background: rgb(255, 224, 179);">
-        <?php csrf_token(); ?>
-        <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
-        <input type="hidden" name="msgId" value="<?php echo $msgId; ?>">
-        <input type="hidden" name="a" value="reply">
-        <input type="hidden" name="lockCode" value="<?php echo $mylock ? $mylock->getCode() : ''; ?>">
-        <table style="width:100%" border="0" cellspacing="0" cellpadding="3">
-            <?php
-            if ($errors['reply']) {?>
-            <tr><td width="120">&nbsp;</td><td class="error"><?php echo $errors['reply']; ?>&nbsp;</td></tr>
-            <?php
-            }?>
-           <tbody id="to_sec">
-           <tr>
-               <td width="120">
-                   <label><strong><?php echo __('From'); ?>:</strong></label>
-               </td>
-               <td>
-                   <select id="from_email_id" name="from_email_id">
-                     <?php
-                     // Department email (default).
-                     if (($e=$dept->getEmail())) {
-                        echo sprintf('<option value="%s" selected="selected">%s</option>',
-                                 $e->getId(),
-                                 Format::htmlchars($e->getAddress()));
-                     }
-                     $staffDepts = $thisstaff->getDepts();
-                     if (in_array($cfg->getDefaultDeptId(), $staffDepts))
-                         $staffDepts[] = 0;
-                     // Optional SMTP addreses user can send email via
-                     if (($emails = Email::getAddresses(array('smtp' => true,
-                                 'depts' => $staffDepts), false)) && count($emails)) {
-                         $emailId = $_POST['from_email_id'] ?: 0;
-                         foreach ($emails as $e) {
-                             if ($dept->getEmail()->getId() == $e->getId())
-                                 continue;
-                             echo sprintf('<option value="%s" %s>%s</option>',
-                                     $e->getId(),
-                                      $e->getId() == $emailId ?
-                                      'selected="selected"' : '',
-                                      Format::htmlchars($e->getAddress()));
-                         }
-                     }
-                     ?>
-                   </select>
-               </td>
-           </tr>
-            </tbody>
-            <tbody id="recipients">
-             <tr id="user-row">
-                <td width="120">
-                    <label><strong><?php echo __('Recipients'); ?>:</strong></label>
-                </td>
-                <td><a href="#tickets/<?php echo $ticket->getId(); ?>/user"
-                    onclick="javascript:
-                        $.userLookup('ajax.php/tickets/<?php echo $ticket->getId(); ?>/user',
-                                function (user) {
-                                    window.location = 'tickets.php?id='<?php $ticket->getId(); ?>
-                                });
-                        return false;
-                        "><span ><?php
-                            echo Format::htmlchars($ticket->getOwner()->getEmail()->getAddress());
-                    ?></span></a>
-                </td>
-              </tr>
-               <tr><td>&nbsp;</td>
-                   <td>
-                   <div style="margin-bottom:2px;">
-                    <?php
-                    if ($ticket->getThread()->getNumCollaborators())
-                        $recipients = sprintf(__('(%d of %d)'),
-                                $ticket->getThread()->getNumActiveCollaborators(),
-                                $ticket->getThread()->getNumCollaborators());
 
 <div class="sticky bar stop actions" id="response_options">
 	<ul class="tabs" id="response-tabs">
@@ -984,13 +879,13 @@ if($ticket->isOverdue())
 		if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) { ?>
 		<li class="active <?php
 			echo isset($errors['reply']) ? 'error' : ''; ?>"><a
-			href="#reply" id="post-reply-tab"><?php echo __('Reply');?></a></li>
+			href="#reply" id="post-reply-tab" style="background: rgb(255, 224, 179);"><?php echo __('Reply');?></a></li>
 		<?php
 		}
 		if (!($blockReply)) { ?>
 		<li><a href="#note" <?php
 			echo isset($errors['postnote']) ?  'class="error"' : ''; ?>
-			id="post-note-tab"><?php echo __('Post Internal Note');?></a></li>
+			id="post-note-tab" style="background: rgb(242, 177, 177);"><?php echo __('Post Internal Note');?></a></li>
 		<?php
 		} ?>
 	</ul>
@@ -1003,7 +898,7 @@ if($ticket->isOverdue())
 		data-lock-object-id="ticket/<?php echo $ticket->getId(); ?>"
 		data-lock-id="<?php echo $mylock ? $mylock->getId() : ''; ?>"
 		action="tickets.php?id=<?php
-		echo $ticket->getId(); ?>#reply" name="reply" method="post" enctype="multipart/form-data">
+		echo $ticket->getId(); ?>#reply" name="reply" method="post" enctype="multipart/form-data" style="background: rgb(255, 224, 179);">
 		<?php csrf_token(); ?>
 		<input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
 		<input type="hidden" name="msgId" value="<?php echo $msgId; ?>">
@@ -1291,122 +1186,13 @@ if($ticket->isOverdue())
     </form>
     <?php
     }
-    if (!($blockReply)) {
-    ?>
-    <form id="note" class="hidden tab_content spellcheck exclusive save"
-        data-lock-object-id="ticket/<?php echo $ticket->getId(); ?>"
-        data-lock-id="<?php echo $mylock ? $mylock->getId() : ''; ?>"
-        action="tickets.php?id=<?php echo $ticket->getId(); ?>#note"
-        name="note" method="post" enctype="multipart/form-data" style="background: rgb(242, 177, 177);">
-        <?php csrf_token(); ?>
-        <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
-        <input type="hidden" name="locktime" value="<?php echo $cfg->getLockTime() * 60; ?>">
-        <input type="hidden" name="a" value="postnote">
-        <input type="hidden" name="lockCode" value="<?php echo $mylock ? $mylock->getCode() : ''; ?>">
-        <table width="100%" border="0" cellspacing="0" cellpadding="3">
-            <?php
-            if($errors['postnote']) {?>
-            <tr>
-                <td width="120">&nbsp;</td>
-                <td class="error"><?php echo $errors['postnote']; ?></td>
-            </tr>
-            <?php
-            } ?>
-            <tr>
-                <td width="120" style="vertical-align:top">
-                    <label><strong><?php echo __('Internal Note'); ?>:</strong><span class='error'>&nbsp;*</span></label>
-                </td>
-                <td>
-                    <div>
-                        <div class="faded" style="padding-left:0.15em"><?php
-                        echo __('Note title - summary of the note (optional)'); ?></div>
-                        <input type="text" name="title" id="title" size="60" value="<?php echo $info['title']; ?>" >
-                        <br/>
-                        <span class="error">&nbsp;<?php echo $errors['title']; ?></span>
-                    </div>
-                </td></tr>
-                <tr><td colspan="2">
-                    <div class="error"><?php echo $errors['note']; ?></div>
-                    <textarea name="note" id="internal_note" cols="80"
-                        placeholder="<?php echo __('Note details'); ?>"
-                        rows="9" wrap="soft"
-                        class="<?php if ($cfg->isRichTextEnabled()) echo 'richtext';
-                            ?> draft draft-delete fullscreen" <?php
-    list($draft, $attrs) = Draft::getDraftAndDataAttrs('ticket.note', $ticket->getId(), $info['note']);
-    echo $attrs; ?>><?php echo ThreadEntryBody::clean($_POST ? $info['note'] : $draft);
-                        ?></textarea>
-                <div class="attachments">
-                <?php
-                    print $note_form->getField('attachments')->render();
-                ?>
-                </div>
-                </td>
-            </tr>
-            <tr><td colspan="2">&nbsp;</td></tr>
-            <tr>
-                <td width="120">
-                    <label><?php echo __('Ticket Status');?>:</label>
-                </td>
-                <td>
-                    <div class="faded"></div>
-                    <select name="note_status_id">
-                        <?php
-                        $statusId = $info['note_status_id'] ?: $ticket->getStatusId();
-                        $states = array('open');
-                        if ($ticket->isCloseable() === true
-                                && $role->hasPerm(Ticket::PERM_CLOSE))
-                            $states = array_merge($states, array('closed'));
-                        foreach (TicketStatusList::getStatuses(
-                                    array('states' => $states)) as $s) {
-                            if (!$s->isEnabled()) continue;
-                            $selected = $statusId == $s->getId();
-                            echo sprintf('<option value="%d" %s>%s%s</option>',
-                                    $s->getId(),
-                                    $selected ? 'selected="selected"' : '',
-                                    __($s->getName()),
-                                    $selected ? (' ('.__('current').')') : ''
-                                    );
-                        }
-                        ?>
-                    </select>
-                    &nbsp;<span class='error'>*&nbsp;<?php echo $errors['note_status_id']; ?></span>
-                </td>
-            </tr>
-        </table>
-
-					foreach (TicketStatusList::getStatuses(
-								array('states' => $states)) as $s) {
-						if (!$s->isEnabled()) continue;
-						$selected = ($statusId == $s->getId());
-						echo sprintf('<option value="%d" %s>%s%s</option>',
-								$s->getId(),
-								$selected
-								 ? 'selected="selected"' : '',
-								__($s->getName()),
-								$selected
-								? (' ('.__('current').')') : ''
-								);
-					}
-					?>
-					</select>
-				</td>
-			</tr>
-		 </tbody>
-		</table>
-		<p  style="text-align:center;">
-			<input class="save pending" type="submit" value="<?php echo __('Post Reply');?>">
-			<input class="" type="reset" value="<?php echo __('Reset');?>">
-		</p>
-	</form>
-	<?php
-	}
 	if (!($blockReply)) {
 	?>
 	<form id="note" class="hidden ticket_content tab_content spellcheck exclusive save"
 		data-lock-object-id="ticket/<?php echo $ticket->getId(); ?>"
 		data-lock-id="<?php echo $mylock ? $mylock->getId() : ''; ?>"
 		action="tickets.php?id=<?php echo $ticket->getId(); ?>#note"
-		name="note" method="post" enctype="multipart/form-data">
+		name="note" method="post" enctype="multipart/form-data" style="background: rgb(242, 177, 177);">
 		<?php csrf_token(); ?>
 		<input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
 		<input type="hidden" name="locktime" value="<?php echo $cfg->getLockTime() * 60; ?>">

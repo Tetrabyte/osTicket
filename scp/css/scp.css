@@ -705,7 +705,9 @@ a time {
 	background: var(--footer-bg);
 	padding: 10px;
 	font-size: .9em;
+    text-align:center;
 }
+
 /**********************End Custom Queues Dropdown******************/
 
 /*************Qeueue Title Config dropdown options****************/

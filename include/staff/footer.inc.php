@@ -1,8 +1,4 @@
 </div> <!-- closing #content -->
-<div id="footer">
-	<?php echo __('Copyright &copy;') ?> 2006-<?php echo date('Y'); ?>&nbsp;<?php
-	echo Format::htmlchars((string) $ost->company ?: 'osTicket.com'); ?>&nbsp;<?php echo __('All Rights Reserved.'); ?>
-</div>
 </div> <!-- closing .v_flex -->
 </div> <!-- closing .flex -->
 </div> <!-- closing #pjax-container -->

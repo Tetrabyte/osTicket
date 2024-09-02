@@ -37,9 +37,8 @@ if (osTicket::is_ie())
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/scp.css" media="all">
     <link rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/redactor.css" media="screen">
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/typeahead.css" media="screen">
-    <link type="text/css" href="<?php echo ROOT_PATH; ?>css/ui-lightness/jquery-ui-1.13.2.custom.min.css"
+    <link type="text/css" href="<?php echo ROOT_PATH; ?>css/ui-lightness/jquery-ui-1.13.2.custom.min.css" rel="stylesheet" media="screen" />
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/colorthemes/default-material-blue-amber.css" media="all"/>
-         rel="stylesheet" media="screen" />
     <link rel="stylesheet" href="<?php echo ROOT_PATH ?>css/jquery-ui-timepicker-addon.css" media="all"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/font-awesome.min.css"/>
     <!--[if IE 7]>
@@ -163,9 +162,9 @@ table {
 		<a href="<?php echo ROOT_PATH ?>scp/profile.php"><?php echo __('Profile'); ?></a>
 		<a href="<?php echo ROOT_PATH ?>scp/logout.php?auth=<?php echo $ost->getLinkToken(); ?>" class="no-pjax"><?php echo __('Log Out'); ?></a>
 	</div>
+    <?php include STAFFINC_DIR . "templates/sub-navigation.tmpl.php"; ?>
 </div>
 <div id="flex_container" class="flex">
-    <?php include STAFFINC_DIR . "templates/sub-navigation.tmpl.php"; ?>
 	<div id="v_flex_container" class="v_flex flex-spacer">
         <div id="content">
         <?php if(isset($errors['err'])) { ?>

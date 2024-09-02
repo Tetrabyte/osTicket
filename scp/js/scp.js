@@ -443,6 +443,7 @@ var scp_prep = function() {
      $('ul.tabs li a[href="' + window.location.hash + '"]').trigger('click');
    }
 
+/*
 // ----- Subnav resizer
 	const subnav = document.querySelector('nav');
 	const $subnav = $('nav');
@@ -514,7 +515,7 @@ var scp_prep = function() {
 	// ----- Subnav responsive elements on page load
 	subnav_resize_responsive();
 	subnav_reset_responsive('page_load');
-	
+*/
 	
 /* Sticky bar is not used, hence commented
    // Make sticky bars float on scroll
@@ -600,7 +601,7 @@ var scp_prep = function() {
     .on('focus', function() { $(this).parent().addClass('focus'); })
     .on('blur', function() { $(this).parent().removeClass('focus'); })
 
-/* Jboverflowmenu funcion is unnecessary since there is a subnav sidebar. Hence commented.
+///* Jboverflowmenu funcion is unnecessary since there is a subnav sidebar. Hence commented.
   $(function() {
     // whenever we hover over a menu item that has a submenu
     $('.subQ').on('mouseover', function() {
@@ -627,7 +628,7 @@ var scp_prep = function() {
       }
     });
   });
-*/
+//*/
 
   // Auto fetch queue counts
   $(function() {

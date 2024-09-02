@@ -90,8 +90,8 @@
 	--body-bg: var(--gray-300);
 	--body-text: var(--black);
 	--header-bg: var(--gray-200);
-	--subnav-bg: var(--gray-50);
+	--subnav-bg: var(--gray-200);
 	--content-bg: var(--white);
 	--footer-bg: var(--gray-300);
-	--table-bg: var(--white);
+	--table-bg: var(--gray-200);
 }
