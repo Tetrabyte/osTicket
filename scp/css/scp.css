@@ -1531,9 +1531,9 @@ h5 a:hover {
 .ticket_info th {
     text-align: left;
 	width: 95px;
-    font-size: 0.85em;
+    font-size: 1em;
     color: var(--gray-600);
-    letter-spacing: -0.5px;
+    letter-spacing: 0px;
 }
 .ticket_info td {
 	font-weight: 400;
