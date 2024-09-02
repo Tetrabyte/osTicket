@@ -899,6 +899,7 @@ a time {
     position: relative;
     height:35px;
     width: 100%;
+    z-index: 410;
 }
 
 
@@ -906,24 +907,6 @@ a time {
     visibility: hidden;
 }
 
-.jb-overflowmenu .jb-overflowmenu-helper-postion {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0px;
-    overflow: visible;
-    position: absolute;
-    width: 23px;
-    height: 23px;
-    text-align: center;
-    font-size: 12px;
-    cursor: pointer;
-	background: var(--white-shadow-a10);
-    color: var(--black-shadow-a05);
-    border: 2px solid var(--black-shadow-a05);
-    border-radius: 12px;
-    box-sizing: border-box;
-}
 
 #sub_nav {
     clear: both;
@@ -1595,7 +1578,6 @@ a#post-note:hover {
 }
 .thread-entry {
     margin-bottom: 20px;
-	width: 89%;
 	width: -webkit-fill-available;
 	width: moz-available;
 	width: stretch;
