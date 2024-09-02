@@ -1017,7 +1017,7 @@ a time {
 	box-shadow: 0 -11px 10px -15px var(--black-shadow-a30);
 }
 #response_options {
-	padding-top: 250px;
+	padding-top: 10px 0 0;
 }
 #footer {
 	min-width: 800px;
@@ -1657,8 +1657,7 @@ img.avatar {
     border-top: 4px solid var( --plain-red);
 }
 .thread-entry.message .header {
-	background: var(--content-bg);
-    background: linear-gradient(180deg, var(--accent-25), var(--content-bg));
+    background: #C3D9FF;
     border-top: 4px solid var(--accent-a100);
 }
 .thread-entry.response .header {
@@ -1668,7 +1667,7 @@ img.avatar {
 }
 .thread-entry.note .header {
     background:#F2B1B1;
-	border-top: 1px solid var(--gray-300);
+	border-top: 4px solid var(--gray-300);
 }
 .thread-entry .thread-body {
 	min-height: 2em;
