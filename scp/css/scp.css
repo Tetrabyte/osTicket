@@ -913,8 +913,6 @@ a time {
     left: 0px;
     overflow: visible;
     position: absolute;
-    bottom: 15px;
-    left: 15px;
     width: 23px;
     height: 23px;
     text-align: center;
@@ -926,21 +924,7 @@ a time {
     border-radius: 12px;
     box-sizing: border-box;
 }
-#nav_resizer_reset i {
-	vertical-align: middle!important;
-}
-#nav_resizer_reset:hover {
-	color: var(--gray-600);
-	background: var(--white-shadow-a80);
-	border-color: var(--gray-500);
-	transition: .2s;
-}
-#nav_resizer_reset:active {
-	color: var(--gray-700);
-	background: var(--gray-200);
-	border-color: var(--gray-500);
-	transition: .2s;
-}
+
 #sub_nav {
     clear: both;
     margin: 0;
