@@ -353,6 +353,14 @@ if($ticket->isOverdue())
 							)
 						);
 		?>
+		<?php
+		if ($errors['err'] && isset($_POST['a'])) {
+			// Reflect errors back to the tab.
+			$errors[$_POST['a']] = $errors['err'];
+		} elseif($warn) { ?>
+			<table class="ticket_info ticket_content" id="ticket_info_msg_warning"><tr><td><?php echo $warn; ?></td></tr></table>
+		<?php
+		} ?>
 		<div class="clear"></div>
 		<div class="sticky bar stop actions" id="response_options">
 	<ul class="tabs" id="response-tabs">
