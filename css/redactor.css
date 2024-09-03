@@ -1054,7 +1054,6 @@
 
 
 #note .redactor-styles, #task_note .redactor-styles {
-	background-color: var(--sec-accent-50);
 }
 .redactor-styles {
   max-width: 100%!important;
