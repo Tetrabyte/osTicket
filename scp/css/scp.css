@@ -3517,6 +3517,20 @@ input[type=radio]:disabled {
         End Custom Radio Button
 ****************************************/
 
+.save.pending {
+  background-color: rgba(255, 174, 0, 0.63);
+  box-shadow: 0 0 0 2px rgba(255, 174, 0, 1) inset;
+}
+.save.pending:hover {
+  box-shadow: 0 0 0 2px rgba(242, 165, 0, 1) inset;
+  background-color: rgba(255, 174, 0, 0.79);
+  color: black;
+}
+
+.save.success {
+  background-color: rgba(22, 109, 82, 0.63);
+}
+
 .vertical-pad {
     margin-top: 3px;
 }

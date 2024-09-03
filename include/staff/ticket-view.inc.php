@@ -367,16 +367,16 @@ if($ticket->isOverdue())
 		<div class="sticky bar stop actions" id="response_options">
 	<ul class="tabs" id="response-tabs">
 		<?php
-		if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) { ?>
-		<li class="active <?php
-			echo isset($errors['reply']) ? 'error' : ''; ?>"><a
-			href="#reply" id="post-reply-tab" style="background: rgb(255, 224, 179);"><?php echo __('Reply');?></a></li>
-		<?php
-		}
 		if (!($blockReply)) { ?>
 		<li><a href="#note" <?php
 			echo isset($errors['postnote']) ?  'class="error"' : ''; ?>
 			id="post-note-tab" style="background: rgb(242, 177, 177);"><?php echo __('Post Internal Note');?></a></li>
+		<?php
+		}
+		if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) { ?>
+		<li class="active <?php
+			echo isset($errors['reply']) ? 'error' : ''; ?>"><a
+			href="#reply" id="post-reply-tab" style="background: rgb(255, 224, 179);"><?php echo __('Reply');?></a></li>
 		<?php
 		} ?>
 	</ul>
