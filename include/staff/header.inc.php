@@ -162,8 +162,8 @@ table {
 		<a href="<?php echo ROOT_PATH ?>scp/profile.php"><?php echo __('Profile'); ?></a>
 		<a href="<?php echo ROOT_PATH ?>scp/logout.php?auth=<?php echo $ost->getLinkToken(); ?>" class="no-pjax"><?php echo __('Log Out'); ?></a>
 	</div>
+    <?php include STAFFINC_DIR . "templates/sub-navigation.tmpl.php"; ?>
 </div>
-<?php include STAFFINC_DIR . "templates/sub-navigation.tmpl.php"; ?>
 <div id="flex_container" class="flex">
 	<div id="v_flex_container" class="v_flex flex-spacer">
         <div id="content">

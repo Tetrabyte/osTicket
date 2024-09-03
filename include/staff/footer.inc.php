@@ -1,12 +1,14 @@
-</div> <!-- closing #content -->
-</div> <!-- closing .v_flex -->
-</div> <!-- closing .flex -->
-</div> <!-- closing #pjax-container -->
 <?php if (!isset($_SERVER['HTTP_X_PJAX'])) { ?>
+    <div class="clear"></div>
     <div id="footer">
         <?php echo __('Copyright &copy;') ?> 2005-<?php echo date('Y'); ?>&nbsp;<?php
         echo Format::htmlchars((string) $ost->company ?: 'osTicket.com'); ?>&nbsp;<?php echo __('All Rights Reserved.'); ?>
     </div>
+    <div class="clear"></div>
+</div> <!-- closing #content -->
+</div> <!-- closing .v_flex -->
+</div> <!-- closing .flex -->
+</div> <!-- closing #pjax-container -->
 <?php
 if(is_object($thisstaff) && $thisstaff->isStaff()) { ?>
     <div>

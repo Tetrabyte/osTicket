@@ -337,8 +337,10 @@ if($ticket->isOverdue())
 			<?php
 			}
 			?>
-<?php                    # ]# end if ($user) ?>            
+		</ul>
 		<div id="ticket_tabs_container">
+		
+		
 		<div id="ticket_thread" class="tab_content">
 
 		<?php
