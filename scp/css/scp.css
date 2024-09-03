@@ -3645,8 +3645,13 @@ a.emailTicket b {
 /***********************************************************************/
 
 #customQ_nav li.item {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
+    position:relative;
+    padding:3px 6px 4px;
+    display: inline-block;
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+    margin:0 2px;
+}
 }
 #customQ_nav li.child.active > a {
     font-weight: 500;
