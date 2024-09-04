@@ -916,58 +916,6 @@ a time {
     border-radius: 12px;
     box-sizing: border-box;
 }
-
-#sub_nav {
-    clear: both;
-    margin: 0;
-	clear:both;
-    margin:0;
-    padding:0;
-    line-height:26px;
-}
-#sub_nav > li {
-	list-style: none;
-    display: block;
-	position: relative;
-    border-radius: 5px;
-	white-space: nowrap;
-}
-#sub_nav > li > a {
-    display: block;
-	margin: auto;
-	width: auto;
-    padding: 5px 16px 5px 28px;
-    background-position: 6px 50%;
-    background-repeat: no-repeat;
-    color: var(--black-text);
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-#sub_nav > li > a > span {
-	visibility: hidden;
-}
-#sub_nav a.active, #sub_nav li.active > a, #sub_nav li.child.active > a {
-    font-weight:bold;
-}
-#sub_nav > li:hover {
-    background-color: var(--black-shadow-a05);
-}
-#sub_nav > li:hover > a {
-    color: var(--sec-accent-900);
-}
-#sub_nav li div ul li {
-	display: block!important;
-}
-#sub_nav a.active {
-    font-weight: bold;
-}
-#sub_nav .open {background-image: url(../images/icons/open.gif);}
-#sub_nav .answered {background-image: url(../images/icons/answered.gif);}
-#sub_nav .mine {background-image: url(../images/icons/mine.gif);}
-#sub_nav .closed {background-image: url(../images/icons/closed.gif);}
-#sub_nav .search {background-image:url(../images/icons/search.gif);}
-#sub_nav .new {background-image: url(../images/icons/new.gif);}
 #pjax-container > .flex > .v_flex > #content {
 	min-width: 800px;
 	box-sizing: border-box;
