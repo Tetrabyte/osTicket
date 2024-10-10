@@ -618,7 +618,8 @@ var scp_prep = function() {
       });
     });
     // Ensure the "new ticket" link is never in the drop-down menu
-    //$('#new-ticket').parent('li').addClass('primary-only');
+    $('#new-ticket').parent('li').addClass('item');
+    $('#new-ticket').parent('li').addClass('new');
     $('#customQ_nav').overflowmenu({
       guessHeight: false,
       // items: 'li.top-queue',
