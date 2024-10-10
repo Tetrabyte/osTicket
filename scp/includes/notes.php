@@ -2,7 +2,7 @@
 require_once('../../main.inc.php');
 if (isset($_POST['save_user'])) {
     $id = intval($_POST['id']);
-    $noteText = $_POST['noteText'];
+    $noteText = htmlspecialchars($_POST['noteText'], ENT_QUOTES);
     $expiryDate = $_POST['expiryDate'];
     $noteColour = $_POST['noteColour'];
 
@@ -20,7 +20,7 @@ if (isset($_POST['save_user'])) {
 }
 if (isset($_POST['save_company'])) {
     $id = intval($_POST['id']);
-    $noteText = $_POST['noteText'];
+    $noteText = htmlspecialchars($_POST['noteText'], ENT_QUOTES);
     $expiryDate = $_POST['cexpiryDate'];
     $noteColour = $_POST['noteColour'];
     $query = "INSERT INTO notes (text, colour, type, id, expiry) VALUES ('$noteText', '$noteColour', 'c', '$id', '$expiryDate')";
@@ -36,7 +36,7 @@ if (isset($_POST['save_company'])) {
 }
 if(isset($_POST['edit_note'])) {
     $id_note = $_POST['id_note'];
-    $noteText = $_POST['noteText'];
+    $noteText = htmlspecialchars($_POST['noteText'], ENT_QUOTES);
     $expiryDate = $_POST['eexpiryDate'];
     $noteColour = $_POST['noteColour'];
 
