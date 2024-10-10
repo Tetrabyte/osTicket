@@ -207,7 +207,7 @@ if (($bks=Staff2FABackend::allRegistered())) {
                     <option value="0">&mdash; <?php echo __('System Default');?> &mdash;</option>
                     <?php
                     $pagelimit = $staff->max_page_size ?: $cfg->getPageSize();
-                    for ($i = 5; $i <= 50; $i += 5) {
+                    for ($i = 25; $i <= 250; $i += 25) {
                         $sel=($pagelimit==$i)?'selected="selected"':'';
                          echo sprintf('<option value="%d" %s>'.__('show %s records').'</option>',$i,$sel,$i);
                     } ?>

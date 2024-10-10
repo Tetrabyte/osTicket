@@ -1047,7 +1047,6 @@ a.print {
 }
 .table td:not(:empty) {
     padding: 4px;
-    background-color:#fff;
 }
 .table.two-column tbody tr td:first-child {
     width: 25%}
