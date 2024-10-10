@@ -5,7 +5,7 @@ function company_notes($id) {
     while ($row = $commit->fetch_assoc()) {
         if (strtotime($row['expiry']) >= strtotime('today')) {
 			$colour = $row['colour'];
-			$text = $row['text'];
+			$text = htmlspecialchars_decode($row['text']);
 			$expiry = $row['expiry'];
 			$id_note = $row['id_note'];
 			echo '
@@ -26,7 +26,7 @@ function user_notes($id) {
     while ($row = $commit->fetch_assoc()) {
         if (strtotime($row['expiry']) >= strtotime('today')) {
 			$colour = $row['colour'];
-			$text = $row['text'];
+			$text = htmlspecialchars_decode($row['text']);
 			$expiry = $row['expiry'];
 			$id_note = $row['id_note'];
 			echo '
