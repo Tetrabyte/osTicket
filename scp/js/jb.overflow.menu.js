@@ -31,7 +31,7 @@
 
 (function( $, undefined ) { 
 /*! The function is unnecessary since there is a subnav sidebar. Hence added a return. */
-//	return;
+	return;
 /*! ------ */
 
 $.widget( "jb.overflowmenu", {
