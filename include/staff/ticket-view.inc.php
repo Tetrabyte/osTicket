@@ -672,7 +672,6 @@ if($ticket->isOverdue())
         </table>
         <p  style="text-align:center;">
             <input class="save pending" type="submit" value="<?php echo __('Post Reply');?>">
-            <input class="" type="reset" value="<?php echo __('Reset');?>">
         </p>
     </form>
     <?php
@@ -760,10 +759,9 @@ if($ticket->isOverdue())
 			</tr>
 		</table>
 
-	   <p style="text-align:center;">
-		   <input class="save pending" type="submit" value="<?php echo __('Post Note');?>">
-		   <input class="" type="reset" value="<?php echo __('Reset');?>">
-	   </p>
+       <p style="text-align:center;">
+           <input class="save pending" type="submit" value="<?php echo __('Post Note');?>">
+       </p>
    </form>
    <?php } ?>
  </div>
