@@ -736,7 +736,7 @@ a time {
 	border-bottom: 1px solid lightgray;
     clear: both;
 	box-sizing: border-box;
-    background: var(--content-bg);
+    background: var(--bs-body-bg);
 }
 #v_flex_container {
 	width: 90%;
@@ -759,7 +759,7 @@ a time {
 	box-sizing: border-box;
 	height: fit-content;
 	max-height: 850px;
-	background: var(--content-bg);
+	background: var(--bs-body-bg);
 }
 #ticket_tabs_container, #task_tabs_container {
 	padding-right: 10px;
