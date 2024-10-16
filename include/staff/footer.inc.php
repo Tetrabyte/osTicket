@@ -1,5 +1,5 @@
 <?php if (!isset($_SERVER['HTTP_X_PJAX'])) { ?>
-    <div class="clear"></div>
+    <div class="clear" style="flex-basis: 100%"></div>
     <div id="footer">
         <?php echo __('Copyright &copy;') ?> 2005-<?php echo date('Y'); ?>&nbsp;<?php
         echo Format::htmlchars((string) $ost->company ?: 'osTicket.com'); ?>&nbsp;<?php echo __('All Rights Reserved.'); ?>
