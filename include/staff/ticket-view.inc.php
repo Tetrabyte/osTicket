@@ -66,247 +66,13 @@ if($ticket->isOverdue())
 ?>
     <div id="msg_notice" style="display: none;"><span id="msg-txt"><?php echo $msg ?: ''; ?></span></div>
 	<div class="clear tixTitle">
-        <div class="pull-right flush-right">
-            <?php
-            if ($thisstaff->hasPerm(Email::PERM_BANLIST)
-                    || $role->hasPerm(Ticket::PERM_EDIT)
-                    || ($dept && $dept->isManager($thisstaff))) { ?>
-            <span class="action-button pull-right" data-dropdown="#action-dropdown-more" data-toggle="tooltip" title="<?php echo __('More');?>">
-                <i class="icon-caret-down pull-right"></i>
-                <span><i class="icon-cog"></i></span>
-            </span>
-            <?php
-            }
-
-            if ($role->hasPerm(Ticket::PERM_EDIT)) { ?>
-                <a class="action-button pull-right" data-toggle="tooltip" title="<?php echo __('Edit'); ?>" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=edit"><i class="icon-edit"></i></a>
-            <?php
-            } ?>
-            <span class="action-button pull-right" data-dropdown="#action-dropdown-print" data-toggle="tooltip" title="<?php echo __('Print'); ?>">
-                <i class="icon-caret-down pull-right"></i>
-                <a id="ticket-print" aria-label="<?php echo __('Print'); ?>" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=print"><i class="icon-print"></i></a>
-            </span>
-            <div id="action-dropdown-print" class="action-dropdown anchor-right">
-              <ul>
-                 <li title="PDF File"><a class="no-pjax" target="_blank" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=print&notes=0&events=0"><i
-                 class="icon-file-text-alt"></i> <?php echo __('Ticket Thread'); ?></a></li>
-                 <li title="PDF File"><a class="no-pjax" target="_blank" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=print&notes=1&events=0"><i
-                 class="icon-file-text-alt"></i> <?php echo __('Thread + Internal Notes'); ?></a></li>
-                 <li title="PDF File"><a class="no-pjax" target="_blank" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=print&notes=1&events=1"><i
-                 class="icon-file-text-alt"></i> <?php echo __('Thread + Internal Notes + Events'); ?></a></li>
-                 <?php if (extension_loaded('zip')) { ?>
-                 <li title="ZIP Archive"><a class="no-pjax" target="_blank" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=zip&notes=1"><i
-                 class="icon-folder-close-alt"></i> <?php echo __('Thread + Internal Notes + Attachments'); ?></a></li>
-                 <li title="ZIP Archive"><a class="no-pjax" target="_blank" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=zip&notes=1&tasks=1"><i
-                 class="icon-folder-close-alt"></i> <?php echo __('Thread + Internal Notes + Attachments + Tasks'); ?></a></li>
-                 <?php } ?>
-              </ul>
-            </div>
-            <?php
-            // Transfer
-            if ($role->hasPerm(Ticket::PERM_TRANSFER)) {?>
-            <a class="action-button pull-right ticket-action" id="ticket-transfer" data-toggle="tooltip" title="<?php echo __('Transfer'); ?>"
-			 data-redirect="tickets.php"
-			 href="#tickets/<?php echo $ticket->getId(); ?>/transfer"><i class="icon-share"></i></a>
-            <?php
-            } ?>
-
-            <?php
-            // Assign
-            if ($ticket->isOpen() && $role->hasPerm(Ticket::PERM_ASSIGN)) {?>
-            <span class="action-button pull-right"
-                data-dropdown="#action-dropdown-assign"
-                data-toggle="tooltip"
-                title=" <?php echo $ticket->isAssigned() ? __('Assign') : __('Reassign'); ?>"
-                >
-                <i class="icon-caret-down pull-right"></i>
-                <a class="ticket-action" id="ticket-assign"
-                    data-redirect="tickets.php"
-                    href="#tickets/<?php echo $ticket->getId(); ?>/assign"><i class="icon-user"></i></a>
-            </span>
-            <div id="action-dropdown-assign" class="action-dropdown anchor-right">
-              <ul>
-                <?php
-                // Agent can claim team assigned ticket
-                if (!$ticket->getStaff()
-                        && (!$dept->assignMembersOnly()
-                            || $dept->isMember($thisstaff))
-                        ) { ?>
-                 <li><a class="no-pjax ticket-action"
-                    data-redirect="tickets.php?id=<?php echo
-                    $ticket->getId(); ?>"
-                    href="#tickets/<?php echo $ticket->getId(); ?>/claim"><i
-                    class="icon-chevron-sign-down"></i> <?php echo __('Claim'); ?></a></li>
-                <?php
-                } ?>
-                 <li><a class="no-pjax ticket-action"
-                    data-redirect="tickets.php"
-                    href="#tickets/<?php echo $ticket->getId(); ?>/assign/agents"><i
-                    class="icon-user"></i> <?php echo __('Agent'); ?></a></li>
-                 <li><a class="no-pjax ticket-action"
-                    data-redirect="tickets.php"
-                    href="#tickets/<?php echo $ticket->getId(); ?>/assign/teams"><i
-                    class="icon-group"></i> <?php echo __('Team'); ?></a></li>
-              </ul>
-            </div>
-            <?php
-            } ?>
-            <div id="action-dropdown-more" class="action-dropdown anchor-right">
-              <ul>
-                <?php
-                 if ($role->hasPerm(Ticket::PERM_EDIT)) { ?>
-                    <li><a class="change-user" href="#tickets/<?php
-                    echo $ticket->getId(); ?>/change-user"
-                    onclick="javascript:
-                        saveDraft();"
-                    ><i class="icon-user"></i> <?php
-                    echo __('Change Owner'); ?></a></li>
-                <?php
-                 }
-
-                 if ($role->hasPerm(Ticket::PERM_MERGE) && !$ticket->isChild()) { ?>
-                     <li><a href="#ajax.php/tickets/<?php echo $ticket->getId();
-                         ?>/merge" onclick="javascript:
-                         $.dialog($(this).attr('href').substr(1), 201);
-                         return false"
-                         ><i class="icon-code-fork"></i> <?php echo __('Merge Tickets'); ?></a></li>
-                 <?php
-                  }
-
-                 if ($role->hasPerm(Ticket::PERM_LINK) && $ticket->getMergeType() == 'visual') { ?>
-                     <li><a href="#ajax.php/tickets/<?php echo $ticket->getId();
-                         ?>/link" onclick="javascript:
-                         $.dialog($(this).attr('href').substr(1), 201);
-                         return false"
-                         ><i class="icon-link"></i> <?php echo __('Link Tickets'); ?></a></li>
-                 <?php
-                 }
-
-                 if ($ticket->isAssigned() && $canRelease) { ?>
-                        <li><a href="#tickets/<?php echo $ticket->getId();
-                            ?>/release" class="ticket-action"
-                             data-redirect="tickets.php?id=<?php echo $ticket->getId(); ?>" >
-                               <i class="icon-unlock"></i> <?php echo __('Release (unassign) Ticket'); ?></a></li>
-                 <?php
-                 }
-                 if($ticket->isOpen() && $isManager) {
-                    if(!$ticket->isOverdue()) { ?>
-                        <li><a class="confirm-action" id="ticket-overdue" href="#overdue"><i class="icon-bell"></i> <?php
-                            echo __('Mark as Overdue'); ?></a></li>
-                    <?php
-                    }
-                 }
-                 if($ticket->isOpen() && $canMarkAnswered) {
-                    if($ticket->isAnswered()) { ?>
-                    <li><a href="#tickets/<?php echo $ticket->getId();
-                        ?>/mark/unanswered" class="ticket-action"
-                            data-redirect="tickets.php?id=<?php echo $ticket->getId(); ?>">
-                            <i class="icon-circle-arrow-left"></i> <?php
-                            echo __('Mark as Unanswered'); ?></a></li>
-                    <?php
-                    } else { ?>
-                    <li><a href="#tickets/<?php echo $ticket->getId();
-                        ?>/mark/answered" class="ticket-action"
-                            data-redirect="tickets.php?id=<?php echo $ticket->getId(); ?>">
-                            <i class="icon-circle-arrow-right"></i> <?php
-                            echo __('Mark as Answered'); ?></a></li>
-                    <?php
-                    }
-                } ?>
-
-                <?php
-                if ($role->hasPerm(Ticket::PERM_REFER)) { ?>
-                <li><a href="#tickets/<?php echo $ticket->getId();
-                    ?>/referrals" class="ticket-action"
-                     data-redirect="tickets.php?id=<?php echo $ticket->getId(); ?>" >
-                       <i class="icon-exchange"></i> <?php echo __('Manage Referrals'); ?></a></li>
-                <?php
-                } ?>
-                <?php
-                if ($role->hasPerm(Ticket::PERM_EDIT)) { ?>
-                <li><a href="#ajax.php/tickets/<?php echo $ticket->getId();
-                    ?>/forms/manage" onclick="javascript:
-                    $.dialog($(this).attr('href').substr(1), 201);
-                    return false"
-                    ><i class="icon-paste"></i> <?php echo __('Manage Forms'); ?></a></li>
-                <?php
-                }
-
-                if ($role->hasPerm(Ticket::PERM_REPLY) && $thread && $ticket->getId() == $thread->getObjectId()) {
-                    ?>
-                <li>
-
-                    <?php
-                    $recipients = __(' Manage Collaborators');
-
-                    echo sprintf('<a class="collaborators manage-collaborators"
-                            href="#thread/%d/collaborators/1"><i class="icon-group"></i>%s</a>',
-                            $ticket->getThreadId(),
-                            $recipients);
-                   ?>
-                </li>
-                <?php
-                } ?>
-
-
-<?php           if ($thisstaff->hasPerm(Email::PERM_BANLIST)
-                    && $role->hasPerm(Ticket::PERM_REPLY)) {
-                     if(!$emailBanned) {?>
-                        <li><a class="confirm-action" id="ticket-banemail"
-                            href="#banemail"><i class="icon-ban-circle"></i> <?php echo sprintf(
-                                Format::htmlchars(__('Ban Email <%s>')),
-                                $ticket->getEmail()); ?></a></li>
-                <?php
-                     } elseif($unbannable) { ?>
-                        <li><a  class="confirm-action" id="ticket-banemail"
-                            href="#unbanemail"><i class="icon-undo"></i> <?php echo sprintf(
-                                Format::htmlchars(__('Unban Email <%s>')),
-                                $ticket->getEmail()); ?></a></li>
-                    <?php
-                     }
-                  }
-                  Signal::send('ticket.view.more', $ticket, $extras);
-                  if ($role->hasPerm(Ticket::PERM_DELETE)) {
-                     ?>
-                    <li class="danger"><a class="ticket-action" href="#tickets/<?php
-                    echo $ticket->getId(); ?>/status/delete"
-                    data-redirect="tickets.php"><i class="icon-trash"></i> <?php
-                    echo __('Delete Ticket'); ?></a></li>
-                <?php
-                 }
-                ?>
-              </ul>
-            </div>
-                <?php
-                if (count($children) != 0)
-                    echo sprintf('<span style="font-weight: 700; line-height: 26px;">%s</span>', __('PARENT'));
-                elseif ($ticket->isChild())
-                    echo sprintf('<span style="font-weight: 700; line-height: 26px;">%s</span>', __('CHILD'));
-				?>	
-				<a href="tickets.php?id=<?php echo $ticket->getId(); ?>"
-				 class="action-button" data-toggle="tooltip"
-				 title="<?php echo __('Reload'); ?>"><i class="icon-refresh"></i></a>
-				 
-				<?php
-                if ($role->hasPerm(Ticket::PERM_REPLY)) { ?>
-				<a href="#reply" id="post-reply" class="post-response action-button"
-				 data-toggle="tooltip" style="background: rgb(255, 224, 179);"
-				 title="<?php echo __('Reply'); ?>"><i class="icon-mail-reply"></i></a>
-                <?php
-                } ?>
-				
-                <a href="#note" id="post-note" class="post-response action-button"
-                 data-toggle="tooltip" style="background: rgb(242, 177, 177);"
-                 title="<?php echo __('Post Internal Note'); ?>"><i class="icon-file-text"></i></a>
-        </div>
 		<h3>
 		<?php $subject_field = TicketForm::getInstance()->getField('subject');
 			echo $subject_field ? $subject_field->display($ticket->getSubject())
 				: Format::htmlchars($ticket->getSubject()); ?>
 		</h3>
 	</div>
-<div class="flex" id="ticket_view_flex">
-	
+	<div class="flex" id="ticket_view_flex">
 	<div class="clear"></div>
 
 	<div id="ticket_thread_flex_container">
@@ -769,6 +535,239 @@ if($ticket->isOverdue())
 		</div>
 	</div>
 	<div id="ticket_info_flex_container" class="sticky tile">
+	<div class="pull-right flush-right">
+            <?php
+            if ($thisstaff->hasPerm(Email::PERM_BANLIST)
+                    || $role->hasPerm(Ticket::PERM_EDIT)
+                    || ($dept && $dept->isManager($thisstaff))) { ?>
+            <span class="action-button pull-right" data-dropdown="#action-dropdown-more" data-toggle="tooltip" title="<?php echo __('More');?>">
+                <i class="icon-caret-down pull-right"></i>
+                <span><i class="icon-cog"></i></span>
+            </span>
+            <?php
+            }
+
+            if ($role->hasPerm(Ticket::PERM_EDIT)) { ?>
+                <a class="action-button pull-right" data-toggle="tooltip" title="<?php echo __('Edit'); ?>" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=edit"><i class="icon-edit"></i></a>
+            <?php
+            } ?>
+            <span class="action-button pull-right" data-dropdown="#action-dropdown-print" data-toggle="tooltip" title="<?php echo __('Print'); ?>">
+                <i class="icon-caret-down pull-right"></i>
+                <a id="ticket-print" aria-label="<?php echo __('Print'); ?>" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=print"><i class="icon-print"></i></a>
+            </span>
+            <div id="action-dropdown-print" class="action-dropdown anchor-right">
+              <ul>
+                 <li title="PDF File"><a class="no-pjax" target="_blank" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=print&notes=0&events=0"><i
+                 class="icon-file-text-alt"></i> <?php echo __('Ticket Thread'); ?></a></li>
+                 <li title="PDF File"><a class="no-pjax" target="_blank" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=print&notes=1&events=0"><i
+                 class="icon-file-text-alt"></i> <?php echo __('Thread + Internal Notes'); ?></a></li>
+                 <li title="PDF File"><a class="no-pjax" target="_blank" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=print&notes=1&events=1"><i
+                 class="icon-file-text-alt"></i> <?php echo __('Thread + Internal Notes + Events'); ?></a></li>
+                 <?php if (extension_loaded('zip')) { ?>
+                 <li title="ZIP Archive"><a class="no-pjax" target="_blank" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=zip&notes=1"><i
+                 class="icon-folder-close-alt"></i> <?php echo __('Thread + Internal Notes + Attachments'); ?></a></li>
+                 <li title="ZIP Archive"><a class="no-pjax" target="_blank" href="tickets.php?id=<?php echo $ticket->getId(); ?>&a=zip&notes=1&tasks=1"><i
+                 class="icon-folder-close-alt"></i> <?php echo __('Thread + Internal Notes + Attachments + Tasks'); ?></a></li>
+                 <?php } ?>
+              </ul>
+            </div>
+            <?php
+            // Transfer
+            if ($role->hasPerm(Ticket::PERM_TRANSFER)) {?>
+            <a class="action-button pull-right ticket-action" id="ticket-transfer" data-toggle="tooltip" title="<?php echo __('Transfer'); ?>"
+			 data-redirect="tickets.php"
+			 href="#tickets/<?php echo $ticket->getId(); ?>/transfer"><i class="icon-share"></i></a>
+            <?php
+            } ?>
+
+            <?php
+            // Assign
+            if ($ticket->isOpen() && $role->hasPerm(Ticket::PERM_ASSIGN)) {?>
+            <span class="action-button pull-right"
+                data-dropdown="#action-dropdown-assign"
+                data-toggle="tooltip"
+                title=" <?php echo $ticket->isAssigned() ? __('Assign') : __('Reassign'); ?>"
+                >
+                <i class="icon-caret-down pull-right"></i>
+                <a class="ticket-action" id="ticket-assign"
+                    data-redirect="tickets.php"
+                    href="#tickets/<?php echo $ticket->getId(); ?>/assign"><i class="icon-user"></i></a>
+            </span>
+            <div id="action-dropdown-assign" class="action-dropdown anchor-right">
+              <ul>
+                <?php
+                // Agent can claim team assigned ticket
+                if (!$ticket->getStaff()
+                        && (!$dept->assignMembersOnly()
+                            || $dept->isMember($thisstaff))
+                        ) { ?>
+                 <li><a class="no-pjax ticket-action"
+                    data-redirect="tickets.php?id=<?php echo
+                    $ticket->getId(); ?>"
+                    href="#tickets/<?php echo $ticket->getId(); ?>/claim"><i
+                    class="icon-chevron-sign-down"></i> <?php echo __('Claim'); ?></a></li>
+                <?php
+                } ?>
+                 <li><a class="no-pjax ticket-action"
+                    data-redirect="tickets.php"
+                    href="#tickets/<?php echo $ticket->getId(); ?>/assign/agents"><i
+                    class="icon-user"></i> <?php echo __('Agent'); ?></a></li>
+                 <li><a class="no-pjax ticket-action"
+                    data-redirect="tickets.php"
+                    href="#tickets/<?php echo $ticket->getId(); ?>/assign/teams"><i
+                    class="icon-group"></i> <?php echo __('Team'); ?></a></li>
+              </ul>
+            </div>
+            <?php
+            } ?>
+            <div id="action-dropdown-more" class="action-dropdown anchor-right">
+              <ul>
+                <?php
+                 if ($role->hasPerm(Ticket::PERM_EDIT)) { ?>
+                    <li><a class="change-user" href="#tickets/<?php
+                    echo $ticket->getId(); ?>/change-user"
+                    onclick="javascript:
+                        saveDraft();"
+                    ><i class="icon-user"></i> <?php
+                    echo __('Change Owner'); ?></a></li>
+                <?php
+                 }
+
+                 if ($role->hasPerm(Ticket::PERM_MERGE) && !$ticket->isChild()) { ?>
+                     <li><a href="#ajax.php/tickets/<?php echo $ticket->getId();
+                         ?>/merge" onclick="javascript:
+                         $.dialog($(this).attr('href').substr(1), 201);
+                         return false"
+                         ><i class="icon-code-fork"></i> <?php echo __('Merge Tickets'); ?></a></li>
+                 <?php
+                  }
+
+                 if ($role->hasPerm(Ticket::PERM_LINK) && $ticket->getMergeType() == 'visual') { ?>
+                     <li><a href="#ajax.php/tickets/<?php echo $ticket->getId();
+                         ?>/link" onclick="javascript:
+                         $.dialog($(this).attr('href').substr(1), 201);
+                         return false"
+                         ><i class="icon-link"></i> <?php echo __('Link Tickets'); ?></a></li>
+                 <?php
+                 }
+
+                 if ($ticket->isAssigned() && $canRelease) { ?>
+                        <li><a href="#tickets/<?php echo $ticket->getId();
+                            ?>/release" class="ticket-action"
+                             data-redirect="tickets.php?id=<?php echo $ticket->getId(); ?>" >
+                               <i class="icon-unlock"></i> <?php echo __('Release (unassign) Ticket'); ?></a></li>
+                 <?php
+                 }
+                 if($ticket->isOpen() && $isManager) {
+                    if(!$ticket->isOverdue()) { ?>
+                        <li><a class="confirm-action" id="ticket-overdue" href="#overdue"><i class="icon-bell"></i> <?php
+                            echo __('Mark as Overdue'); ?></a></li>
+                    <?php
+                    }
+                 }
+                 if($ticket->isOpen() && $canMarkAnswered) {
+                    if($ticket->isAnswered()) { ?>
+                    <li><a href="#tickets/<?php echo $ticket->getId();
+                        ?>/mark/unanswered" class="ticket-action"
+                            data-redirect="tickets.php?id=<?php echo $ticket->getId(); ?>">
+                            <i class="icon-circle-arrow-left"></i> <?php
+                            echo __('Mark as Unanswered'); ?></a></li>
+                    <?php
+                    } else { ?>
+                    <li><a href="#tickets/<?php echo $ticket->getId();
+                        ?>/mark/answered" class="ticket-action"
+                            data-redirect="tickets.php?id=<?php echo $ticket->getId(); ?>">
+                            <i class="icon-circle-arrow-right"></i> <?php
+                            echo __('Mark as Answered'); ?></a></li>
+                    <?php
+                    }
+                } ?>
+
+                <?php
+                if ($role->hasPerm(Ticket::PERM_REFER)) { ?>
+                <li><a href="#tickets/<?php echo $ticket->getId();
+                    ?>/referrals" class="ticket-action"
+                     data-redirect="tickets.php?id=<?php echo $ticket->getId(); ?>" >
+                       <i class="icon-exchange"></i> <?php echo __('Manage Referrals'); ?></a></li>
+                <?php
+                } ?>
+                <?php
+                if ($role->hasPerm(Ticket::PERM_EDIT)) { ?>
+                <li><a href="#ajax.php/tickets/<?php echo $ticket->getId();
+                    ?>/forms/manage" onclick="javascript:
+                    $.dialog($(this).attr('href').substr(1), 201);
+                    return false"
+                    ><i class="icon-paste"></i> <?php echo __('Manage Forms'); ?></a></li>
+                <?php
+                }
+
+                if ($role->hasPerm(Ticket::PERM_REPLY) && $thread && $ticket->getId() == $thread->getObjectId()) {
+                    ?>
+                <li>
+
+                    <?php
+                    $recipients = __(' Manage Collaborators');
+
+                    echo sprintf('<a class="collaborators manage-collaborators"
+                            href="#thread/%d/collaborators/1"><i class="icon-group"></i>%s</a>',
+                            $ticket->getThreadId(),
+                            $recipients);
+                   ?>
+                </li>
+                <?php
+                } ?>
+
+
+<?php           if ($thisstaff->hasPerm(Email::PERM_BANLIST)
+                    && $role->hasPerm(Ticket::PERM_REPLY)) {
+                     if(!$emailBanned) {?>
+                        <li><a class="confirm-action" id="ticket-banemail"
+                            href="#banemail"><i class="icon-ban-circle"></i> <?php echo sprintf(
+                                Format::htmlchars(__('Ban Email <%s>')),
+                                $ticket->getEmail()); ?></a></li>
+                <?php
+                     } elseif($unbannable) { ?>
+                        <li><a  class="confirm-action" id="ticket-banemail"
+                            href="#unbanemail"><i class="icon-undo"></i> <?php echo sprintf(
+                                Format::htmlchars(__('Unban Email <%s>')),
+                                $ticket->getEmail()); ?></a></li>
+                    <?php
+                     }
+                  }
+                  Signal::send('ticket.view.more', $ticket, $extras);
+                  if ($role->hasPerm(Ticket::PERM_DELETE)) {
+                     ?>
+                    <li class="danger"><a class="ticket-action" href="#tickets/<?php
+                    echo $ticket->getId(); ?>/status/delete"
+                    data-redirect="tickets.php"><i class="icon-trash"></i> <?php
+                    echo __('Delete Ticket'); ?></a></li>
+                <?php
+                 }
+                ?>
+              </ul>
+            </div>
+                <?php
+                if (count($children) != 0)
+                    echo sprintf('<span style="font-weight: 700; line-height: 26px;">%s</span>', __('PARENT'));
+                elseif ($ticket->isChild())
+                    echo sprintf('<span style="font-weight: 700; line-height: 26px;">%s</span>', __('CHILD'));
+				?>	
+				<a href="tickets.php?id=<?php echo $ticket->getId(); ?>"
+				 class="action-button" data-toggle="tooltip"
+				 title="<?php echo __('Reload'); ?>"><i class="icon-refresh"></i></a>
+				 
+				<?php
+                if ($role->hasPerm(Ticket::PERM_REPLY)) { ?>
+				<a href="#reply" id="post-reply" class="post-response action-button"
+				 data-toggle="tooltip" style="background: rgb(255, 224, 179);"
+				 title="<?php echo __('Reply'); ?>"><i class="icon-mail-reply"></i></a>
+                <?php
+                } ?>
+				
+                <a href="#note" id="post-note" class="post-response action-button"
+                 data-toggle="tooltip" style="background: rgb(242, 177, 177);"
+                 title="<?php echo __('Post Internal Note'); ?>"><i class="icon-file-text"></i></a>
+        </div>
 		<div class="ticket_number">
             <h5>
 				<?php echo sprintf(__('Ticket #%s'), $ticket->getNumber()); ?>
