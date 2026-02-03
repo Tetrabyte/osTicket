@@ -12,51 +12,46 @@ require_once(STAFFINC_DIR.'header.inc.php');
 
 $dev = 0;
 
-function run_search ($keyword) {
+$date = $_GET['since']; 
+$type = $_GET['andor']; 
+$keyword = $_GET['keyword'];
+
+function run_search_1($keyword, $type) {
 	global $dev;
-	$query = "SELECT
-				ost_ticket.ticket_id AS ticket_id, 
-				ost_ticket.number AS ticket_number, 
-				ost_ticket__cdata.`subject` AS ticket_subject, 
-				ost_ticket_status.`name` AS `status`, 
-				ost_thread_entry.created AS entry_posted,
-				ost_thread_entry.user_id AS user_id,
-				ost_thread_entry.staff_id AS staff_id,
-				ost_thread_entry.poster AS poster
-			FROM
-				ost_thread_entry
-				INNER JOIN
-				ost_thread
-				ON 
-					ost_thread_entry.thread_id = ost_thread.id
-				INNER JOIN
-				ost_ticket__cdata
-				ON 
-					ost_thread.object_id = ost_ticket__cdata.ticket_id
-				INNER JOIN
-				ost_ticket
-				ON 
-					ost_thread.object_id = ost_ticket.ticket_id
-				INNER JOIN
-				ost_ticket_status
-				ON 
-					ost_ticket.status_id = ost_ticket_status.id
-			WHERE
+	
+
+	$query = "	SELECT
+					ost_thread_entry.id, 
+					ost_thread_entry.thread_id, 
+					ost_thread_entry.poster, 
+					ost_thread_entry.user_id, 
+					ost_thread_entry.staff_id,
+					ost_thread_entry.created
+				FROM
+					ost__search
+					INNER JOIN
+					ost_thread_entry
+					ON 
+						ost__search.object_id = ost_thread_entry.id
+				WHERE
+					ost__search.object_type = 'H' AND
 				";
 	
 	
-	if ( $_GET['andor'] == "phrase" )  {
-		$query .= " ost_thread_entry.body LIKE '%".$keyword."%'";		
-	}else{	
+	if ( $type == "phrase" )  {
+		$query .= " ost__search.content LIKE '%".$keyword."%'";		
+	}
+	else
+	{	
 		$keyword_arr = explode(" ", $keyword);  
 		foreach($keyword_arr as $text)  
 		{  
 			if ( $_GET['andor'] == "or" )  {
-				$query .= " ost_thread_entry.body LIKE '%".$text."%'  OR";  
+				$query .= " ost__search.content LIKE '%".$text."%'  OR";  
 			}
 			elseif ( $_GET['andor'] == "and" )
 			{
-				$query .= " ost_thread_entry.body LIKE '%".$text."%' AND"; 
+				$query .= " ost__search.content LIKE '%".$text."%' AND"; 
 			}
 			else
 			{
@@ -65,21 +60,78 @@ function run_search ($keyword) {
 		} 
 		$query = substr($query, 0, -4);  #deduct the last ' AND' or '  OR' both 4 chars
 	}
-
 	
-	$query .= " AND ost_thread_entry.created > '".$_GET['since']."' 
-			ORDER BY
-				ost_thread_entry.created DESC
-			LIMIT 1000";
+	$query .= " ORDER BY
+					ost__search.object_id DESC
+				LIMIT 10000";
 	
-	if ( $dev ) {echo "<br/>Search Query: ".$query."<br/>";}
+	if ( $dev ) {echo "<br/>Search Query 1: ".$query."<br/><br/><br/>";}
 		
 	$commit = db_query($query, $logError=true, $buffered=true);
 	
-	return $commit;
+	
+	$search1array = array();
+	while(($row =  mysqli_fetch_assoc($commit))) {
+		$search1array[] = $row;
+	}
+	
+	
+	if ( $dev ) {
+		echo "<br/>Search Query 1a: ";
+		print_r($search1array);
+		echo "<br/>";
+	};
+	
+	return $search1array;
 }
 
-function OrgName ($UserId) {
+function run_search_2($threadid) {
+	global $dev;
+	
+	$query = "	SELECT
+					ost_ticket__cdata.`subject`, 
+					ost_ticket.number, 
+					ost_ticket_status.`name`, 
+					ost_ticket.ticket_id, 
+					ost_ticket.created, 
+					ost_ticket.lastupdate
+				FROM
+					ost_thread
+					INNER JOIN
+					ost_ticket__cdata
+					ON 
+						ost_thread.object_id = ost_ticket__cdata.ticket_id
+					INNER JOIN
+					ost_ticket
+					ON 
+						ost_thread.object_id = ost_ticket.ticket_id
+					INNER JOIN
+					ost_ticket_status
+					ON 
+						ost_ticket.status_id = ost_ticket_status.id
+				WHERE
+					ost_thread.id = '".$threadid."'
+				LIMIT 1	
+				";
+	
+	if ( $dev ) {echo "<br/>Search Query 2 : ".$query."<br/>";}
+		
+	$commit = db_query($query, $logError=true, $buffered=true);
+	
+	$search2array = mysqli_fetch_assoc($commit);
+		
+	if ( $dev ) {
+		echo "<br/>Search Query 2a: ";
+		print_r($search2array);
+		echo "<br/>";
+	};
+	
+	return $search2array;
+}
+
+
+
+function OrgName($UserId) {
 	global $dev;
 	
 	$query = "SELECT
@@ -98,9 +150,58 @@ function OrgName ($UserId) {
 	
 	$commit = db_query($query, $logError=true, $buffered=true);
 	
-	return $commit;
+	if ( $commit->num_rows > 0 ) {
+		$orgarray = mysqli_fetch_assoc($commit);
+	}
+	else
+	{
+		$orgarray = array('OrgID'=>'0','OrgName'=>"");
+	}
+	
+	
+	if ( $dev ) {
+		echo "<br/>Search Query 2a: ";
+		print_r($orgarray);
+		echo "<br/>";
+	};
+	
+	return $orgarray;
 }
+
+
 $ost->setPageTitle('Ticket Search Tool');
+
+
+
+if ( isset($_GET['keyword']) AND $_GET['keyword'] != "" ) {
+							
+	$search1array = run_search_1($keyword, $type);
+	
+	foreach ($search1array as $key1 => $value1) {
+		$search2array =  run_search_2($value1['thread_id']);
+		$org = array('OrgID'=>'0','OrgName'=>"");
+		if ( $value1['user_id'] > 0 ){
+			$org = OrgName($value1['user_id']);
+		}
+		$value1 = array_merge($value1, $search2array, $org);
+		$search1array[$key1] = $value1;
+	}
+	
+	if ( $dev ) {
+		foreach ($search1array as $key1 => $value1) {		
+			echo "$key1 : <br>";
+			foreach ($value1 as $key2 => $value2) {
+				echo "$key2 : $value2 <br>";
+			}
+			echo "<br>";
+		}
+	}
+	
+
+}
+
+
+
 ?>
 
 <!doctype html>
@@ -171,12 +272,8 @@ body {
 											<label class="form-check-label" for="andorand">  Phrase</label>
 										</div>
 									</div>
-									<div class="col-1 text-end" style="font-size: 25px;">
-										Since Date: </div>
-									<div class="col-1">
-										<input class="form-control" type="text" value="<?php echo $_GET['since'] ?? date("Y-m-d",strtotime("-3 year")); ?>" id="since" name="since">
-									</div>
-									<div class="col-7"></div>
+									
+									<div class="col-8"></div>
 								</div>
 							</div>
 						</div>
@@ -228,8 +325,8 @@ body {
 						<?php
 							
 							if ( isset($_GET['keyword']) AND $_GET['keyword'] != "" ) {
-								$keyword = $_GET['keyword'];
-								$commit = run_search($keyword);
+								
+							#	$commit = run_search_1($keyword, $date, $type);
 
 						?>
 						
@@ -246,28 +343,27 @@ body {
 							</thead>
 							<tbody>
 <?php
-								while($row = $commit->fetch_assoc())  {
-									$UserOrg = mysqli_fetch_assoc(OrgName($row["user_id"]));
-									echo '	
-									<tr>
-										<td> <a href="/scp/orgs.php?id='.$UserOrg['OrgId'].'#tickets">'.$UserOrg["OrgName"].' </a></td>
-									';	
-									if ( $row['user_id'] != 0) {
-										echo '<td> <a href="/scp/UserSearch.php?UserId='.$row['user_id'].'">'.$row["poster"].' </a></td> ';
-									}
-									else
-									{
-										echo '<td>'.$row["poster"].'</td> ';
-									}
-										
-									echo '		
-										<td> <a href="/scp/tickets.php?id='.$row["ticket_id"].'#note">'.$row["ticket_number"].' </a> </td>
-										<td> <a href="/scp/tickets.php?id='.$row["ticket_id"].'#note">'.$row["ticket_subject"].'</a> </td>
-										<td> '.$row["status"].' </td>
-										<td> '.$row["entry_posted"].' </td>
-									</tr>
-										';
-								}
+
+
+
+		foreach ($search1array as $key1 => $value1) {		
+			echo "<tr>";
+			echo "<td><a href='/scp/orgs.php?id=".$value1['OrgId']."#tickets'>".$value1['OrgName']."</a></td>";#company
+			if ( $value1['user_id'] > 0 ) {
+				echo "<td><a href='/scp/UserSearch.php?UserId=".$value1['user_id']."'> ".$value1['poster']." </a></td>";	#Poster
+			}
+			else
+			{
+				echo "<td>".$value1['poster']."</td>";	#Poster
+			}
+			echo "<td><a href='/scp/tickets.php?id=".$value1['ticket_id']."'>".$value1['number']."</a></td>";	#Ticket Number
+			echo "<td><a href='/scp/tickets.php?id=".$value1['ticket_id']."'>".$value1['subject']."</a></td>";	#Subject
+			echo "<td>".$value1['name']."</td>";	#Ticket Status
+			echo "<td>".$value1['created']."</td>";	#Posted		
+			echo "</tr>";				
+		}
+
+
 							}
 ?>
 							</tbody>

@@ -428,6 +428,40 @@ function update_contacts($UserId) {
 	$contact;
 }
 
+function phpsubmitter($name, $email, $phone, $subject, $message, $notes) {
+	$data = array(
+		'name'      =>    $name,
+		'email'       =>    $email,
+		'subject'    =>    $subject,
+		'message' =>    "data:text/html,$message",
+		'notes'       =>    "data:text/html,$notes",
+		'phone'      =>    $phone,
+		'topicId'   =>      '10',
+	);
+	
+	#print_r($data);
+	$json_data = json_encode($data);
+	#print $json_data;
+	
+	#$json_data = '{"name":"Ashley","email":"ashley@tbyte.com","subject":"New User - bob marley - 2025-07-18","message":"data:text\/html,Users Name<\/b>bob marleyDate Required (5PM unless otherwise stated)<\/b>2025-07-18Primary work location<\/b>Users Manager<\/b>Users Department<\/b>Computer account required<\/b>NoEmail account required<\/b>NoThe user requires the following software<\/b>dTelephones\/Webex required<\/b>NoThe user requires access to the following places<\/b>dFurther information<\/b>dUsers Leaving - Check leaver ticket has been created and send form<\/b>Notes<\/b>Check company user set up proceedure and complete any actions from thereSubmitter Name:<\/b> Ashley Submitter Email:<\/b> ashley@tbyte.com Subject:<\/b> New User - bob marley - 2025-07-18 ","notes":"data:text\/html,test","phone":"","topicId":"10"}';
+	
+	set_time_limit(30);
+	$options = array(
+	  'http' => array(
+		'header'  => "X-API-Key: 11DFF30430D75F7BA06816A8C6D6F1FC",
+		'method' => 'POST',
+		'content' => $json_data
+	   )
+	);
+	$context  = stream_context_create($options);
+	$result = file_get_contents('https://tickets.remoteit.co.uk/api/http.php/tickets.json', false, $context);
+	if ($result === FALSE) { die("Ticket Creation Failed - API Error. <br/> Please call Tetrabyte."); }
+	
+	
+	return $result;
+}
+
+
 if( (isset($_GET['UserNumber']) OR isset($_GET['UserNotes']) OR isset($_GET['OrgNotes']) OR isset($_GET['OrgPhone'])) AND (isset($_GET['UserId']))  ) {
 	
 	### Update User Number
@@ -624,6 +658,7 @@ body {
 				</form>
 			</div>
 		</div>
+
 		<hr>
 		<div class="">
 			<div class="panel-body">
@@ -632,7 +667,13 @@ body {
 						
 						
 						<?php
-########################################################### User Search #################################################################		
+########################################################### User Search #################################################################	
+
+#print_r($thisstaff);
+#echo $thisstaff->email;
+
+
+	
 							
 							if ( isset($_GET['UserId']) AND $_GET['UserId'] != "" ) 
 							{
@@ -694,7 +735,8 @@ body {
 									$row["OrgNotesPHP"] = str_replace("<p>","",$row["OrgNotesPHP"]);
 									$row["OrgNotesPHP"] = str_replace("</p>","",$row["OrgNotesPHP"]);
 									echo '<tr>';
-									if ( mysqli_num_rows($commit) == 1 ) {
+									if ( mysqli_num_rows($commit) == 1 ) 
+									{
 										echo '<td> <a target="_blank" href="/scp/tickets.php?a=open&uid='.$row["UserId"].'"class="btn btn-success" role="button" > OPEN TICKET </a></td> ';
 										update_contacts($UserId);
 									} else {
@@ -781,6 +823,8 @@ body {
 									echo '</tr>';
 
 									require_once('includes/note_add_modal.php');
+									include('Quick_Ticket3.php');
+
 
 ############################################################ Modals #################################################################
 
@@ -879,7 +923,14 @@ body {
 						?>
 							</tbody>
 						</table>
-						<?php if(isset($OrgId)) { ?><div class="row" >
+						
+						<?php
+if (isset($ticket)) {
+	echo "Ticket Created.... See list below.";
+}						
+						
+						
+						if(isset($OrgId)) { ?><div class="row" >
 								<div class="col-md"><?php company_notes($OrgId); ?></div>
 								<div class="col-md-1"><button type="button" class="btn btn-primary" id="add" data-bs-toggle="modal" data-bs-target="#addCNoteModal">
 								<i class="bi bi-building-add"></i> New Org Note</button></div> 
