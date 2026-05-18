@@ -752,7 +752,7 @@ body {
 												<i class="bi bi-pencil-square pe-none"></i>
 												</div>
 												&nbsp&nbsp
-												<a href="dial:'.$row["UserPhone"].'">
+												<a href="tel:'.$row["UserPhone"].'">
 													<i class="bi bi-telephone-outbound-fill"></i>
 												</a>
 											</div>';
@@ -790,7 +790,7 @@ body {
 													<i class="bi bi-pencil-square"></i>
 												</div>
 												&nbsp&nbsp
-												<a href="dial:'.$row["OrgPhone"].'">
+												<a href="tel:'.$row["OrgPhone"].'">
 													<i class="bi bi-telephone-outbound-fill"></i>
 												</a>
 											</div>
