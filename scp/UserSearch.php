@@ -116,6 +116,8 @@ function run_idsearch ($UserId) {
 }
 
 function run_telsearch ($Tel) {
+
+$Tel = preg_replace('/\s+/', '', $Tel);
 	
 	$query = "	SELECT
 					ost_user.`id` AS UserId,
