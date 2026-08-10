@@ -326,7 +326,7 @@ class DatabaseSessionRecord extends VerySimpleModel
         return $this->session_id;
     }
 
-    public function setData(string $data = null) {
+    public function setData(?string $data = null) {
         $this->session_data = $data;
         return $this;
     }
@@ -417,7 +417,7 @@ class DatabaseSessionRecord extends VerySimpleModel
         }
         catch (DoesNotExist $e) {
             // We're auto-creating model (unsaved) when one doesn't exist?
-            $record = $autocreate ? self::create($id) : null;
+            $record = ($autocreate && ctype_alnum($id)) ? self::create($id) : null;
         }
         catch (OrmException | Exception $ex) {
             // This could happen if more than one record exits in the
@@ -645,7 +645,7 @@ implements osTicket\Session\SessionRecordInterface {
         return $this->data->data;
     }
 
-    public function setData(string $data = null) {
+    public function setData(?string $data = null) {
         $this->data->data = $data;
     }
 

@@ -180,7 +180,7 @@ class ContentAjaxAPI extends AjaxController {
     }
 
     function updateContent($id) {
-        global $thisstaff;
+        global $thisstaff, $cfg;
 
         if (!$thisstaff)
             Http::response(403, 'Login Required');
@@ -201,6 +201,7 @@ class ContentAjaxAPI extends AjaxController {
         }
         if (!$errors['err'])
             $errors['err'] = __('Correct any errors below and try again.');
+        $langs = Internationalization::getConfiguredSystemLanguages();
         $info = $_POST;
         $errors = Format::htmlchars($errors);
         include STAFFINC_DIR . 'templates/content-manage.tmpl.php';

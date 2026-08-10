@@ -36,9 +36,9 @@ $entries->filter(array('type__in' => array_keys($entryTypes)))->order_by("{$orde
                     <td style=" border-top: 1px dashed #999;">
                         <div style="background-color:#f7f7f7; padding:10px 20px;">
                             <p style="font-family: sans-serif; padding:0; margin:0; color:<?php echo $color; ?>;">
-                                <strong><?php echo $name; ?></strong>
+                                <strong><?php echo Format::htmlchars($name); ?></strong>
                                 <span style="color:#888; font-size:12px; padding-left: 20px;"><?php
-                                    echo $entry->title;
+                                    echo Format::htmlchars($entry->title);
                                 ?>
                                 </span>
                             </p>
