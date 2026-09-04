@@ -269,7 +269,7 @@ var scp_prep = function() {
 
     /* Typeahead tickets lookup */
     var last_req;
-    $('input.basic-search').typeahead({
+    $('input.basic-search:not([id])').typeahead({
         source: function (typeahead, query) {
             if (last_req) last_req.abort();
             var $el = this.$element;
@@ -1414,7 +1414,7 @@ $(document).on('click.inline-edit', 'a.inline-edit', function(e) {
                             reply.append(option);
                     if (note)
                         if (note.find('option[value='+key+']').length == 0)
-                            note.append(option);
+                            note.append(option.clone());
                 });
                 // Hide warning banner
                 reply.closest('td').find('.warning-banner').hide();

@@ -195,6 +195,7 @@ extends VerySimpleModel {
             ))->delete();
     }
 
+
     static function getConfigsByNamespace(?string $namespace=null, $key, $value=false) {
         $filter = array();
 
@@ -1348,8 +1349,8 @@ class OsticketConfig extends Config {
             'enable_avatars' => isset($vars['enable_avatars']) ? 1 : 0,
             'enable_richtext' => isset($vars['enable_richtext']) ? 1 : 0,
             'files_req_auth' => isset($vars['files_req_auth']) ? 1 : 0,
-            'allow_iframes' => Format::sanitize($vars['allow_iframes']),
             'enable_stafflogin'=>$vars['enable_stafflogin'] ? '1' : '0',
+            'allow_iframes' => Format::sanitize($vars['allow_iframes']),
             'embedded_domain_whitelist' => Format::sanitize($vars['embedded_domain_whitelist']),
             'acl' => Format::sanitize($vars['acl']),
             'acl_backend' => Format::sanitize((int) $vars['acl_backend']) ?: 0,
