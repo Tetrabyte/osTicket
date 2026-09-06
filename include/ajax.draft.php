@@ -243,6 +243,7 @@ class DraftAjaxAPI extends AjaxController {
 
         $draft = Draft::create(array(
             'namespace' => $namespace,
+            'body' => ''
         ));
         if (!$draft->save())
             Http::response(500, 'Unable to create draft');
@@ -313,7 +314,8 @@ class DraftAjaxAPI extends AjaxController {
             Http::response(403, "Login required for image upload");
 
         $draft = Draft::create(array(
-            'namespace' => $namespace
+            'namespace' => $namespace,
+            'body' => ''
         ));
         if (!$draft->save())
             Http::response(500, 'Unable to create draft');

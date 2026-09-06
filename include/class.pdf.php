@@ -77,7 +77,7 @@ class Ticket2PDF extends mPDFWithLocalImages
         $this->includenotes = $notes;
         $this->includeevents = $events;
 
-	parent::__construct(['mode' => 'utf-8', 'format' => $psize, 'tempDir'=>sys_get_temp_dir()]);
+        parent::__construct(['mode' => 'utf-8', 'format' => $psize, 'tempDir'=>sys_get_temp_dir(), 'autoLangToFont' => true, 'autoScriptToLang' => true]);
 
         $this->_print();
 	}
@@ -101,7 +101,7 @@ class Ticket2PDF extends mPDFWithLocalImages
             return;
         $html = ob_get_clean();
 
-        $this->autoScriptToLang;
+        $this->autoScriptToLang = true;
         $this->WriteHtml($html, 0, true, true);
     }
 }
@@ -118,7 +118,7 @@ class Task2PDF extends mPDFWithLocalImages {
         $this->task = $task;
         $this->options = $options;
 
-        parent::__construct(['mode' => 'utf-8', 'format' => $this->options['psize'], 'tempDir'=>sys_get_temp_dir()]);
+        parent::__construct(['mode' => 'utf-8', 'format' => $this->options['psize'], 'tempDir'=>sys_get_temp_dir(), 'autoLangToFont' => true, 'autoScriptToLang' => true]);
         $this->_print();
     }
 
@@ -131,7 +131,7 @@ class Task2PDF extends mPDFWithLocalImages {
         ob_start();
         include STAFFINC_DIR.'templates/task-print.tmpl.php';
         $html = ob_get_clean();
-        $this->autoScriptToLang;
+        $this->autoScriptToLang = true;
         $this->WriteHtml($html, 0, true, true);
 
     }
