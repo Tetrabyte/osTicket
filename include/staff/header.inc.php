@@ -51,9 +51,30 @@ if (osTicket::is_ie())
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH; ?>css/rtl.css"/>
     <link type="text/css" rel="stylesheet" href="<?php echo ROOT_PATH ?>scp/css/translatable.css"/>
     <!-- Favicons -->
-    <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/oscar-favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/oscar-favicon-16x16.png" sizes="16x16" />
-
+    <link rel="apple-touch-icon" href="<?php echo ROOT_PATH ?>images/apple-touch-icon.png" sizes="180x180"/>
+    <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="<?php echo ROOT_PATH ?>images/favicon-16x16.png" sizes="16x16" />
+    <link rel="manifest" href="<?php echo ROOT_PATH ?>images/site.webmanifest" crossorigin="use-credentials"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="/scp/js/tinymce/tinymce.min.js"></script>
+	<style>
+*, ::after, ::before {
+  box-sizing: content-box;
+}
+a {
+	text-decoration: none;
+	color: #184E81;
+}
+:root {
+	--bs-body-bg : #eee;
+    --bs-body-font-family : "Lato", "Helvetica Neue", arial, helvetica, sans-serif;
+}
+table {
+	border-collapse: separate !important;
+}</style>
     <?php
     if($ost && ($headers=$ost->getExtraHeaders())) {
         echo "\n\t".implode("\n\t", $headers)."\n";

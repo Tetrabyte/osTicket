@@ -39,7 +39,7 @@
   color: #999;
 }
 .filedrop .files .file > span {
-    padding:4px 0 0 0;
+    padding:4px 0 0;
     display:block;
 }
 .filedrop .files .file .upload-rate {
