@@ -811,20 +811,27 @@ if ($errors['err'] && isset($_POST['a'])) {
 <div class="sticky bar stop actions" id="response_options"
 >
     <ul class="tabs" id="response-tabs">
-        <?php
-        if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) { ?>
-        <li class="active <?php
-            echo isset($errors['reply']) ? 'error' : ''; ?>"><a
-            href="#reply" id="post-reply-tab"><?php echo __('Post Reply');?></a></li>
-        <?php
-        }
-        if (!($blockReply)) { ?>
-        <li><a href="#note" <?php
-            echo isset($errors['postnote']) ?  'class="error"' : ''; ?>
-            id="post-note-tab"><?php echo __('Post Internal Note');?></a></li>
-        <?php
-        } ?>
-    </ul>
+			<?php
+			if (!($blockReply)) {
+			?>
+				<li>
+					<a href="#note" <?php echo isset($errors['postnote']) ?  'class="error"' : ''; ?> id="post-note-tab" style="background: rgb(242, 177, 177);" >
+						<?php echo __('Post Internal Note');?>
+					</a>
+				</li>
+			<?php
+			}
+			if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) {
+			?>
+				<li class="active <?php echo isset($errors['reply']) ? 'error' : ''; ?>">
+					<a href="#reply" id="post-reply-tab" style="background: rgb(255, 224, 179);">
+						<?php echo __('Post Reply');?>
+					</a>
+				</li>
+			<?php
+			}
+			?>
+		</ul>
     <?php
     if ($role->hasPerm(Ticket::PERM_REPLY) && !($blockReply)) {
         $replyTo = $_POST['reply-to'] ?: 'all';
@@ -834,7 +841,7 @@ if ($errors['err'] && isset($_POST['a'])) {
         data-lock-object-id="ticket/<?php echo $ticket->getId(); ?>"
         data-lock-id="<?php echo $mylock ? $mylock->getId() : ''; ?>"
         action="tickets.php?id=<?php
-        echo $ticket->getId(); ?>#reply" name="reply" method="post" enctype="multipart/form-data">
+        echo $ticket->getId(); ?>#reply" name="reply" method="post" enctype="multipart/form-data" style="background: rgb(255, 224, 179);">
         <?php csrf_token(); ?>
         <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
         <input type="hidden" name="msgId" value="<?php echo $msgId; ?>">
@@ -1147,7 +1154,6 @@ if ($errors['err'] && isset($_POST['a'])) {
         </table>
         <p  style="text-align:center;">
             <input class="save pending" type="submit" value="<?php echo __('Post Reply');?>">
-            <input class="" type="reset" value="<?php echo __('Reset');?>">
         </p>
     </form>
     <?php
@@ -1158,7 +1164,7 @@ if ($errors['err'] && isset($_POST['a'])) {
         data-lock-object-id="ticket/<?php echo $ticket->getId(); ?>"
         data-lock-id="<?php echo $mylock ? $mylock->getId() : ''; ?>"
         action="tickets.php?id=<?php echo $ticket->getId(); ?>#note"
-        name="note" method="post" enctype="multipart/form-data">
+        name="note" method="post" enctype="multipart/form-data" style="background: rgb(242, 177, 177);">
         <?php csrf_token(); ?>
         <input type="hidden" name="id" value="<?php echo $ticket->getId(); ?>">
         <input type="hidden" name="locktime" value="<?php echo $cfg->getLockTime() * 60; ?>">
@@ -1237,7 +1243,6 @@ if ($errors['err'] && isset($_POST['a'])) {
 
        <p style="text-align:center;">
            <input class="save pending" type="submit" value="<?php echo __('Post Note');?>">
-           <input class="" type="reset" value="<?php echo __('Reset');?>">
        </p>
    </form>
    <?php } ?>
