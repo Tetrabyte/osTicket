@@ -65,6 +65,15 @@ if(!($maxfileuploads=ini_get('max_file_uploads')))
                 <i class="help-tip icon-question-sign" href="#sequence_id"></i>
             </td>
         </tr>
+		<tr>
+			<td width="220">
+				<?php echo __('Clear Ticket Locks'); ?>:
+			</td>
+				<?php $selected = 'selected="selected"'; ?>
+            <td>
+				<input class="button pull-right" type="submit" name="ClearLocks" value="<?php echo __('Clear');?>">
+            </td>
+        </tr>
         <tr><td width="220"><?php echo __('Top-Level Ticket Counts'); ?>:</td>
             <td>
                 <input type="checkbox" name="queue_bucket_counts" <?php echo $config['queue_bucket_counts']?'checked="checked"':''; ?>>
