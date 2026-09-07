@@ -57,8 +57,12 @@
         else if (this.$textarea.hasClass('draft')) {
             // Just upload the file. A draft will be created automatically
             // and will be configured locally in the afterUpateDraft()
+            // The CSRF token is appended as a query param (not just via
+            // imageUploadData) because Redactor's clipboard-paste upload
+            // path doesn't send imageUploadData with the request.
             this.opts.clipboardUpload =
-            this.opts.imageUpload = this.autoCreateUrl + '/attach';
+            this.opts.imageUpload = this.autoCreateUrl + '/attach?__CSRFToken__=' +
+                encodeURIComponent($("meta[name=csrf_token]").attr("content"));
             this.opts.imageCaption = false;
         }
         this.opts.autosaveData = {
@@ -79,9 +83,11 @@
     _setup: function (draft_id) {
         this.opts.draftId = draft_id;
         this.opts.autosave = 'ajax.php/draft/' + draft_id;
+        // See the comment in start() re: why the token is on the URL.
         this.opts.clipboardUpload =
         this.opts.imageUpload =
-            'ajax.php/draft/' + draft_id + '/attach';
+            'ajax.php/draft/' + draft_id + '/attach?__CSRFToken__=' +
+                encodeURIComponent($("meta[name=csrf_token]").attr("content"));
         this.opts.imageCaption = false;
 
         // Add [Delete Draft] button to the toolbar
@@ -361,7 +367,7 @@ $(function() {
     },
     redact = $.fn.redact = function(el, options) {
         var el = $(el),
-            sizes = {'small': '75px', 'medium': '150px', 'large': '225px'},
+            sizes = {'small': '100px', 'medium': '150px', 'large': '225px'},
             selectedSize = sizes['medium'];
         $.each(sizes, function(k, v) {
             if (el.hasClass(k)) selectedSize = v;
@@ -375,9 +381,9 @@ $(function() {
                     'file', 'table', 'link', 'line', 'fullscreen'],
                 'buttonSource': !el.hasClass('no-bar'),
                 'autoresize': !el.hasClass('no-bar') && !el.closest('.dialog').length,
-                'maxHeight': el.closest('.dialog').length ? selectedSize : false,
+                'maxHeight': '75%',
                 'minHeight': selectedSize,
-                'maxWidth': el.hasClass('fullscreen') ? '950px' : false,
+                'maxWidth': el.hasClass('fullscreen') ? '100%' : false,
                 'focus': false,
                 'plugins': el.hasClass('no-bar')
                   ? ['imagemanager','definedlinks']
