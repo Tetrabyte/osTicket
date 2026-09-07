@@ -24,3 +24,6 @@ nbproject/
 # Backup/old config files that shouldn't be committed
 include/ost-config-old.php
 *.bak
+
+# Secrets - never commit
+.env
