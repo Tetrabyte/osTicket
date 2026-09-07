@@ -1665,7 +1665,6 @@ implements TemplateVariable {
 
         $entry = new static(array(
             'created' => SqlFunction::NOW(),
-            'updated' => SqlFunction::NOW(),
             'type' => $vars['type'],
             'thread_id' => $vars['threadId'],
             'title' => Format::strip_emoticons(Format::sanitize($vars['title'], true)),
@@ -2209,8 +2208,8 @@ class ThreadEvent extends VerySimpleModel {
 
         $inst = self::create(array(
             'thread_type' => ObjectModel::OBJECT_TYPE_TICKET,
-            'staff_id' => $staff ?: 0,
-            'team_id' => $ticket->getTeamId() ?: 0,
+            'staff_id' => $staff,
+            'team_id' => $ticket->getTeamId(),
             'dept_id' => $ticket->getDeptId(),
             'topic_id' => $ticket->getTopicId(),
         ), $user);
@@ -2220,8 +2219,8 @@ class ThreadEvent extends VerySimpleModel {
     static function forTask($task, $state, $user=false) {
         $inst = self::create(array(
             'thread_type' => ObjectModel::OBJECT_TYPE_TASK,
-            'staff_id' => $task->getStaffId() ?: 0,
-            'team_id' => $task->getTeamId() ?: 0,
+            'staff_id' => $task->getStaffId(),
+            'team_id' => $task->getTeamId(),
             'dept_id' => $task->getDeptId(),
         ), $user);
         return $inst;
@@ -2655,7 +2654,7 @@ class ResendEvent extends ThreadEvent {
     static $state = 'resent';
 
     function getDescription($mode=self::MODE_STAFF) {
-        return $this->template(__('<b>{somebody}</b> resent <strong><a href="#thread-entry-{data.entry}">a previous response</a></strong> {timestamp}'), $mode);
+        return $this->template(__('<p style="color:red; font-size:22px"><b>{somebody}</b> resent <strong><a href="#thread-entry-{data.entry}">a previous response</a></strong> {timestamp}</p>'), $mode);
     }
 }
 
