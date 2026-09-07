@@ -20,3 +20,7 @@ stage
 include/mpdf/ttfontdata
 include/mpdf/tmp
 nbproject/
+
+# Backup/old config files that shouldn't be committed
+include/ost-config-old.php
+*.bak
