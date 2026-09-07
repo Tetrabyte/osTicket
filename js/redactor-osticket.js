@@ -57,8 +57,12 @@
         else if (this.$textarea.hasClass('draft')) {
             // Just upload the file. A draft will be created automatically
             // and will be configured locally in the afterUpateDraft()
+            // The CSRF token is appended as a query param (not just via
+            // imageUploadData) because Redactor's clipboard-paste upload
+            // path doesn't send imageUploadData with the request.
             this.opts.clipboardUpload =
-            this.opts.imageUpload = this.autoCreateUrl + '/attach';
+            this.opts.imageUpload = this.autoCreateUrl + '/attach?__CSRFToken__=' +
+                encodeURIComponent($("meta[name=csrf_token]").attr("content"));
             this.opts.imageCaption = false;
         }
         this.opts.autosaveData = {
@@ -79,9 +83,11 @@
     _setup: function (draft_id) {
         this.opts.draftId = draft_id;
         this.opts.autosave = 'ajax.php/draft/' + draft_id;
+        // See the comment in start() re: why the token is on the URL.
         this.opts.clipboardUpload =
         this.opts.imageUpload =
-            'ajax.php/draft/' + draft_id + '/attach';
+            'ajax.php/draft/' + draft_id + '/attach?__CSRFToken__=' +
+                encodeURIComponent($("meta[name=csrf_token]").attr("content"));
         this.opts.imageCaption = false;
 
         // Add [Delete Draft] button to the toolbar

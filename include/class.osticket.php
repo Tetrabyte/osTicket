@@ -114,7 +114,9 @@ class osTicket {
 
     function checkCSRFToken($name=false, $rotate=false) {
         $name = $name ?: $this->getCSRF()->getTokenName();
-        $token = $_POST[$name] ?: $_SERVER['HTTP_X_CSRFTOKEN'];
+        # $_GET fallback needed for uploaders (e.g. Redactor's clipboard-paste
+        # image upload) that can't attach extra POST fields or headers.
+        $token = $_POST[$name] ?: $_GET[$name] ?: $_SERVER['HTTP_X_CSRFTOKEN'];
         if ($token && $this->validateCSRFToken($token)) {
             if ($rotate) $this->getCSRF()->rotate();
             return true;
