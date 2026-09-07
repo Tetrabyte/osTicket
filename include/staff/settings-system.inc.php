@@ -62,10 +62,20 @@ $gmtime = Misc::gmtime();
             </td>
         </tr>
         <tr>
+            <td><?php echo __('Enable Staff Login'); ?>:</td>
+            <td>
+                <input type="checkbox" name="enable_stafflogin" <?php
+                echo $config['enable_stafflogin'] ? 'checked="checked"' : ''; ?>>
+                <?php echo __('Enable Staff User & Password Login.'); ?>
+                <font class="error"><?php echo $errors['enable_stafflogin']; ?></font>
+                <i class="help-tip icon-question-sign" href="#enable_stafflogin"></i>
+            </td>
+        </tr>
+        <tr>
             <td><?php echo __('Force HTTPS'); ?>:</td>
             <td>
                 <input type="checkbox" name="force_https" <?php
-                echo ($config['force_https'] == "on") ? 'checked="checked"' : ''; ?>>
+                echo $config['force_https'] ? 'checked="checked"' : ''; ?>>
                 <?php echo __('Force all requests through HTTPS.'); ?>
                 <font class="error"><?php echo $errors['force_https']; ?></font>
                 <i class="help-tip icon-question-sign" href="#force_https"></i>
@@ -84,7 +94,7 @@ $gmtime = Misc::gmtime();
                 <select name="max_page_size">
                     <?php
                      $pagelimit=$config['max_page_size'];
-                    for ($i = 5; $i <= 50; $i += 5) {
+                    for ($i = 25; $i <= 250; $i += 25) {
                         ?>
                         <option <?php echo $config['max_page_size']==$i?'selected="selected"':''; ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
                         <?php
