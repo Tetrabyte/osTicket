@@ -90,6 +90,9 @@ if ($_POST)
                 <div class="error"><?php echo $errors['user']; ?></div>
             </th>
         </tr>
+        <tr>
+          <td>
+            <table class="form_table" width="940" border="0" cellspacing="0" cellpadding="2">
               <?php
               if ($user) { ?>
                   <tr><td><?php echo __('User'); ?>:</td><td>
@@ -193,6 +196,9 @@ if ($_POST)
           </td>
         </tr>
       <?php } ?>
+    </table>
+          </td>
+        </tr>
     </tbody>
     <tbody>
         <tr>
@@ -375,12 +381,12 @@ if ($_POST)
         //is the user allowed to post replies??
         if ($thisstaff->getRole()->hasPerm(Ticket::PERM_REPLY)) { ?>
         <tr>
-            <th colspan="2">
+            <th colspan="2" style="background: rgb(255, 224, 179);">
                 <em><strong><?php echo __('Response');?></strong>: <?php echo __('Optional response to the above issue.');?></em>
             </th>
         </tr>
         <tr>
-            <td colspan=2>
+            <td colspan="2" style="background: rgb(255, 224, 179);">
             <?php
             if($cfg->isCannedResponseEnabled() && ($cannedResponses=Canned::getCannedResponses())) {
                 ?>
@@ -467,13 +473,13 @@ print $response_form->getField('attachments')->render();
         } //end canPostReply
         ?>
         <tr>
-            <th colspan="2">
+            <th colspan="2" style="background: rgb(242, 177, 177);">
                 <em><strong><?php echo __('Internal Note');?></strong>
                 <font class="error">&nbsp;<?php echo $errors['note']; ?></font></em>
             </th>
         </tr>
-        <tr>
-            <td colspan=2>
+        <tr >
+            <td colspan="2" style="background: rgb(242, 177, 177);">
                 <textarea
                     class="<?php if ($cfg->isRichTextEnabled()) echo 'richtext';
                         ?> draft draft-delete"
@@ -488,7 +494,6 @@ print $response_form->getField('attachments')->render();
 </table>
 <p style="text-align:center;">
     <input type="submit" name="submit" value="<?php echo _P('action-button', 'Open');?>">
-    <input type="reset"  name="reset"  value="<?php echo __('Reset');?>">
     <input type="button" name="cancel" value="<?php echo __('Cancel');?>" onclick="javascript:
         $(this.form).find('textarea.richtext')
           .redactor('plugin.draft.deleteDraft');
