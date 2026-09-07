@@ -2,7 +2,7 @@
 function company_notes($id) {
     $query = "SELECT * FROM notes WHERE id = '$id' AND type = 'c' ORDER BY priority ASC, id_note ASC";
     $commit = db_query($query, $logError = true, $buffered = true);
-    while ($row = $commit->fetch_assoc()) {
+    while ($commit && ($row = $commit->fetch_assoc())) {
         if (strtotime($row['expiry']) >= strtotime('today')) {
 			$colour = $row['colour'];
 			$text = htmlspecialchars_decode($row['text']);
@@ -23,7 +23,7 @@ function company_notes($id) {
 function user_notes($id) {
     $query = "SELECT * FROM notes WHERE id = '$id' AND type = 'u' ORDER BY priority ASC, id_note ASC";
     $commit = db_query($query, $logError = true, $buffered = true);
-    while ($row = $commit->fetch_assoc()) {
+    while ($commit && ($row = $commit->fetch_assoc())) {
         if (strtotime($row['expiry']) >= strtotime('today')) {
 			$colour = $row['colour'];
 			$text = htmlspecialchars_decode($row['text']);
@@ -45,7 +45,7 @@ function auth_img($id, $cid) {
     $query = "SELECT contact_important, contact_billing, contact_decisions, contact_notes FROM `tbyte-portal`.contacts WHERE contact_ticket_id = '$id'";
     $commit = db_query($query, $logError = true, $buffered = true);
 	echo '<a class="bi bi-list-check fs-5 text-secondary" title="Auth List" href="https://portal.remoteit.co.uk/client/contacts/?ticket_id='.$cid.'"></a>&nbsp;';
-    while ($row = $commit->fetch_assoc()) {
+    while ($commit && ($row = $commit->fetch_assoc())) {
         $clean_notes = strip_tags(html_entity_decode($row['contact_notes']));
         
         if ($row['contact_important']) {
