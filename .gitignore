@@ -14,7 +14,7 @@ Vagrantfile
 stage
 
 # Ignore packaged plugins and language packs
-*.phar
+#*.phar
 
 # Ignore mPDF temp files
 include/mpdf/ttfontdata
