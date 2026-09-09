@@ -215,10 +215,21 @@ JS
         if (!$entry)
             return false;
 
-        // Move the attachments to the new entry
-        $old->attachments->filter(array(
+        // Move the attachments to the new entry. Skip any file already
+        // attached to the new entry (e.g. an inline image re-embedded in
+        // the edited body may have already registered itself against
+        // $entry) - ost_attachment has a UNIQUE KEY on (file_id, object_id)
+        // regardless of type, so attempting to move a duplicate fatals the
+        // whole edit with an InconsistentModelException.
+        $moved = $old->attachments->filter(array(
             'inline' => false,
-        ))->update(array(
+        ));
+        $existing_file_ids = array();
+        foreach ($entry->attachments as $a)
+            $existing_file_ids[] = $a->file_id;
+        if ($existing_file_ids)
+            $moved = $moved->exclude(array('file_id__in' => $existing_file_ids));
+        $moved->update(array(
             'object_id' => $entry->id
         ));
 
