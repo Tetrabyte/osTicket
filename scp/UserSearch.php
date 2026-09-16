@@ -474,7 +474,7 @@ function user_notes($id) {
 }
 function auth_img($UserId) {
     $UserId = (int) $UserId;
-    $query = "SELECT client_id, contact_decisions, contact_spending, contact_important, contact_gone, contact_authorisation_notes
+    $query = "SELECT client_id, contact_decisions, contact_spending, contact_important, contact_gone, contact_authorisation_notes, contact_authorisation_url
               FROM `tbyte-portal`.clients_contacts
               WHERE ticket_user_id = $UserId";
     $commit = db_query($query, $logError = true, $buffered = true);
@@ -486,6 +486,11 @@ function auth_img($UserId) {
     $notes = $row ? htmlspecialchars(strip_tags((string) $row['contact_authorisation_notes']), ENT_QUOTES) : '';
 
     $hasFlag = $row && ($row['contact_decisions'] || $row['contact_spending'] || $row['contact_important'] || $row['contact_gone']);
+
+    // TEMP: authorisation-source link, for double checking migrated data - hide after 01/12/2026
+    if ($row && !empty($row['contact_authorisation_url']) && strtotime('today') <= strtotime('2026-12-01')) {
+        echo '<a href="'.htmlspecialchars($row['contact_authorisation_url'], ENT_QUOTES).'" target="_blank" style="color:darkgrey; float:right;"><i class="fa-brands fa-stack-exchange"></i></a>';
+    }
 
     if (!$hasFlag) {
         echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:lightgrey;"><i class="fa-solid fa-list-check"></i></a>';
@@ -502,7 +507,7 @@ function auth_img($UserId) {
         echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:orange; font-size:1.5em;"><i class="fa-solid fa-star"></i></a>&nbsp;';
     }
     if ($row['contact_gone']) {
-        echo '<br><a href="'.$href.'" target="_blank" title="'.$notes.'"><span class="badge bg-danger" style="font-size:1.2em;">User left</span></a>';
+        echo '<br><a href="'.$href.'" target="_blank" title="'.$notes.'"><span class="badge bg-danger" style="font-size:1.2em;">User Disabled/Left</span></a>';
     }
 }
 
