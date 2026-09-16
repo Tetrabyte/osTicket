@@ -492,11 +492,6 @@ function auth_img($UserId) {
         echo '<a href="'.htmlspecialchars($row['contact_authorisation_url'], ENT_QUOTES).'" target="_blank" style="color:darkgrey; float:right;"><i class="fa-brands fa-stack-exchange"></i></a>';
     }
 
-    if ($row && $row['client_id']) {
-        $authView = 'https://portal.remoteit.co.uk/client/client_contacts.php?client_id=' . (int) $row['client_id'] . '&view=authorised';
-        echo '<a href="'.$authView.'" target="_blank" style="color:darkgrey; float:right;"><i class="fa-solid fa-users"></i></a>';
-    }
-
     if (!$hasFlag) {
         echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:lightgrey;"><i class="fa-solid fa-list-check"></i></a>';
     } else {
@@ -518,6 +513,14 @@ function auth_img($UserId) {
     if ($notes !== '') {
         echo '<div style="font-size:0.7em; width:170px; white-space:normal; overflow-wrap:break-word; word-wrap:break-word;">'.$notes.'</div>';
     }
+}
+
+function get_client_id($UserId) {
+    $UserId = (int) $UserId;
+    $query = "SELECT client_id FROM `tbyte-portal`.clients_contacts WHERE ticket_user_id = $UserId";
+    $commit = db_query($query, $logError = true, $buffered = true);
+    $row = $commit ? $commit->fetch_assoc() : false;
+    return $row && $row['client_id'] ? (int) $row['client_id'] : null;
 }
 
 function phpsubmitter($name, $email, $phone, $subject, $message, $notes) {
@@ -810,7 +813,7 @@ body {
 									<th scope="col">User Email</th>
 									<th style="width:186px; max-width:186px;">Flags</th>
 									<th scope="col">User Notes</th>
-									<th scope="col">Org Name</th>
+									<th scope="col" style="width:180px; max-width:180px;">Org Name</th>
 									<th scope="col">Org Phone</th>
 
 									<th scope="col">Org Notes</th>
@@ -887,7 +890,13 @@ body {
 											</div>';
 										echo $row["UserNotes"];
 									echo '</td>';
-									echo '<td> <a target="_blank" href="/scp/orgs.php?id='.$row["OrgId"].'#tickets">'.$row["OrgName"].'</td> ';
+									echo '<td>';
+									$clientId = get_client_id($row["UserId"]);
+									if ($clientId) {
+										$authView = 'https://portal.remoteit.co.uk/client/client_contacts.php?client_id=' . $clientId . '&view=authorised';
+										echo '<a href="'.$authView.'" target="_blank" style="color:darkgrey; float:right; font-size:1.5em;"><i class="fa-solid fa-users"></i></a>';
+									}
+									echo '<a target="_blank" href="/scp/orgs.php?id='.$row["OrgId"].'#tickets">'.$row["OrgName"].'</a></td> ';
 									echo '<td>';
 									if ( $row["OrgPhone"] != "" ) {
 										echo $row["OrgPhone"];
