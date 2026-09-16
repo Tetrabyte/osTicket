@@ -505,7 +505,7 @@ function auth_img($UserId) {
             echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:orange; font-size:1.5em;"><i class="fa-solid fa-star"></i></a>&nbsp;';
         }
         if ($row['contact_gone']) {
-            echo '<br><a href="'.$href.'" target="_blank" title="'.$notes.'"><span class="badge bg-danger" style="font-size:1.2em;">User Disabled/Left</span></a>';
+            echo '<br><a href="'.$href.'" target="_blank" title="'.$notes.'"><span class="badge bg-danger" style="font-size:1em;">User Disabled/Left</span></a>';
         }
     }
 
