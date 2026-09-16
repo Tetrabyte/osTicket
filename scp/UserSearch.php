@@ -511,7 +511,7 @@ function auth_img($UserId) {
 
     // Fixed max-width so long notes text wraps instead of widening the column
     if ($notes !== '') {
-        echo '<div style="font-size:0.7em; max-width:170px; white-space:normal; word-wrap:break-word;">'.$notes.'</div>';
+        echo '<div style="font-size:0.7em; width:170px; white-space:normal; overflow-wrap:break-word; word-wrap:break-word;">'.$notes.'</div>';
     }
 }
 
@@ -803,7 +803,7 @@ body {
 									<th scope="col">User Phone</th>
 									
 									<th scope="col">User Email</th>
-									<th>Flags</th>
+									<th style="width:186px; max-width:186px;">Flags</th>
 									<th scope="col">User Notes</th>
 									<th scope="col">Org Name</th>
 									<th scope="col">Org Phone</th>
