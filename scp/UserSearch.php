@@ -492,6 +492,11 @@ function auth_img($UserId) {
         echo '<a href="'.htmlspecialchars($row['contact_authorisation_url'], ENT_QUOTES).'" target="_blank" style="color:darkgrey; float:right;"><i class="fa-brands fa-stack-exchange"></i></a>';
     }
 
+    if ($row && $row['client_id']) {
+        $authView = 'https://portal.remoteit.co.uk/client/client_contacts.php?client_id=' . (int) $row['client_id'] . '&view=authorised';
+        echo '<a href="'.$authView.'" target="_blank" style="color:darkgrey; float:right;"><i class="fa-solid fa-users"></i></a>';
+    }
+
     if (!$hasFlag) {
         echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:lightgrey;"><i class="fa-solid fa-list-check"></i></a>';
     } else {
