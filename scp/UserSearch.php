@@ -628,6 +628,7 @@ $ost->addExtraHeader('<title>User Search Tool</title>');
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 	  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
 	  <script src="/scp/js/tinymce/tinymce.min.js"></script>
 	  <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
 	  <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
@@ -788,7 +789,7 @@ body {
 									echo '</td>';
 									echo '<td> <a href="mailto:'.$row["UserEmail"].'">'.$row["UserEmail"].'</a>  </td>';
 									echo '<td>';
-									auth_img($row["UserId"], $row["OrgId"]);
+									auth_img($row["UserId"]);
 									echo '</td>';
 									echo '<td>
 											<div style="float:right">

@@ -41,22 +41,29 @@ function user_notes($id) {
 		}
     }
 }
-function auth_img($id, $cid) {
-    $query = "SELECT contact_important, contact_billing, contact_decisions, contact_notes FROM `tbyte-portal`.contacts WHERE contact_ticket_id = '$id'";
+function auth_img($UserId) {
+    $UserId = (int) $UserId;
+    $query = "SELECT client_id, contact_decisions, contact_spending, contact_important, contact_gone, contact_authorisation_notes
+              FROM `tbyte-portal`.clients_contacts
+              WHERE ticket_user_id = $UserId";
     $commit = db_query($query, $logError = true, $buffered = true);
-	echo '<a class="bi bi-list-check fs-5 text-secondary" title="Auth List" href="https://portal.remoteit.co.uk/client/contacts/?ticket_id='.$cid.'"></a>&nbsp;';
-    while ($commit && ($row = $commit->fetch_assoc())) {
-        $clean_notes = strip_tags(html_entity_decode($row['contact_notes']));
-        
-        if ($row['contact_important']) {
-            echo '&nbsp;<a class="bi bi-exclamation-circle-fill fs-5 text-black" title="IMPORTANT: ' . htmlspecialchars($clean_notes) . '" href="https://portal.remoteit.co.uk/client/contacts/?ticket_id='.$cid.'"></a>&nbsp;';
-        }
-        if ($row['contact_billing']) {
-            echo '&nbsp;<a class="bi bi-cash-coin fs-5 text-black" title="BILLING: ' . htmlspecialchars($clean_notes) . '" href="https://portal.remoteit.co.uk/client/contacts/?ticket_id='.$cid.'"></a>&nbsp;';
-        }
-        if ($row['contact_decisions']) {
-            echo '&nbsp;<a class="bi bi-person-fill-check fs-5 text-black" title="DECISIONS: ' . htmlspecialchars($clean_notes) . '" href="https://portal.remoteit.co.uk/client/contacts/?ticket_id='.$cid.'"></a>&nbsp;';
-        }
+    if (!$commit || !($row = $commit->fetch_assoc()))
+        return;
+
+    $href = 'https://portal.remoteit.co.uk/client/client_contacts.php?client_id=' . (int) $row['client_id'];
+    $notes = htmlspecialchars(strip_tags((string) $row['contact_authorisation_notes']), ENT_QUOTES);
+
+    if ($row['contact_decisions']) {
+        echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:blue;"><i class="fa-solid fa-circle-check"></i></a>&nbsp;';
+    }
+    if ($row['contact_spending']) {
+        echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:purple;"><i class="fa-solid fa-sterling-sign"></i></a>&nbsp;';
+    }
+    if ($row['contact_important']) {
+        echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:orange;"><i class="fa-solid fa-star"></i></a>&nbsp;';
+    }
+    if ($row['contact_gone']) {
+        echo '<a href="'.$href.'" target="_blank" title="'.$notes.'"><span class="badge bg-danger">GONE</span></a>&nbsp;';
     }
 }
 
