@@ -478,11 +478,19 @@ function auth_img($UserId) {
               FROM `tbyte-portal`.clients_contacts
               WHERE ticket_user_id = $UserId";
     $commit = db_query($query, $logError = true, $buffered = true);
-    if (!$commit || !($row = $commit->fetch_assoc()))
-        return;
+    $row = $commit ? $commit->fetch_assoc() : false;
 
-    $href = 'https://portal.remoteit.co.uk/client/client_contacts.php?client_id=' . (int) $row['client_id'];
-    $notes = htmlspecialchars(strip_tags((string) $row['contact_authorisation_notes']), ENT_QUOTES);
+    $href = 'https://portal.remoteit.co.uk/client/client_contacts.php?ticket_user_id=' . $UserId;
+    if ($row && $row['client_id'])
+        $href .= '&client_id=' . (int) $row['client_id'];
+    $notes = $row ? htmlspecialchars(strip_tags((string) $row['contact_authorisation_notes']), ENT_QUOTES) : '';
+
+    $hasFlag = $row && ($row['contact_decisions'] || $row['contact_spending'] || $row['contact_important'] || $row['contact_gone']);
+
+    if (!$hasFlag) {
+        echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:lightgrey;"><i class="fa-solid fa-list-check"></i></a>';
+        return;
+    }
 
     if ($row['contact_decisions']) {
         echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:blue;"><i class="fa-solid fa-circle-check"></i></a>&nbsp;';
@@ -494,7 +502,7 @@ function auth_img($UserId) {
         echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:orange;"><i class="fa-solid fa-star"></i></a>&nbsp;';
     }
     if ($row['contact_gone']) {
-        echo '<a href="'.$href.'" target="_blank" title="'.$notes.'"><span class="badge bg-danger">GONE</span></a>&nbsp;';
+        echo '<br><a href="'.$href.'" target="_blank" title="'.$notes.'"><span class="badge bg-danger" style="font-size:2em;">GONE</span></a>';
     }
 }
 
@@ -786,7 +794,7 @@ body {
 									<th scope="col">User Phone</th>
 									
 									<th scope="col">User Email</th>
-									<th>Auth</th>
+									<th>Flags</th>
 									<th scope="col">User Notes</th>
 									<th scope="col">Org Name</th>
 									<th scope="col">Org Phone</th>
