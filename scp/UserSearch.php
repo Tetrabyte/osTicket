@@ -496,13 +496,13 @@ function auth_img($UserId) {
         echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:lightgrey;"><i class="fa-solid fa-list-check"></i></a>';
     } else {
         if ($row['contact_decisions']) {
-            echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:blue; font-size:1.5em;"><i class="fa-solid fa-circle-check"></i></a>&nbsp;';
+            echo '<a href="'.$href.'" target="_blank" title="Authorised for Decision Making" style="color:blue; font-size:1.5em;"><i class="fa-solid fa-circle-check"></i></a>&nbsp;';
         }
         if ($row['contact_spending']) {
-            echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:purple; font-size:1.5em;"><i class="fa-solid fa-sterling-sign"></i></a>&nbsp;';
+            echo '<a href="'.$href.'" target="_blank" title="Authorised for Spending" style="color:purple; font-size:1.5em;"><i class="fa-solid fa-sterling-sign"></i></a>&nbsp;';
         }
         if ($row['contact_important']) {
-            echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:orange; font-size:1.5em;"><i class="fa-solid fa-star"></i></a>&nbsp;';
+            echo '<a href="'.$href.'" target="_blank" title="Important Contact" style="color:orange; font-size:1.5em;"><i class="fa-solid fa-star"></i></a>&nbsp;';
         }
         if ($row['contact_gone']) {
             echo '<br><a href="'.$href.'" target="_blank" title="'.$notes.'"><span class="badge bg-danger" style="font-size:1em;">User Disabled/Left</span></a>';
