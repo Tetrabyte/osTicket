@@ -477,6 +477,10 @@ if($ticket->isOverdue())
                         data-dropdown="#action-dropdown-org-stats">
                         (<b><?php echo $user->getNumOrganizationTickets(); ?></b>)
                         </a>
+                        <a href="https://portal.remoteit.co.uk/quotes/new.php?orgid=<?php echo $user->getOrgId(); ?>&ticket=<?php echo $ticket->getNumber(); ?>"
+                            target="_blank" title="<?php echo __('New Quote'); ?>" style="color:#6F42C1;">
+                        <i class="bi bi-cart4"></i>
+                        </a>
                             <div id="action-dropdown-org-stats" class="action-dropdown anchor-right">
                                 <ul>
 <?php   if ($open = $user->getNumOpenOrganizationTickets()) { ?>
