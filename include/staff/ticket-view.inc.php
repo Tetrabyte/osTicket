@@ -477,9 +477,8 @@ if($ticket->isOverdue())
                         data-dropdown="#action-dropdown-org-stats">
                         (<b><?php echo $user->getNumOrganizationTickets(); ?></b>)
                         </a>
-                        <a href="https://portal.remoteit.co.uk/quotes/new.php?orgid=<?php echo $user->getOrgId(); ?>&ticket=<?php echo $ticket->getNumber(); ?>"
-                            target="_blank" title="<?php echo __('New Quote'); ?>" style="color:#6F42C1;">
-                        <i class="bi bi-cart4"></i>
+                        <a class='btn btn-sm no-pjax' target="_blank" href='https://portal.remoteit.co.uk/quotes/new.php?orgid=<?php echo $user->getOrgId(); ?>&ticket=<?php echo $ticket->getNumber(); ?>' style="--bs-btn-padding-y: .25rem !important; --bs-btn-padding-x: .5rem !important; background-color:#6F42C1; border-color:#6F42C1; color:#fff;">
+                        <i class="bi bi-cart4"></i> <?php echo __('Create Quote'); ?>
                         </a>
                             <div id="action-dropdown-org-stats" class="action-dropdown anchor-right">
                                 <ul>
