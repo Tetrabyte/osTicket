@@ -512,11 +512,6 @@ if($ticket->isOverdue())
                                     $__ticketQuotes = $__quoteApiData['quotes'];
                             }
                         }
-                        // TEMP DIAGNOSTIC - remove once working
-                        echo "<!-- quoteapi debug: token_found=" . ($__quoteApiToken ? 'yes' : 'no')
-                            . " url=" . (isset($__quoteApiUrl) ? htmlspecialchars($__quoteApiUrl) : 'n/a')
-                            . " response=" . (isset($__quoteApiResponse) ? ($__quoteApiResponse === false ? 'FALSE' : htmlspecialchars(substr($__quoteApiResponse, 0, 500))) : 'not attempted')
-                            . " count=" . count($__ticketQuotes) . " -->";
                         foreach ($__ticketQuotes as $__quote) {
                         ?>
                         <a class='btn btn-sm no-pjax' target="_blank"
