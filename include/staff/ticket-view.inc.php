@@ -513,11 +513,19 @@ if($ticket->isOverdue())
                             }
                         }
                         foreach ($__ticketQuotes as $__quote) {
+                            $__quoteStatus = strtolower(trim((string) ($__quote['status'] ?? '')));
+                            if (in_array($__quoteStatus, array('cancelled', 'rejected'))) {
+                                $__quoteColor = '#DC3545'; $__quoteText = '#fff';
+                            } elseif (in_array($__quoteStatus, array('accepted', 'invoiced', 'complete'))) {
+                                $__quoteColor = '#198754'; $__quoteText = '#fff';
+                            } else {
+                                $__quoteColor = '#0DCAF0'; $__quoteText = '#000';
+                            }
                         ?>
                         <a class='btn btn-sm no-pjax' target="_blank"
                             href='<?php echo Format::htmlchars($__quote['url']); ?>'
                             title='<?php echo Format::htmlchars((string) $__quote['title']); ?>'
-                            style="--bs-btn-padding-y: .25rem !important; --bs-btn-padding-x: .5rem !important; background-color:#0DCAF0; border-color:#0DCAF0; color:#000;">
+                            style="--bs-btn-padding-y: .25rem !important; --bs-btn-padding-x: .5rem !important; background-color:<?php echo $__quoteColor; ?>; border-color:<?php echo $__quoteColor; ?>; color:<?php echo $__quoteText; ?>;">
                         <i class="bi bi-receipt"></i> <?php echo Format::htmlchars($__quote['quote_number']); ?>
                         </a>
                         <?php } ?>
