@@ -1,0 +1,5 @@
+# Never serve dotfiles/dot-directories (.env, .git, .gitignore ...).
+# .well-known is excluded so Let's Encrypt/ACME validation keeps working.
+<IfModule mod_alias.c>
+    RedirectMatch 403 "(^|/)\.(?!well-known(/|$))"
+</IfModule>
