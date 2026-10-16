@@ -18,6 +18,7 @@ require 'api.inc.php';
 require_once INCLUDE_DIR."class.dispatcher.php";
 $dispatcher = patterns('',
         url_post("^/tickets\.(?P<format>xml|json|email)$", array('api.tickets.php:TicketApiController','create')),
+        url_post("^/users\.(?P<format>json)$", array('api.users.php:UserApiController','sync')),
         url('^/tasks/', patterns('',
                 url_post("^cron$", array('api.cron.php:CronApiController', 'execute'))
          ))
