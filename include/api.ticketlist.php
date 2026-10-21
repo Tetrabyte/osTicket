@@ -106,8 +106,11 @@ class TicketListApiController extends ApiController {
      * conversation (every message, reply and internal note, as osTicket's own
      * search index holds it) matches EVERY word in q, each word anywhere in
      * that ticket: "vpn password" finds a ticket with vpn in its subject and
-     * password in a later reply. Words match as substrings, case-insensitively
-     * (up to 6 words, 3 characters at least altogether). Each ticket comes back
+     * password in a later reply. In the subject and number a word matches as a
+     * substring, case-insensitively; in the conversation it matches a word that
+     * starts with it (vpn finds vpns - osTicket's FULLTEXT index is used when it
+     * can be, which is what makes this fast). Up to 6 words, 3 characters at
+     * least altogether. Each ticket comes back
      * once however many of its messages matched, last updated first - except that
      * a ticket whose number is exactly one of the words (100123 or T100123, with
      * or without a leading #) comes first.
@@ -141,39 +144,65 @@ class TicketListApiController extends ApiController {
 
         // Where the words can be found: the subject, the ticket number, or any
         // message in the ticket's thread (osTicket's search table, object type H =
-        // thread entry). Each place is read ONCE however many words there are:
-        // a row's "mask" has bit i set when word i is in it, the masks of a
-        // ticket's rows are OR-ed together, and the ticket matches when every
-        // word's bit is set (the HAVING below) - each word may be in a different place.
+        // thread entry). A row's "mask" has bit i set when word i is in it, the
+        // masks of a ticket's rows are OR-ed together, and the ticket matches when
+        // every word's bit is set (the HAVING below) - each word may be in a
+        // different place.
         $likes = array();
         foreach ($words as $i => $word)
             $likes[$i] = db_input('%'.addcslashes($word, '\\%_').'%');
-        $mask = function ($columns) use ($likes) {
+        $mask = function ($columns, $indexes) use ($likes) {
             $bits = array();
-            foreach ($likes as $i => $like) {
+            foreach ($indexes as $i) {
                 $found = array();
                 foreach ($columns as $column)
-                    $found[] = $column.' LIKE '.$like;
+                    $found[] = $column.' LIKE '.$likes[$i];
                 $bits[] = 'COALESCE('.implode(' OR ', $found).', 0) * '.(1 << $i);
             }
             return implode(' + ', $bits);
         };
-        $any = function ($columns) use ($likes) {
+        $any = function ($columns, $indexes) use ($likes) {
             $found = array();
-            foreach ($likes as $like)
+            foreach ($indexes as $i)
                 foreach ($columns as $column)
-                    $found[] = $column.' LIKE '.$like;
+                    $found[] = $column.' LIKE '.$likes[$i];
             return '('.implode(' OR ', $found).')';
         };
+        $all = array_keys($words);
         $entry = array('se.content', 'se.title');
         $branches = array(
-            'SELECT ticket_id, '.$mask(array('subject')).' AS mask FROM '.TICKET_CDATA_TABLE.' WHERE '.$any(array('subject')),
-            'SELECT ticket_id, '.$mask(array('number')).' AS mask FROM '.TICKET_TABLE.' WHERE '.$any(array('number')),
-            'SELECT th.object_id AS ticket_id, '.$mask($entry).' AS mask FROM '.TABLE_PREFIX.'_search se'
-                .' JOIN '.THREAD_ENTRY_TABLE.' te ON te.id = se.object_id'
-                .' JOIN '.THREAD_TABLE.' th ON th.id = te.thread_id AND th.object_type = \'T\''
-                .' WHERE se.object_type = \'H\' AND '.$any($entry),
+            'SELECT ticket_id, '.$mask(array('subject'), $all).' AS mask FROM '.TICKET_CDATA_TABLE.' WHERE '.$any(array('subject'), $all),
+            'SELECT ticket_id, '.$mask(array('number'), $all).' AS mask FROM '.TICKET_TABLE.' WHERE '.$any(array('number'), $all),
         );
+
+        // The conversations are the big part: reading every message's text for a
+        // substring took ~14 s here. So a word is first looked up in the search
+        // table's FULLTEXT index (what osTicket's own search uses - milliseconds),
+        // and only the messages that index finds are then checked for the substring.
+        // The index finds words that START with the typed one (vpn finds vpn and
+        // vpns, not "anyvpn"). A word the index can't hold (shorter than its minimum,
+        // or a stopword like "the") is still read from the text, in one pass for all
+        // such words; if the table isn't InnoDB with that index, every word is.
+        $from_entry = ' FROM '.TABLE_PREFIX.'_search se'
+            .' JOIN '.THREAD_ENTRY_TABLE.' te ON te.id = se.object_id'
+            .' JOIN '.THREAD_TABLE.' th ON th.id = te.thread_id AND th.object_type = \'T\'';
+        $fulltext = $this->fulltextInfo();
+        $scan = array();
+        foreach ($words as $i => $word) {
+            $tokens = $fulltext ? $this->fulltextTokens($word, $fulltext) : array();
+            if (!$tokens) {
+                $scan[] = $i;
+                continue;
+            }
+            $branches[] = 'SELECT th.object_id AS ticket_id, '.(1 << $i).' AS mask'.$from_entry
+                .' WHERE se.object_type = \'H\''
+                .' AND MATCH(se.title, se.content) AGAINST('.db_input('+'.implode('* +', $tokens).'*').' IN BOOLEAN MODE)'
+                .' AND '.$any($entry, array($i));
+        }
+        if ($scan)
+            $branches[] = 'SELECT th.object_id AS ticket_id, '.$mask($entry, $scan).' AS mask'.$from_entry
+                .' WHERE se.object_type = \'H\' AND '.$any($entry, $scan);
+        $method = !$scan ? 'fulltext' : (count($scan) < count($words) ? 'mixed' : 'scan');
 
         // A ticket whose number IS one of the words (as typed, or with the T that
         // 7-character numbers start with: 100123 = T100123) goes first - a number
@@ -187,8 +216,9 @@ class TicketListApiController extends ApiController {
         }
 
         // A runaway scan must not hold the ticket system up (MariaDB; harmless elsewhere).
-        db_query('SET SESSION max_statement_time = 15', false);
+        db_query('SET SESSION max_statement_time = 30', false);
 
+        $started = microtime(true);
         $res = db_query('SELECT t.ticket_id FROM (SELECT ticket_id FROM ('.implode(' UNION ALL ', $branches).') x'
             .' GROUP BY ticket_id HAVING BIT_OR(mask) = '.((1 << count($words)) - 1).') m'
             .' JOIN '.TICKET_TABLE.' t ON t.ticket_id = m.ticket_id'
@@ -200,6 +230,7 @@ class TicketListApiController extends ApiController {
         while ($row = db_fetch_row($res))
             $ids[] = (int) $row[0];
         $total = count($ids);
+        $ms = (int) round((microtime(true) - $started) * 1000);
 
         // Details for the newest few only.
         $tickets = array();
@@ -231,6 +262,47 @@ class TicketListApiController extends ApiController {
             }
         }
 
-        Http::response(200, json_encode(array('total' => $total, 'tickets' => $tickets), JSON_INVALID_UTF8_SUBSTITUTE), 'application/json');
+        // "method" and "ms" say how the conversations were searched and how long the
+        // match took - for tuning, not for display.
+        Http::response(200, json_encode(array('total' => $total, 'tickets' => $tickets, 'method' => $method, 'ms' => $ms), JSON_INVALID_UTF8_SUBSTITUTE), 'application/json');
+    }
+
+    // Whether osTicket's search table can be searched through its FULLTEXT index,
+    // and what that index holds: array('min' => the shortest word it stores, 'stop'
+    // => the words it leaves out), or null when the plain read has to be used (not
+    // an InnoDB table, no FULLTEXT index on title + content, or a custom stopword table).
+    private function fulltextInfo() {
+        $table = db_input(TABLE_PREFIX.'_search');
+        $res = db_query('SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '.$table, false);
+        if (!($res && ($row = db_fetch_row($res)) && !strcasecmp((string) $row[0], 'InnoDB')))
+            return null;
+        $res = db_query('SELECT INDEX_NAME FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '.$table
+            .' AND INDEX_TYPE = \'FULLTEXT\' GROUP BY INDEX_NAME HAVING COUNT(*) = 2 AND SUM(COLUMN_NAME IN (\'title\', \'content\')) = 2', false);
+        if (!($res && db_fetch_row($res)))
+            return null;
+        $vars = array();
+        $res = db_query('SHOW VARIABLES LIKE \'innodb_ft_%\'', false);
+        while ($res && ($row = db_fetch_row($res)))
+            $vars[$row[0]] = $row[1];
+        if (trim((string) ($vars['innodb_ft_server_stopword_table'] ?? '')) !== '')
+            return null;
+        // InnoDB's built-in stopword list (MySQL and MariaDB).
+        $stop = (($vars['innodb_ft_enable_stopword'] ?? 'ON') === 'OFF') ? array() : array(
+            'a', 'about', 'an', 'are', 'as', 'at', 'be', 'by', 'com', 'de', 'en', 'for', 'from', 'how', 'i', 'in', 'is', 'it', 'la',
+            'of', 'on', 'or', 'that', 'the', 'this', 'to', 'was', 'what', 'when', 'where', 'who', 'will', 'with', 'und', 'www');
+        return array('min' => max(1, (int) ($vars['innodb_ft_min_token_size'] ?? 3)), 'stop' => $stop);
+    }
+
+    // The index words a typed word is looked up by: its letter/digit runs that the
+    // index can hold ("john@acme.com" -> john, acme; "com" is a stopword). Empty
+    // when none can be - the word then has to be read from the text.
+    private function fulltextTokens($word, $ft) {
+        $tokens = array();
+        foreach (preg_split('/[^\p{L}\p{N}_]+/u', mb_strtolower($word), -1, PREG_SPLIT_NO_EMPTY) as $token) {
+            $length = mb_strlen($token);
+            if ($length >= $ft['min'] && $length <= 80 && !in_array($token, $ft['stop'], true))
+                $tokens[$token] = $token;
+        }
+        return array_values($tokens);
     }
 }
