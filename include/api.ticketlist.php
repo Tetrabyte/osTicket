@@ -108,7 +108,9 @@ class TicketListApiController extends ApiController {
      * that ticket: "vpn password" finds a ticket with vpn in its subject and
      * password in a later reply. Words match as substrings, case-insensitively
      * (up to 6 words, 3 characters at least altogether). Each ticket comes back
-     * once however many of its messages matched, last updated first.
+     * once however many of its messages matched, last updated first - except that
+     * a ticket whose number is exactly one of the words (100123 or T100123, with
+     * or without a leading #) comes first.
      *
      *   200 {"total": 37, "tickets": [{"id", "number", "subject", "status",
      *        "created", "updated", "user", "org"}, ...]}
@@ -123,7 +125,17 @@ class TicketListApiController extends ApiController {
         $q = trim(preg_replace('/\s+/u', ' ', (string) ($_GET['q'] ?? '')));
         if (mb_strlen($q) < 3)
             return $this->exerr(400, 'Give q: at least 3 characters');
-        $words = array_slice(array_values(array_unique(explode(' ', mb_substr($q, 0, 200)))), 0, self::MAX_WORDS);
+        // A leading # is dropped from each word, so a ticket number can be typed
+        // as it is written ("#T123456") as well as bare.
+        $words = array();
+        foreach (explode(' ', mb_substr($q, 0, 200)) as $word) {
+            $word = ltrim($word, '#');
+            if ($word !== '')
+                $words[$word] = $word;
+        }
+        $words = array_slice(array_values($words), 0, self::MAX_WORDS);
+        if (!$words)
+            return $this->exerr(400, 'Give q: at least 3 characters');
         $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : self::DEFAULT_LIMIT;
         $limit = max(1, min(self::MAX_LIMIT, $limit));
 
@@ -163,6 +175,17 @@ class TicketListApiController extends ApiController {
                 .' WHERE se.object_type = \'H\' AND '.$any($entry),
         );
 
+        // A ticket whose number IS one of the words (as typed, or with the T that
+        // 7-character numbers start with: 100123 = T100123) goes first - a number
+        // also turns up in other tickets' conversations, and the ticket itself must
+        // not be pushed out of the few returned by more recently updated ones.
+        $exact = array();
+        foreach ($words as $word) {
+            $exact[] = db_input($word);
+            if (ctype_digit($word))
+                $exact[] = db_input('T'.$word);
+        }
+
         // A runaway scan must not hold the ticket system up (MariaDB; harmless elsewhere).
         db_query('SET SESSION max_statement_time = 15', false);
 
@@ -170,7 +193,7 @@ class TicketListApiController extends ApiController {
             .' GROUP BY ticket_id HAVING BIT_OR(mask) = '.((1 << count($words)) - 1).') m'
             .' JOIN '.TICKET_TABLE.' t ON t.ticket_id = m.ticket_id'
             .' JOIN '.TICKET_STATUS_TABLE.' s ON s.id = t.status_id AND s.state <> \'deleted\''
-            .' ORDER BY t.lastupdate DESC, t.ticket_id DESC LIMIT '.self::MAX_MATCHES);
+            .' ORDER BY (t.number IN ('.implode(',', $exact).')) DESC, t.lastupdate DESC, t.ticket_id DESC LIMIT '.self::MAX_MATCHES);
         if (!$res)
             return $this->exerr(500, 'Ticket search failed');
         $ids = array();
