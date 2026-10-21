@@ -20,6 +20,7 @@ $dispatcher = patterns('',
         url_post("^/tickets\.(?P<format>xml|json|email)$", array('api.tickets.php:TicketApiController','create')),
         url_post("^/users\.(?P<format>json)$", array('api.users.php:UserApiController','sync')),
         url_get("^/tickets/open\.(?P<format>json)$", array('api.ticketlist.php:TicketListApiController','recent')),
+        url_get("^/tickets/search\.(?P<format>json)$", array('api.ticketlist.php:TicketListApiController','search')),
         url('^/tasks/', patterns('',
                 url_post("^cron$", array('api.cron.php:CronApiController', 'execute'))
          ))
