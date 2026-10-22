@@ -36,8 +36,9 @@ class TicketListApiController extends ApiController {
 
     const DEFAULT_LIMIT = 5;
     const MAX_LIMIT = 10;
-    // search.json only: a results page of the portal's Ticket Search can be this long.
-    const SEARCH_MAX_LIMIT = 100;
+    // search.json only: the portal's Ticket Search page asks for every match in one go
+    // (a search is the slow part, so it pages, sorts and filters the rows it has).
+    const SEARCH_MAX_LIMIT = 5000;
     const MAX_WORDS = 6;
     const MAX_MATCHES = 5000;
 
@@ -255,6 +256,24 @@ class TicketListApiController extends ApiController {
                 $exact[] = db_input('T'.$word);
         }
 
+        // A broad search (a common word) takes 5-25 s of the ticket database. A page that
+        // asks again, quick clicks and requests the portal has already given up on all
+        // keep running here, and stacked up they push each other past the limit below.
+        // So at most two run at once (named database locks, which go when the
+        // connection does): a third waits a few seconds for one to finish, then is told
+        // it is busy.
+        $slot = 0;
+        foreach (array(1, 2) as $n) {
+            if ($this->takeSearchSlot($n, 0)) {
+                $slot = $n;
+                break;
+            }
+        }
+        if (!$slot && $this->takeSearchSlot(1, 8))
+            $slot = 1;
+        if (!$slot)
+            return $this->exerr(503, 'Ticket search is busy with other searches - try again in a moment');
+
         // A runaway scan must not hold the ticket system up (MariaDB; harmless elsewhere).
         db_query('SET SESSION max_statement_time = 30', false);
 
@@ -272,6 +291,7 @@ class TicketListApiController extends ApiController {
             $ids[] = (int) $row[0];
         $total = count($ids);
         $ms = (int) round((microtime(true) - $started) * 1000);
+        db_query('DO RELEASE_LOCK(\'tbyte_ticket_search_'.$slot.'\')', false);
 
         // ?debug=1: where the time went - each place the words are looked up, run on
         // its own, with the rows it finds (tuning only; costs about as much again).
@@ -324,6 +344,15 @@ class TicketListApiController extends ApiController {
         if ($timings !== null)
             $answer['branches'] = $timings;
         Http::response(200, json_encode($answer, JSON_INVALID_UTF8_SUBSTITUTE), 'application/json');
+    }
+
+    // Tries to take search slot $n (a named database lock), waiting up to $wait
+    // seconds. A lock belongs to the database connection, so it is freed when the
+    // request ends even if this code never gets to release it.
+    private function takeSearchSlot($n, $wait) {
+        $res = db_query('SELECT GET_LOCK(\'tbyte_ticket_search_'.(int) $n.'\', '.(int) $wait.')', false);
+        $row = $res ? db_fetch_row($res) : null;
+        return $row && (int) $row[0] === 1;
     }
 
     // Whether osTicket's search table can be searched through its FULLTEXT index,
