@@ -171,15 +171,18 @@ class TicketListApiController extends ApiController {
         $all = array_keys($words);
         $entry = array('se.content', 'se.title');
         $branches = array(
-            'SELECT ticket_id, '.$mask(array('subject'), $all).' AS mask FROM '.TICKET_CDATA_TABLE.' WHERE '.$any(array('subject'), $all),
-            'SELECT ticket_id, '.$mask(array('number'), $all).' AS mask FROM '.TICKET_TABLE.' WHERE '.$any(array('number'), $all),
+            'subject' => 'SELECT ticket_id, '.$mask(array('subject'), $all).' AS mask FROM '.TICKET_CDATA_TABLE.' WHERE '.$any(array('subject'), $all),
+            'number' => 'SELECT ticket_id, '.$mask(array('number'), $all).' AS mask FROM '.TICKET_TABLE.' WHERE '.$any(array('number'), $all),
         );
 
         // The conversations are the big part: reading every message's text for a
         // substring took ~14 s here. So a word is first looked up in the search
         // table's FULLTEXT index (what osTicket's own search uses - milliseconds),
-        // and only the messages that index finds are then checked for the substring.
-        // The index finds words that START with the typed one (vpn finds vpn and
+        // and, for a word that is more than one index word (john@acme.com), the
+        // messages it finds are then checked for the whole substring. For a plain
+        // word the index answer is the answer - reading the text of the thousands of
+        // messages that mention a common word (vpn) took 4-15 s, and tells nothing
+        // new. The index finds words that START with the typed one (vpn finds vpn and
         // vpns, not "anyvpn"). A word the index can't hold (shorter than its minimum,
         // or a stopword like "the") is still read from the text, in one pass for all
         // such words; if the table isn't InnoDB with that index, every word is.
@@ -194,13 +197,14 @@ class TicketListApiController extends ApiController {
                 $scan[] = $i;
                 continue;
             }
-            $branches[] = 'SELECT th.object_id AS ticket_id, '.(1 << $i).' AS mask'.$from_entry
+            $plain = count($tokens) === 1 && $tokens[0] === mb_strtolower($word);
+            $branches['text:'.$word] = 'SELECT th.object_id AS ticket_id, '.(1 << $i).' AS mask'.$from_entry
                 .' WHERE se.object_type = \'H\''
                 .' AND MATCH(se.title, se.content) AGAINST('.db_input('+'.implode('* +', $tokens).'*').' IN BOOLEAN MODE)'
-                .' AND '.$any($entry, array($i));
+                .($plain ? '' : ' AND '.$any($entry, array($i)));
         }
         if ($scan)
-            $branches[] = 'SELECT th.object_id AS ticket_id, '.$mask($entry, $scan).' AS mask'.$from_entry
+            $branches['scan'] = 'SELECT th.object_id AS ticket_id, '.$mask($entry, $scan).' AS mask'.$from_entry
                 .' WHERE se.object_type = \'H\' AND '.$any($entry, $scan);
         $method = !$scan ? 'fulltext' : (count($scan) < count($words) ? 'mixed' : 'scan');
 
@@ -231,6 +235,19 @@ class TicketListApiController extends ApiController {
             $ids[] = (int) $row[0];
         $total = count($ids);
         $ms = (int) round((microtime(true) - $started) * 1000);
+
+        // ?debug=1: where the time went - each place the words are looked up, run on
+        // its own, with the rows it finds (tuning only; costs about as much again).
+        $timings = null;
+        if (!empty($_GET['debug'])) {
+            $timings = array();
+            foreach ($branches as $label => $sql) {
+                $t = microtime(true);
+                $res = db_query('SELECT COUNT(*) FROM ('.$sql.') b', false);
+                $row = $res ? db_fetch_row($res) : null;
+                $timings[$label] = array('rows' => $row ? (int) $row[0] : null, 'ms' => (int) round((microtime(true) - $t) * 1000));
+            }
+        }
 
         // Details for the newest few only.
         $tickets = array();
@@ -264,7 +281,10 @@ class TicketListApiController extends ApiController {
 
         // "method" and "ms" say how the conversations were searched and how long the
         // match took - for tuning, not for display.
-        Http::response(200, json_encode(array('total' => $total, 'tickets' => $tickets, 'method' => $method, 'ms' => $ms), JSON_INVALID_UTF8_SUBSTITUTE), 'application/json');
+        $answer = array('total' => $total, 'tickets' => $tickets, 'method' => $method, 'ms' => $ms);
+        if ($timings !== null)
+            $answer['branches'] = $timings;
+        Http::response(200, json_encode($answer, JSON_INVALID_UTF8_SUBSTITUTE), 'application/json');
     }
 
     // Whether osTicket's search table can be searched through its FULLTEXT index,
