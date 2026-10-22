@@ -36,6 +36,8 @@ class TicketListApiController extends ApiController {
 
     const DEFAULT_LIMIT = 5;
     const MAX_LIMIT = 10;
+    // search.json only: a results page of the portal's Ticket Search can be this long.
+    const SEARCH_MAX_LIMIT = 100;
     const MAX_WORDS = 6;
     const MAX_MATCHES = 5000;
 
@@ -99,14 +101,19 @@ class TicketListApiController extends ApiController {
     }
 
     /**
-     * GET /api/http.php/tickets/search.json?q=vpn+password[&limit=5]
+     * GET /api/http.php/tickets/search.json?q=vpn+password[&mode=and|or|phrase][&limit=5][&offset=0]
      * Header: X-API-Key: <key>      (same read-only, IP-bound key as open.json)
      *
      * The tickets - any status except deleted - whose subject, number or
      * conversation (every message, reply and internal note, as osTicket's own
-     * search index holds it) matches EVERY word in q, each word anywhere in
+     * search index holds it) matches the words in q, each word anywhere in
      * that ticket: "vpn password" finds a ticket with vpn in its subject and
-     * password in a later reply. In the subject and number a word matches as a
+     * password in a later reply. mode picks how the words combine - and (the
+     * default: every word), or (any word) or phrase (q as ONE piece of text, the
+     * words next to each other in that order). q is always plain text - no
+     * wildcards or operators of any kind - and reaches the SQL only as an escaped
+     * literal. limit is 1-100 (default 5), offset skips that many matches, for
+     * paging. In the subject and number a word matches as a
      * substring, case-insensitively; in the conversation it matches a word that
      * starts with it (vpn finds vpns - osTicket's FULLTEXT index is used when it
      * can be, which is what makes this fast). Up to 6 words, 3 characters at
@@ -116,7 +123,7 @@ class TicketListApiController extends ApiController {
      * or without a leading #) comes first.
      *
      *   200 {"total": 37, "tickets": [{"id", "number", "subject", "status",
-     *        "created", "updated", "user", "org"}, ...]}
+     *        "created", "updated", "user", "org"}, ...], "mode", "offset", "limit"}
      *   "total" is how many tickets matched altogether (counted up to 5000).
      *
      * Only ticket headers are returned, never the text that matched.
@@ -128,19 +135,49 @@ class TicketListApiController extends ApiController {
         $q = trim(preg_replace('/\s+/u', ' ', (string) ($_GET['q'] ?? '')));
         if (mb_strlen($q) < 3)
             return $this->exerr(400, 'Give q: at least 3 characters');
+        $mode = strtolower((string) ($_GET['mode'] ?? 'and'));
+        if (!in_array($mode, array('and', 'or', 'phrase'), true))
+            return $this->exerr(400, 'mode is and, or or phrase');
         // A leading # is dropped from each word, so a ticket number can be typed
-        // as it is written ("#T123456") as well as bare.
+        // as it is written ("#T123456") as well as bare. A phrase is one "word".
         $words = array();
-        foreach (explode(' ', mb_substr($q, 0, 200)) as $word) {
-            $word = ltrim($word, '#');
-            if ($word !== '')
-                $words[$word] = $word;
+        if ($mode === 'phrase') {
+            $phrase = ltrim(mb_substr($q, 0, 200), '#');
+            if ($phrase !== '')
+                $words[] = $phrase;
+        } else {
+            foreach (explode(' ', mb_substr($q, 0, 200)) as $word) {
+                $word = ltrim($word, '#');
+                if ($word !== '')
+                    $words[$word] = $word;
+            }
+            $words = array_slice(array_values($words), 0, self::MAX_WORDS);
         }
-        $words = array_slice(array_values($words), 0, self::MAX_WORDS);
         if (!$words)
             return $this->exerr(400, 'Give q: at least 3 characters');
         $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : self::DEFAULT_LIMIT;
-        $limit = max(1, min(self::MAX_LIMIT, $limit));
+        $limit = max(1, min(self::SEARCH_MAX_LIMIT, $limit));
+        $offset = max(0, min(self::MAX_MATCHES, (int) ($_GET['offset'] ?? 0)));
+
+        // Words the full-text index can't hold (shorter than its minimum, or a
+        // stopword like "to" or "the") are left out when other words remain: one
+        // would force a read of every message's text (~14 s) and narrows nothing
+        // useful. They come back as "ignored" so the page can say so.
+        $fulltext = $this->fulltextInfo();
+        $ignored = array();
+        if ($fulltext && $mode !== 'phrase' && count($words) > 1) {
+            $usable = array();
+            foreach ($words as $word) {
+                if ($this->fulltextTokens($word, $fulltext))
+                    $usable[] = $word;
+                else
+                    $ignored[] = $word;
+            }
+            if ($usable)
+                $words = $usable;
+            else
+                $ignored = array();
+        }
 
         // Where the words can be found: the subject, the ticket number, or any
         // message in the ticket's thread (osTicket's search table, object type H =
@@ -189,7 +226,6 @@ class TicketListApiController extends ApiController {
         $from_entry = ' FROM '.TABLE_PREFIX.'_search se'
             .' JOIN '.THREAD_ENTRY_TABLE.' te ON te.id = se.object_id'
             .' JOIN '.THREAD_TABLE.' th ON th.id = te.thread_id AND th.object_type = \'T\'';
-        $fulltext = $this->fulltextInfo();
         $scan = array();
         foreach ($words as $i => $word) {
             $tokens = $fulltext ? $this->fulltextTokens($word, $fulltext) : array();
@@ -224,7 +260,8 @@ class TicketListApiController extends ApiController {
 
         $started = microtime(true);
         $res = db_query('SELECT t.ticket_id FROM (SELECT ticket_id FROM ('.implode(' UNION ALL ', $branches).') x'
-            .' GROUP BY ticket_id HAVING BIT_OR(mask) = '.((1 << count($words)) - 1).') m'
+            // and: every word's bit set; or: any bit set (every row already has one).
+            .' GROUP BY ticket_id HAVING BIT_OR(mask) '.($mode === 'or' ? '> 0' : '= '.((1 << count($words)) - 1)).') m'
             .' JOIN '.TICKET_TABLE.' t ON t.ticket_id = m.ticket_id'
             .' JOIN '.TICKET_STATUS_TABLE.' s ON s.id = t.status_id AND s.state <> \'deleted\''
             .' ORDER BY (t.number IN ('.implode(',', $exact).')) DESC, t.lastupdate DESC, t.ticket_id DESC LIMIT '.self::MAX_MATCHES);
@@ -252,7 +289,7 @@ class TicketListApiController extends ApiController {
         // Details for the newest few only.
         $tickets = array();
         if ($ids) {
-            $top = array_slice($ids, 0, $limit);
+            $top = array_slice($ids, $offset, $limit);
             $res = db_query('SELECT t.ticket_id, t.number, t.created, t.lastupdate, s.name AS status, cd.subject, u.name AS user_name, o.name AS org_name'
                 .' FROM '.TICKET_TABLE.' t'
                 .' JOIN '.TICKET_STATUS_TABLE.' s ON s.id = t.status_id'
@@ -281,7 +318,9 @@ class TicketListApiController extends ApiController {
 
         // "method" and "ms" say how the conversations were searched and how long the
         // match took - for tuning, not for display.
-        $answer = array('total' => $total, 'tickets' => $tickets, 'method' => $method, 'ms' => $ms);
+        $answer = array('total' => $total, 'tickets' => $tickets, 'mode' => $mode, 'offset' => $offset, 'limit' => $limit, 'method' => $method, 'ms' => $ms);
+        if ($ignored)
+            $answer['ignored'] = $ignored;
         if ($timings !== null)
             $answer['branches'] = $timings;
         Http::response(200, json_encode($answer, JSON_INVALID_UTF8_SUBSTITUTE), 'application/json');
