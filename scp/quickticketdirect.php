@@ -25,8 +25,20 @@ $vars = [
     'source' => "quick ticket"
 ];
 
+// Ticket::create() adds "Ticket Created From Thread Entry" notes (to the new ticket AND to the
+// old one) whenever the staff session still holds a pending "create ticket from this thread
+// entry" in $_SESSION[':form-data'] - it is left there if that form is opened and then not
+// submitted. A Quick Ticket never comes from a thread entry, so set that state aside for the
+// create (otherwise every Quick Ticket made afterwards is linked to the old entry) and put it
+// back afterwards in case that form is still open in another tab.
+$pendingFromEntry = isset($_SESSION[':form-data']) ? $_SESSION[':form-data'] : null;
+unset($_SESSION[':form-data']);
+
 $errors = [];
 $ticket = Ticket::create($vars, $errors, 'api');
+
+if ($pendingFromEntry !== null)
+    $_SESSION[':form-data'] = $pendingFromEntry;
 
 if (!$ticket) {
     //print_r($errors);
