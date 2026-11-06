@@ -483,7 +483,14 @@ function auth_img($UserId) {
     $href = 'https://portal.remoteit.co.uk/client/client_contacts.php?ticket_user_id=' . $UserId;
     if ($row && $row['client_id'])
         $href .= '&client_id=' . (int) $row['client_id'];
-    $notes = $row ? htmlspecialchars(strip_tags((string) $row['contact_authorisation_notes']), ENT_QUOTES) : '';
+    // The note is HTML written on the portal's contact page (links, bold, lists - the
+    // portal cleans it to a short allow-list before storing it). $notes is its plain
+    // text, for the tooltips; $notesHtml is what is shown under the icons, put through
+    // osTicket's own cleaner as well so a link stays a link and nothing else can come
+    // along with it. (decode off: leave &lt; / &amp; as text, don't turn them into tags.)
+    $rawNotes = $row ? trim((string) $row['contact_authorisation_notes']) : '';
+    $notes = htmlspecialchars(strip_tags($rawNotes), ENT_QUOTES);
+    $notesHtml = ($rawNotes !== strip_tags($rawNotes)) ? Format::safe_html($rawNotes, array('decode' => false)) : $notes;
 
     $hasFlag = $row && ($row['contact_decisions'] || $row['contact_spending'] || $row['contact_important'] || $row['contact_gone']);
 
@@ -511,7 +518,7 @@ function auth_img($UserId) {
 
     // Fixed max-width so long notes text wraps instead of widening the column
     if ($notes !== '') {
-        echo '<div style="font-size:0.7em; width:170px; white-space:normal; overflow-wrap:break-word; word-wrap:break-word;">'.$notes.'</div>';
+        echo '<div style="font-size:0.7em; width:170px; white-space:normal; overflow-wrap:break-word; word-wrap:break-word;">'.$notesHtml.'</div>';
     }
 }
 
