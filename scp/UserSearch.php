@@ -7,6 +7,9 @@
 
 **********************************************************************/
 require('staff.inc.php');
+// Contact authorisation flags + authorised-contacts link: one shared implementation,
+// also used by the ticket page (include/plugins/tbyte-contact-flags).
+require_once(INCLUDE_DIR.'tbyte.contactauth.php');
 
 function run_search ($keyword) {
 	
@@ -474,25 +477,19 @@ function user_notes($id) {
 }
 function auth_img($UserId) {
     $UserId = (int) $UserId;
-    $query = "SELECT client_id, contact_decisions, contact_spending, contact_important, contact_gone, contact_authorisation_notes, contact_authorisation_url
-              FROM `tbyte-portal`.clients_contacts
-              WHERE ticket_user_id = $UserId";
-    $commit = db_query($query, $logError = true, $buffered = true);
-    $row = $commit ? $commit->fetch_assoc() : false;
+    $row = TbyteContactAuth::lookup($UserId) ?: false;
 
-    $href = 'https://portal.remoteit.co.uk/client/client_contacts.php?ticket_user_id=' . $UserId;
-    if ($row && $row['client_id'])
-        $href .= '&client_id=' . (int) $row['client_id'];
+    $href = TbyteContactAuth::contactUrl($UserId);
     // The note is HTML written on the portal's contact page (links, bold, lists - the
     // portal cleans it to a short allow-list before storing it). $notes is its plain
     // text, for the tooltips; $notesHtml is what is shown under the icons, put through
     // osTicket's own cleaner as well so a link stays a link and nothing else can come
     // along with it. (decode off: leave &lt; / &amp; as text, don't turn them into tags.)
     $rawNotes = $row ? trim((string) $row['contact_authorisation_notes']) : '';
-    $notes = htmlspecialchars(strip_tags($rawNotes), ENT_QUOTES);
+    $notes = TbyteContactAuth::plainNotes($row);
     $notesHtml = ($rawNotes !== strip_tags($rawNotes)) ? Format::safe_html($rawNotes, array('decode' => false)) : $notes;
 
-    $hasFlag = $row && ($row['contact_decisions'] || $row['contact_spending'] || $row['contact_important'] || $row['contact_gone']);
+    $hasFlag = TbyteContactAuth::hasFlag($row);
 
     // TEMP: authorisation-source link, for double checking migrated data - hide after 01/12/2026
     if ($row && !empty($row['contact_authorisation_url']) && strtotime('today') <= strtotime('2026-12-01')) {
@@ -502,17 +499,9 @@ function auth_img($UserId) {
     if (!$hasFlag) {
         echo '<a href="'.$href.'" target="_blank" title="'.$notes.'" style="color:lightgrey;"><i class="fa-solid fa-list-check"></i></a>';
     } else {
-        if ($row['contact_decisions']) {
-            echo '<a href="'.$href.'" target="_blank" title="Authorised for Decision Making" style="color:blue; font-size:1.5em;"><i class="fa-solid fa-circle-check"></i></a>&nbsp;';
-        }
-        if ($row['contact_spending']) {
-            echo '<a href="'.$href.'" target="_blank" title="Authorised for Spending" style="color:purple; font-size:1.5em;"><i class="fa-solid fa-sterling-sign"></i></a>&nbsp;';
-        }
-        if ($row['contact_important']) {
-            echo '<a href="'.$href.'" target="_blank" title="Important Contact" style="color:orange; font-size:1.5em;"><i class="fa-solid fa-star"></i></a>&nbsp;';
-        }
+        echo TbyteContactAuth::flagLinksHtml($row, $href, array('icons' => 'fa', 'size' => '1.5em'));
         if ($row['contact_gone']) {
-            echo '<br><a href="'.$href.'" target="_blank" title="'.$notes.'"><span class="badge bg-danger" style="font-size:1em;">User Disabled/Left</span></a>';
+            echo '<br>' . TbyteContactAuth::goneBadgeHtml($row, $href, array('size' => '1em'));
         }
     }
 
@@ -520,14 +509,6 @@ function auth_img($UserId) {
     if ($notes !== '') {
         echo '<div style="font-size:0.7em; width:170px; white-space:normal; overflow-wrap:break-word; word-wrap:break-word;">'.$notesHtml.'</div>';
     }
-}
-
-function get_client_id($UserId) {
-    $UserId = (int) $UserId;
-    $query = "SELECT client_id FROM `tbyte-portal`.clients_contacts WHERE ticket_user_id = $UserId";
-    $commit = db_query($query, $logError = true, $buffered = true);
-    $row = $commit ? $commit->fetch_assoc() : false;
-    return $row && $row['client_id'] ? (int) $row['client_id'] : null;
 }
 
 function phpsubmitter($name, $email, $phone, $subject, $message, $notes) {
@@ -898,9 +879,9 @@ body {
 										echo $row["UserNotes"];
 									echo '</td>';
 									echo '<td>';
-									$clientId = get_client_id($row["UserId"]);
-									if ($clientId) {
-										$authView = 'https://portal.remoteit.co.uk/client/client_contacts.php?client_id=' . $clientId . '&view=authorised';
+									$authView = TbyteContactAuth::authorisedUrl($row["UserId"]);
+									if ($authView) {
+										$authView = htmlspecialchars($authView, ENT_QUOTES);
 										echo '<a href="'.$authView.'" target="_blank" style="color:darkgrey; float:right; font-size:1.5em;"><i class="fa-solid fa-users"></i></a>';
 									}
 									echo '<a target="_blank" href="/scp/orgs.php?id='.$row["OrgId"].'#tickets">'.$row["OrgName"].'</a></td> ';
