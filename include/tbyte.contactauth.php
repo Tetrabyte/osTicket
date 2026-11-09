@@ -20,6 +20,13 @@ class TbyteContactAuth {
 
     const PORTAL_URL = 'https://portal.remoteit.co.uk';
 
+    /**
+     * The Font Awesome stylesheet scp/UserSearch.php loads. The ticket page does not load
+     * it (osTicket ships an older icon font), so the ticket-page pieces carry their own
+     * link - that way they use the very same icons as User Search.
+     */
+    const FA_CSS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css';
+
     /** Rows already read during this request, by ticket user id (null = no row). */
     private static $rows = array();
 
@@ -153,35 +160,47 @@ class TbyteContactAuth {
              . 'User Disabled/Left</span></a>';
     }
 
+    /** The stylesheet link for the Font Awesome icons (see FA_CSS_URL). */
+    static function faStylesheetHtml() {
+        return '<link rel="stylesheet" href="'.self::FA_CSS_URL.'">';
+    }
+
     /** Small icon-only button linking to every authorised contact of the user's company. */
     static function authorisedButtonHtml($url) {
         return '<a class="btn btn-secondary btn-sm no-pjax tbyte-auth-users" target="_blank" rel="noopener"'
              . ' href="'.htmlspecialchars($url, ENT_QUOTES).'" title="Authorised contacts for this company"'
              . ' style="--bs-btn-padding-y: .25rem !important; --bs-btn-padding-x: .5rem !important;">'
-             . '<i class="bi bi-people-fill"></i></a>';
+             . '<i class="fa-solid fa-users"></i></a>';
     }
 
     /**
-     * Everything the ticket page needs for the ticket's owner:
-     *   flags      - the flag icons (+ "User Disabled/Left"), '' if they have none
-     *   authorised - the icon-only "authorised contacts" button, '' if the portal has no client for them
+     * Ticket page, User row: the flag icons (+ "User Disabled/Left") for the ticket's
+     * owner, or '' when they have none. Never throws - it decorates a page that matters more.
      */
-    static function ticketPageHtml($userId) {
-        $out = array('flags' => '', 'authorised' => '');
+    static function ticketFlagsHtml($userId) {
         try {
-            if (!($row = self::lookup($userId)))
-                return $out;
-            if (self::hasFlag($row)) {
-                $href = self::contactUrl($userId);
-                $o = array('icons' => 'bi', 'size' => '1.2em', 'link_class' => 'no-pjax', 'notes_in_title' => true);
-                $out['flags'] = self::flagLinksHtml($row, $href, $o)
-                              . self::goneBadgeHtml($row, $href, array('size' => '.85em', 'link_class' => 'no-pjax'));
-            }
-            if ($url = self::authorisedUrl($userId))
-                $out['authorised'] = self::authorisedButtonHtml($url);
+            if (!($row = self::lookup($userId)) || !self::hasFlag($row))
+                return '';
+            $href = self::contactUrl($userId);
+            return self::faStylesheetHtml()
+                 . self::flagLinksHtml($row, $href,
+                        array('icons' => 'fa', 'size' => '1.2em', 'link_class' => 'no-pjax', 'notes_in_title' => true))
+                 . self::goneBadgeHtml($row, $href, array('size' => '.85em', 'link_class' => 'no-pjax'));
         } catch (Throwable $e) {
-            // never let this break the page it decorates
+            return '';
         }
-        return $out;
+    }
+
+    /**
+     * Ticket page, Organization row: the icon-only "authorised contacts" button for the
+     * ticket's owner, or '' when the portal has no client for them.
+     */
+    static function ticketAuthorisedButtonHtml($userId) {
+        try {
+            $url = self::authorisedUrl($userId);
+            return $url ? self::faStylesheetHtml() . self::authorisedButtonHtml($url) : '';
+        } catch (Throwable $e) {
+            return '';
+        }
     }
 }
