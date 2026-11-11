@@ -633,6 +633,19 @@ abstract class StaffAuthenticationBackend  extends AuthenticationBackend {
             || !($authkey=$bk->getAuthKey($staff)))
             return false;
 
+        // The credentials are verified. Give the session a new id *before*
+        // any authentication state is stored in it, so that a session id
+        // known to someone else before login (session fixation) can never
+        // become an authenticated session. The old id is retired shortly
+        // (see regenerateSession) and never carried any authentication.
+        // If the id cannot be rotated here the TIME_BOMB below is the
+        // fallback.
+        $staff->regenerateSession();
+        // The CSRF token is kept in the session, so it has been handed out
+        // (e.g. in the login form) to whoever knew the session before the
+        // login. Drop it so the authenticated session starts with a new one.
+        unset($_SESSION['csrf']);
+
         //Log debug info.
         $ost->logDebug(_S('Agent Login'),
             sprintf(_S("%s logged in [%s], via %s"), $staff->getUserName(),
@@ -849,6 +862,19 @@ abstract class UserAuthenticationBackend  extends AuthenticationBackend {
             elseif ($acct->isLocked())
                 throw new AccessDenied(__('Account is administratively locked'));
         }
+
+        // The credentials are verified. Give the session a new id *before*
+        // any authentication state is stored in it, so that a session id
+        // known to someone else before login (session fixation) can never
+        // become an authenticated session. The old id is retired shortly
+        // (see regenerateSession) and never carried any authentication.
+        // If the id cannot be rotated here the TIME_BOMB below is the
+        // fallback.
+        $user->regenerateSession();
+        // The CSRF token is kept in the session, so it has been handed out
+        // (e.g. in the login form) to whoever knew the session before the
+        // login. Drop it so the authenticated session starts with a new one.
+        unset($_SESSION['csrf']);
 
         // Tag the user and associated ticket in the SESSION
         $this->setAuthKey($user, $bk, $authkey);
