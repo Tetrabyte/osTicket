@@ -16,11 +16,15 @@ include_once INCLUDE_DIR.'class.organization.php';
  * writing to the database directly.
  *
  * Request  (JSON, X-API-Key header):
- *   {"org_ids": [12, 40], "dry_run": false}
+ *   {"org_ids": [12, 40], "dry_run": false, "clear_domains": true}
+ *   clear_domains (optional) also empties each organisation's email-domain list, the setting
+ *   that automatically adds future users from those domains - left in place, mail from the
+ *   ex-client would keep creating users inside the old organisation.
  * Response (JSON):
  *   {"summary": {"orgs": n, "orgs_missing": [ids], "users": n, "emails_renamed": n,
  *                "emails_would_rename": n, "already_prefixed": n, "skipped_too_long": n,
- *                "users_with_login_account": n}}
+ *                "users_with_login_account": n, "orgs_domains_cleared": n,
+ *                "orgs_domains_would_clear": n}}
  *
  * Idempotent: addresses that already start with OLD_ are left alone, so a repeat (or a retry after a
  * failure part-way) is safe. Nothing is deleted. Same key rules as /api/users.json: the key must be
@@ -53,10 +57,13 @@ class OffboardApiController extends ApiController {
         if (count($org_ids) > self::MAX_ORGS)
             return $this->exerr(400, sprintf('At most %d organisations per request', self::MAX_ORGS));
         $dry_run = !empty($data['dry_run']);
+        // Also empty the organisation's list of email domains - the setting that automatically
+        // adds future users from those domains to the organisation.
+        $clear_domains = !empty($data['clear_domains']);
 
         $summary = array('orgs' => 0, 'orgs_missing' => array(), 'users' => 0, 'emails_renamed' => 0,
             'emails_would_rename' => 0, 'already_prefixed' => 0, 'skipped_too_long' => 0,
-            'users_with_login_account' => 0);
+            'users_with_login_account' => 0, 'orgs_domains_cleared' => 0, 'orgs_domains_would_clear' => 0);
 
         foreach ($org_ids as $org_id) {
             if (!($org = Organization::lookup($org_id))) {
@@ -64,6 +71,17 @@ class OffboardApiController extends ApiController {
                 continue;
             }
             $summary['orgs']++;
+
+            if ($clear_domains && trim((string) $org->domain) !== '') {
+                if ($dry_run) {
+                    $summary['orgs_domains_would_clear']++;
+                }
+                else {
+                    $org->set('domain', '');
+                    $org->save();
+                    $summary['orgs_domains_cleared']++;
+                }
+            }
 
             // Same filter osTicket's own Organization::delete() uses to find an org's users.
             foreach (User::objects()->filter(array('org' => $org)) as $user) {
