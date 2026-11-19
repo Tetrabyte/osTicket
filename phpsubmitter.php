@@ -1,3 +1,48 @@
+<?php
+// Rate limit (security review SR-12, Ashley 2026-11-19): at most 60 requests per rolling 60 minutes per client IP, then HTTP 429.
+// Done here, at the origin, because tickets.remoteit.co.uk is not proxied through Cloudflare (some downloads, such as the .ps1 files, break behind it).
+// State: one small file per IP in <system temp>/phpsubmitter-rl/ (survives nothing important: a cleared temp dir just resets the counters).
+// It FAILS OPEN: if the counter cannot be kept for any reason the request is allowed, so a fault here can never lock out a real user.
+function phpsubmitter_rate_limited($ip, $limit = 60, $window = 3600, $now = null) {
+    $now = $now === null ? time() : $now;
+    $dir = sys_get_temp_dir() . '/phpsubmitter-rl';
+    if (!is_dir($dir) && !@mkdir($dir, 0700, true) && !is_dir($dir)) {
+        return false;
+    }
+    $fh = @fopen($dir . '/' . sha1($ip), 'c+');
+    if (!$fh) {
+        return false;
+    }
+    flock($fh, LOCK_EX);
+    $seen = array_filter(array_map('intval', explode(',', (string) stream_get_contents($fh))), function ($t) use ($now, $window) {
+        return $t > $now - $window;
+    });
+    $blocked = count($seen) >= $limit;
+    if (!$blocked) {
+        $seen[] = $now;                       // a refused request is not counted, so the window frees up as old requests age out
+    }
+    ftruncate($fh, 0);
+    rewind($fh);
+    fwrite($fh, implode(',', $seen));
+    fflush($fh);
+    flock($fh, LOCK_UN);
+    fclose($fh);
+    if (mt_rand(1, 200) === 1) {              // now and then tidy counters nobody has touched for two windows
+        foreach (glob($dir . '/*') ?: array() as $old) {
+            if (@filemtime($old) < $now - 2 * $window) {
+                @unlink($old);
+            }
+        }
+    }
+    return $blocked;
+}
+if (phpsubmitter_rate_limited(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown')) {
+    http_response_code(429);
+    header('Retry-After: 3600');
+    die('Too many requests. Please try again later.');
+}
+// (this block sits ABOVE the old "#!/usr/bin/php -q" first line on purpose: nothing has been output yet, so the 429 status can always be sent)
+?>
 #!/usr/bin/php -q
 <?php
 $config = array(
