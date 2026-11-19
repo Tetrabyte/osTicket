@@ -1,5 +1,6 @@
 <?php
-// Rate limit (security review SR-12, Ashley 2026-11-19): at most 60 requests per rolling 60 minutes per client IP, then HTTP 429.
+// Rate limit (security review SR-12, Ashley 2026-11-19): at most 60 requests per rolling 60 minutes per client IP, AND at most 100 per rolling
+// 60 minutes across all IPs combined (a flood spread over many addresses), then HTTP 429.
 // Done here, at the origin, because tickets.remoteit.co.uk is not proxied through Cloudflare (some downloads, such as the .ps1 files, break behind it).
 // State: one small file per IP in <system temp>/phpsubmitter-rl/ (survives nothing important: a cleared temp dir just resets the counters).
 // It FAILS OPEN: if the counter cannot be kept for any reason the request is allowed, so a fault here can never lock out a real user.
@@ -36,7 +37,8 @@ function phpsubmitter_rate_limited($ip, $limit = 60, $window = 3600, $now = null
     }
     return $blocked;
 }
-if (phpsubmitter_rate_limited(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown')) {
+if (phpsubmitter_rate_limited(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown')
+    || phpsubmitter_rate_limited('global:all', 100)) {   // per-IP first, so one noisy address cannot use up the global allowance
     http_response_code(429);
     header('Retry-After: 3600');
     die('Too many requests. Please try again later.');
