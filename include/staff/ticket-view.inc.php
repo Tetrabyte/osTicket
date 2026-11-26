@@ -1472,3 +1472,4 @@ function saveDraft() {
         $('#response').redactor('plugin.draft.saveDraft');
 }
 </script>
+<?php include STAFFINC_DIR.'tbyte/ticket-view-unlock.inc.php'; ?>
